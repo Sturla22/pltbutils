@@ -1,0 +1,5 @@
+$PLTBUTILS_ROOT/src/vhdl/txt_util.vhd
+$PLTBUTILS_ROOT/src/vhdl/pltbutils_type_pkg.vhd
+$PLTBUTILS_ROOT/src/vhdl/pltbutils_func_pkg.vhd
+$PLTBUTILS_ROOT/src/vhdl/pltbutils_comp.vhd
+$PLTBUTILS_ROOT/src/vhdl/pltbutils_comp_pkg.vhd
