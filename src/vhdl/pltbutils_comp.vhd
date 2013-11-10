@@ -49,6 +49,9 @@
 ----------------------------------------------------------------------
 -- pltbutils_clkgen
 -- Creates a clock for use in a testbech.
+-- A non-inverted as well as an inverted output is available, 
+-- use one or both depending on if you need a single-ended or
+-- differential clock.
 -- The clock stops when input port stop_sim goes '1'.
 -- This makes the simulator stop (unless there are other infinite 
 -- processes running in the simulation).
@@ -58,21 +61,24 @@ use ieee.std_logic_1164.all;
 
 entity pltbutils_clkgen is
   generic (
-    G_PERIOD : time := 10 ns
+    G_PERIOD        : time := 10 ns;
+    G_INITVALUE     : std_logic := '0'
   );
   port (
     clk_o           : out std_logic;
+    clk_n_o         : out std_logic;
     stop_sim_i      : in  std_logic
   );
 end entity pltbutils_clkgen;
 
 architecture bhv of pltbutils_clkgen is
   constant C_HALF_PERIOD    : time := G_PERIOD / 2;
-  signal   clk              : std_logic := '0';
+  signal   clk              : std_logic := G_INITVALUE;
 begin
 
-  clk   <= not clk and not stop_sim_i after C_HALF_PERIOD;
-  clk_o <= clk;
+  clk       <= not clk and not stop_sim_i after C_HALF_PERIOD;
+  clk_o     <= clk;
+  clk_n_o   <= not clk;
 
 end architecture bhv;
 
