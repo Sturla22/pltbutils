@@ -58,10 +58,12 @@ package pltbutils_comp_pkg is
 
   component pltbutils_clkgen is
     generic (
-      G_PERIOD        : time := 10 ns
+      G_PERIOD        : time := 10 ns;
+      G_INITVALUE     : std_logic := '0'
     );
     port (
       clk_o           : out std_logic;
+      clk_n_o         : out std_logic;      
       stop_sim_i      : in  std_logic
     );
   end component pltbutils_clkgen;
@@ -70,10 +72,12 @@ package pltbutils_comp_pkg is
   -- (copy to your own file and remove the comment characters):
   --pltbutils_clkgen0 : pltbutils_clkgen
   --  generic map (
-  --    G_PERIOD        => G_PERIOD
+  --    G_PERIOD        => G_PERIOD,
+  --    G_INITVALUE     => '0'
   --  )
   --  port map (
   --    clk_o           => clk,
+  --    clk_n_o         => clk_n,
   --    stop_sim_i      => stop_sim
   --  );
 
