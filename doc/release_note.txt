@@ -1,0 +1,16 @@
+pltbutils release_note.txt
+
+alpha0002 November 10, 2013
+1. Added doc/release_note.txt
+2. Removed file paths from pltbutils_files.lst
+3. Added overloaded print procedures with boolean argument called active, 
+   which is useful for debug switches, etc.
+4. Added inverted clock output and a generic for setting initial value to 
+   pltbutils_clkgen in  pltbutils_comp.vhd and pltbutils_comp_pkg.vhd .
+   The inverted clock output can be used when a differential
+   clock is needed.
+5. Added overloaded procedures waitsig().   
+6. Updated specification
+  
+alpha0001 September 2, 2013
+1. First commit
