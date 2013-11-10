@@ -114,7 +114,17 @@ package pltbutils_func_pkg is
   
   -- print, printv, print2
   procedure print(
+    constant active             : in    boolean;
     signal   s                  : out   string;
+    constant txt                : in    string
+  );
+  procedure print(
+    signal   s                  : out   string;
+    constant txt                : in    string
+  );
+  procedure printv(
+    constant active             : in    boolean;
+    variable s                  : out   string;
     constant txt                : in    string
   );
   procedure printv(
@@ -122,7 +132,17 @@ package pltbutils_func_pkg is
     constant txt                : in    string
   );
   procedure printv(
+    constant active             : in    boolean;
     variable s                  : inout pltbutils_p_string_t;
+    constant txt                : in    string
+  );
+  procedure printv(
+    variable s                  : inout pltbutils_p_string_t;
+    constant txt                : in    string
+  );
+  procedure print(
+    constant active             : in    boolean;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
     constant txt                : in    string
   );
   procedure print(
@@ -130,7 +150,17 @@ package pltbutils_func_pkg is
     constant txt                : in    string
   );
   procedure print2(
+    constant active             : in    boolean;
     signal   s                  : out   string;
+    constant txt                : in    string
+  );
+  procedure print2(
+    signal   s                  : out   string;
+    constant txt                : in    string
+  );
+  procedure print2(
+    constant active             : in    boolean;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
     constant txt                : in    string
   );
   procedure print2(
@@ -146,6 +176,80 @@ package pltbutils_func_pkg is
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
+  
+  -- waitsig
+  procedure waitsig(
+    signal   s                  : in    integer;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );
+  procedure waitsig(
+    signal   s                  : in    std_logic;
+    constant value              : in    std_logic;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );
+  procedure waitsig(
+    signal   s                  : in    std_logic;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );  
+  procedure waitsig(
+    signal   s                  : in    std_logic_vector;
+    constant value              : in    std_logic_vector;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );
+  procedure waitsig(
+    signal   s                  : in    std_logic_vector;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );
+  procedure waitsig(
+    signal   s                  : in    unsigned;
+    constant value              : in    unsigned;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );  
+  procedure waitsig(
+    signal   s                  : in    unsigned;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );
+  procedure waitsig(
+    signal   s                  : in    signed;
+    constant value              : in    signed;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );
+  procedure waitsig(
+    signal   s                  : in    signed;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );  
   
   -- check
   procedure check(
@@ -463,12 +567,30 @@ package body pltbutils_func_pkg is
   --   constant txt                : in    string
   -- ) 
   --
+  -- procedure print(   
+  --   constant active             : in    boolean;
+  --   signal   s                  : out   string;
+  --   constant txt                : in    string
+  -- ) 
+  --
   -- procedure print(
   --   signal   pltbutils_sc       : out   pltbutils_sc_t;
   --   constant txt                : in    string
   -- )
   --
+  -- procedure print(
+  --   constant active             : in    boolean;
+  --   signal   pltbutils_sc       : out   pltbutils_sc_t;
+  --   constant txt                : in    string
+  -- )
+  --
   -- procedure printv(
+  --   variable s                  : out   string;
+  --   constant txt                : in    string
+  -- )
+  --
+  -- procedure printv(
+  --   constant active             : in    boolean;
   --   variable s                  : out   string;
   --   constant txt                : in    string
   -- )
@@ -479,6 +601,18 @@ package body pltbutils_func_pkg is
   -- )
   --
   -- procedure print2(    
+  --   constant active             : in    boolean;
+  --   signal   s                  : out   string;
+  --   constant txt                : in    string
+  -- )
+  --
+  -- procedure print2(    
+  --   signal   pltbutils          : out   pltbutils_sc_t;
+  --   constant txt                : in    string
+  -- )
+  --
+  -- procedure print2(    
+  --   constant active             : in    boolean;
   --   signal   pltbutils          : out   pltbutils_sc_t;
   --   constant txt                : in    string
   -- )
@@ -495,6 +629,9 @@ package body pltbutils_func_pkg is
   --
   --   txt                      The text.
   --
+  --   active                   The text is only printed if active is true.
+  --                            Useful for debug switches, etc.
+  --
   --   pltbutils_sc             PlTbUtils' global status- and control signal 
   --                            of type pltbutils_sc_t. 
   --                            The name must be no other than pltbutils_sc.
@@ -504,6 +641,8 @@ package body pltbutils_func_pkg is
   --
   -- Examples:
   -- print(msg, "Hello, world"); -- Prints to signal msg
+  -- print(G_DEBUG, msg, "Hello, world"); -- Prints to signal msg if 
+  --                                      -- generic G_DEBUG is true
   -- printv(v_msg, "Hello, world"); -- Prints to variable msg
   -- print(pltbutils_sc, "Hello, world"); -- Prints to "info" in waveform window
   -- print2(msg, "Hello, world"); -- Prints to signal and transcript window 
@@ -511,65 +650,130 @@ package body pltbutils_func_pkg is
   --                                      -- transcript windows
   ----------------------------------------------------------------------------
   procedure print(
+    constant active             : in    boolean;
     signal   s                  : out   string;
     constant txt                : in    string
   ) is
     variable j : positive := txt 'low;
   begin
-    for i in s'range loop
-      if j <= txt 'high then
-        s(i) <= txt (j);
-      else
-        s(i) <= ' ';
-      end if;
-      j := j + 1;
-    end loop;
+    if active then
+      for i in s'range loop
+        if j <= txt 'high then
+          s(i) <= txt (j);
+        else
+          s(i) <= ' ';
+        end if;
+        j := j + 1;
+      end loop;
+    end if;
+  end procedure print;
+  
+  procedure print(
+    signal   s                  : out   string;
+    constant txt                : in    string
+  ) is
+  begin
+    print(true, s, txt);
   end procedure print;
   
   procedure printv(
+    constant active             : in    boolean;
     variable s                  : out   string;
     constant txt                : in    string
   ) is
     variable j : positive := txt 'low;
   begin
-    for i in s'range loop
-      if j <= txt 'high then
-        s(i) := txt (j);
-      else
-        s(i) := ' ';
-      end if;
-      j := j + 1;
-    end loop;
+    if active then
+      for i in s'range loop
+        if j <= txt 'high then
+          s(i) := txt (j);
+        else
+          s(i) := ' ';
+        end if;
+        j := j + 1;
+      end loop;
+    end if;
   end procedure printv;
+  
+  procedure printv(
+    variable s                  : out   string;
+    constant txt                : in    string
+  ) is
+  begin
+    printv(true, s, txt);
+  end procedure printv;  
   
   -- VHDL-2002:
   procedure printv(
+    constant active             : in    boolean;
     variable s                  : inout pltbutils_p_string_t;
     constant txt                : in    string
   ) is
     variable j : positive := txt 'low;
   begin
-    s.set(txt );
+    if active then
+      s.set(txt);
+    end if;
   end procedure printv;
+  
+  procedure printv(
+    variable s                  : inout pltbutils_p_string_t;
+    constant txt                : in    string
+  ) is
+  begin
+    printv(true, s, txt);
+  end procedure printv;  
 
   -- Print to info element in pltbutils_sc, which shows up in waveform window
   procedure print(
+    constant active             : in    boolean;
     signal   pltbutils_sc       : out   pltbutils_sc_t;
     constant txt                : in    string
   ) is
     variable j : positive := txt 'low;
   begin
-    printv(v_pltbutils_info, txt );
-    pltbutils_sc_update(pltbutils_sc);
+    if active then
+      printv(v_pltbutils_info, txt );
+      pltbutils_sc_update(pltbutils_sc);
+    end if;
   end procedure print;
+
+  procedure print(
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant txt                : in    string
+  ) is
+  begin
+    print(true, pltbutils_sc, txt);
+  end procedure print;  
   
+  procedure print2(
+    constant active             : in    boolean;
+    signal   s                  : out   string;
+    constant txt                : in    string
+  ) is
+  begin
+    if active then 
+      print(s, txt );
+      print(txt);
+    end if;
+  end procedure print2;
+
   procedure print2(
     signal   s                  : out   string;
     constant txt                : in    string
   ) is
   begin
-    print(s, txt );
-    print(txt );
+    print(true, s, txt);
+  end procedure print2;  
+  
+  procedure print2(
+    constant active             : in    boolean;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant txt                : in    string
+  ) is
+  begin
+    print(pltbutils_sc, txt );
+    print(txt);
   end procedure print2;
 
   procedure print2(
@@ -577,9 +781,8 @@ package body pltbutils_func_pkg is
     constant txt                : in    string
   ) is
   begin
-    print(pltbutils_sc, txt );
-    print(txt );
-  end procedure print2;
+    print(true, pltbutils_sc, txt);
+  end procedure print2;  
 
   ----------------------------------------------------------------------------
   -- waitclks
@@ -627,7 +830,7 @@ package body pltbutils_func_pkg is
   begin
     v_timeout_time := now + timeout;
     while i > 0 loop
-      if FALLING then
+      if falling then
         wait until falling_edge(clk) for timeout / n;
       else
         wait until rising_edge(clk)  for timeout / n;
@@ -643,7 +846,242 @@ package body pltbutils_func_pkg is
       pltbutils_sc_update(pltbutils_sc);  
     end if;
   end procedure waitclks;
+    
+  ----------------------------------------------------------------------------
+  -- waitsig
+  --
+  -- procedure waitsig(
+  --   signal   s                  : in    integer|std_logic|std_logic_vector|unsigned|signed;
+  --   constant value              : in    integer|std_logic|std_logic_vector|unsigned|signed;
+  --   signal   clk                : in    std_logic;
+  --   signal   pltbutils_sc       : out   pltbutils_sc_t;
+  --   constant falling            : in    boolean := false;
+  --   constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  -- )
+  --
+  -- Waits until a signal has reached a specified value after specified clock
+  -- edge.
+  --
+  -- Arguments: 
+  --   s                        The signal to test.
+  --                            Supported types: integer, std_logic, 
+  --                            std_logic_vector, unsigned, signed.
+  --
+  --   value                    Value to wait for.
+  --                            Same type as data or integer.
+  --
+  --   clk                      The clock.
+  --
+  --   pltbutils_sc             PlTbUtils' global status- and control signal.
+  --                            Must be set to pltbutils_sc.
+  --
+  --   falling                  If true, waits for falling edges, otherwise
+  --                            rising edges. Optional, default is false.
+  --
+  --   timeout                  Timeout time, in case the clock is not working.
+  --                            Optional, default is C_PLTBUTILS_TIMEOUT.  
+  --
+  -- Examples:
+  -- waitsig(wr_en, '1', sys_clk, pltbutils_sc);
+  -- waitsig(rd_en,   1, sys_clk, pltbutils_sc, true);
+  -- waitclks(full, '1', sys_clk, pltbutils_sc, true, 1 ms);
+  ---------------------------------------------------------------------------- 
+  procedure waitsig(
+    signal   s                  : in    integer;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_timeout_time     : time;
+  begin
+    v_timeout_time := now + timeout;
+    l1 : loop
+      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      exit l1 when s = value or now >= v_timeout_time;
+    end loop;
+    if now >= v_timeout_time then
+      assert false
+      report "waitsig() timeout"
+      severity error;
+      v_pltbutils_err_cnt.inc; -- VHDL-2002
+      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
+      pltbutils_sc_update(pltbutils_sc);  
+    end if;
+  end procedure waitsig;
+
+  procedure waitsig(
+    signal   s                  : in    std_logic;
+    constant value              : in    std_logic;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_timeout_time     : time;
+  begin
+    v_timeout_time := now + timeout;
+    l1 : loop
+      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      exit l1 when s = value or now >= v_timeout_time;
+    end loop;
+    if now >= v_timeout_time then
+      assert false
+      report "waitsig() timeout"
+      severity error;
+      v_pltbutils_err_cnt.inc; -- VHDL-2002
+      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
+      pltbutils_sc_update(pltbutils_sc);  
+    end if;
+  end procedure waitsig;
   
+  procedure waitsig(
+    signal   s                  : in    std_logic;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_value            : std_logic;
+    variable v_timeout_time     : time;
+  begin
+    case value is
+      when 0      => v_value := '0';
+      when 1      => v_value := '1';
+      when others => v_value := 'X';
+    end case;
+    if v_value /= 'X' then
+      waitsig(s, v_value, clk, 
+              pltbutils_sc, falling, timeout);
+    else
+      assert false
+        report "waitsig() illegal value to wait for: " & integer'image(value)
+        severity error;
+      v_pltbutils_err_cnt.inc; -- VHDL-2002
+      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
+      pltbutils_sc_update(pltbutils_sc);      
+    end if;
+  end procedure waitsig;  
+  
+  procedure waitsig(
+    signal   s                  : in    std_logic_vector;
+    constant value              : in    std_logic_vector;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_timeout_time     : time;
+  begin
+    v_timeout_time := now + timeout;
+    l1 : loop
+      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      exit l1 when s = value or now >= v_timeout_time;
+    end loop;
+    if now >= v_timeout_time then
+      assert false
+      report "waitsig() timeout"
+      severity error;
+      v_pltbutils_err_cnt.inc; -- VHDL-2002
+      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
+      pltbutils_sc_update(pltbutils_sc);  
+    end if;
+  end procedure waitsig;  
+
+  procedure waitsig(
+    signal   s                  : in    std_logic_vector;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_timeout_time     : time;
+  begin
+    waitsig(s, std_logic_vector(to_unsigned(value, s'length)), clk, 
+            pltbutils_sc, falling, timeout);
+  end procedure waitsig;  
+  
+  procedure waitsig(
+    signal   s                  : in    unsigned;
+    constant value              : in    unsigned;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_timeout_time     : time;
+  begin
+    v_timeout_time := now + timeout;
+    l1 : loop
+      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      exit l1 when s = value or now >= v_timeout_time;
+    end loop;
+    if now >= v_timeout_time then
+      assert false
+      report "waitsig() timeout"
+      severity error;
+      v_pltbutils_err_cnt.inc; -- VHDL-2002
+      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
+      pltbutils_sc_update(pltbutils_sc);  
+    end if;
+  end procedure waitsig;  
+  
+  procedure waitsig(
+    signal   s                  : in    unsigned;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_timeout_time     : time;
+  begin
+    waitsig(s, to_unsigned(value, s'length), clk, 
+            pltbutils_sc, falling, timeout);
+  end procedure waitsig;  
+ 
+  procedure waitsig(
+    signal   s                  : in    signed;
+    constant value              : in    signed;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_timeout_time     : time;
+  begin
+    v_timeout_time := now + timeout;
+    l1 : loop
+      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      exit l1 when s = value or now >= v_timeout_time;
+    end loop;
+    if now >= v_timeout_time then
+      assert false
+      report "waitsig() timeout"
+      severity error;
+      v_pltbutils_err_cnt.inc; -- VHDL-2002
+      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
+      pltbutils_sc_update(pltbutils_sc);  
+    end if;
+  end procedure waitsig;  
+
+  procedure waitsig(
+    signal   s                  : in    signed;
+    constant value              : in    integer;
+    signal   clk                : in    std_logic;
+    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_timeout_time     : time;
+  begin
+    waitsig(s, to_signed(value, s'length), clk, 
+            pltbutils_sc, falling, timeout);
+  end procedure waitsig;  
+ 
   ----------------------------------------------------------------------------
   -- check
   --
