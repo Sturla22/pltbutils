@@ -51,7 +51,8 @@ use ieee.std_logic_1164.all;
 
 entity tc_example is
   generic (
-    G_WIDTH         : integer := 8
+    G_WIDTH         : integer := 8;
+    G_DISABLE_BUGS  : integer range 0 to 1 := 0
   );
   port (
     clk             : in  std_logic;

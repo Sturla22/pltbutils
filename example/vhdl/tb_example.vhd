@@ -128,7 +128,8 @@ begin
    
   tc0 : entity work.tc_example
     generic map (
-      G_WIDTH           => G_WIDTH
+      G_WIDTH           => G_WIDTH,
+      G_DISABLE_BUGS    => G_DISABLE_BUGS
     )
     port map(
       clk               => clk,

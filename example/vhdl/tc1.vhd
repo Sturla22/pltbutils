@@ -83,7 +83,7 @@ begin
     check("Carry out", carry_out, '0', pltbutils_sc); 
     
     testname(3, "Simple carry in test", pltbutils_sc);
-    print(pltbutils_sc, "Bug here somewhere");
+    print(G_DISABLE_BUGS=0, pltbutils_sc, "Bug here somewhere");
     carry_in <= '1';
     x <= std_logic_vector(to_unsigned(1, x'length));
     y <= std_logic_vector(to_unsigned(2, x'length));
