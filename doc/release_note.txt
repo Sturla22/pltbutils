@@ -1,5 +1,17 @@
 pltbutils release_note.txt
 
+alpha0003 December 02, 2013
+1. Added a line feed before printing the test name for clarity,
+   in procedure testname() in pltbutils.vhd .
+2. Added functions to_ascending(), to_descending() and hxstr()
+   in pltbutils.vhd (not yet included in the specification).
+3. check() in pltbutils.vhd now outputs hexadecimal values instead of
+   binary values for std_logic_vector, unsigned and signed.
+4. Updated tb_example.vhd, tc_example.vhd and tc1.vhd to feed
+   the generic G_DISABLE_BUGS to tc1. 
+   The message "Bug here somewhere" is now only output when
+   G_DISABLE_BUGS=0.   
+
 alpha0002 November 10, 2013
 1. Added doc/release_note.txt
 2. Removed file paths from pltbutils_files.lst
