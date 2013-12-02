@@ -325,6 +325,42 @@ package pltbutils_func_pkg is
     constant expr               : in    boolean;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );
+  
+  -- to_ascending
+  function to_ascending(
+    constant s                  : std_logic_vector
+  ) return std_logic_vector;
+  function to_ascending(
+    constant s                  : unsigned
+  ) return unsigned;
+  function to_ascending(
+    constant s                  : signed
+  ) return signed;
+
+  -- to_descending
+  function to_descending(
+    constant s                  : std_logic_vector
+  ) return std_logic_vector;
+  function to_descending(
+    constant s                  : unsigned
+  ) return unsigned;
+  function to_descending(
+    constant s                  : signed
+  ) return signed;
+  
+  -- hxstr
+  function hxstr(
+    constant s                  : std_logic_vector;
+    constant prefix             : string := ""
+  ) return string;
+  function hxstr(
+    constant s                  : unsigned;
+    constant prefix             : string := ""
+  ) return string;
+  function hxstr(
+    constant s                  : signed;
+    constant prefix             : string := ""
+  ) return string;
 
   -- pltbutils internal procedure(s), do not call from user's code
   procedure pltbutils_sc_update(
@@ -539,7 +575,7 @@ package body pltbutils_func_pkg is
     end if;
     v_pltbutils_test_name.set(name);
     pltbutils_sc_update(pltbutils_sc);
-    print("Test " & str(v_pltbutils_test_num.value) & ": " & name);    
+    print(lf & "Test " & str(v_pltbutils_test_num.value) & ": " & name);    
     -- VHDL-1993:
     --if num = -1 then
     --  b_pltbutils_test_num := v_pltbutils_test_num + 1;
@@ -1262,8 +1298,8 @@ package body pltbutils_func_pkg is
              str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
              --str(v_pltbutils_chk_cnt) & -- VHDL-1993
              "; " & rpt   &
-             "; Data=" & str(data) &
-             " Expected=" & str(expected) &
+             "; Data=" & hxstr(data, "0x") &
+             " Expected=" & hxstr(expected, "0x") &
              " " & --str('lf') &
              "  in test " & 
              str(v_pltbutils_test_num.value) & -- VHDL-2002
@@ -1295,9 +1331,9 @@ package body pltbutils_func_pkg is
              str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
              --str(v_pltbutils_chk_cnt) & -- VHDL-1993
              "; " & rpt &
-             "; Data=" & str(data) &
-             " Expected=" & str(expected) &
-             " Mask=" & str(mask) &
+             "; Data=" & hxstr(data, "0x") &
+             " Expected=" & hxstr(expected, "0x") &
+             " Mask=" & hxstr(mask, "0x") &
              " " & --str('lf') &
              "  in test " & 
              str(v_pltbutils_test_num.value) & -- VHDL-2002
@@ -1351,8 +1387,8 @@ package body pltbutils_func_pkg is
              str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
              --str(v_pltbutils_chk_cnt) & -- VHDL-1993
              "; " & rpt   &
-             "; Data=" & str(std_logic_vector(data)) &
-             " Expected=" & str(std_logic_vector(expected)) &
+             "; Data=" & hxstr(data, "0x") &
+             " Expected=" & hxstr(expected, "0x") &
              " " & --str('lf') &
              "  in test " & 
              str(v_pltbutils_test_num.value) & -- VHDL-2002
@@ -1394,8 +1430,8 @@ package body pltbutils_func_pkg is
              str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
              --str(v_pltbutils_chk_cnt) & -- VHDL-1993
              "; " & rpt   &
-             "; Data=" & str(std_logic_vector(data)) &
-             " Expected=" & str(std_logic_vector(expected)) &
+             "; Data=" & hxstr(data, "0x") &
+             " Expected=" & hxstr(expected, "0x") &
              " " & --str('lf') &
              "  in test " & 
              str(v_pltbutils_test_num.value) & -- VHDL-2002
@@ -1453,6 +1489,162 @@ package body pltbutils_func_pkg is
     end if;
     pltbutils_sc_update(pltbutils_sc);
   end procedure check;  
+  
+  ----------------------------------------------------------------------------
+  -- to_ascending
+  --
+  -- function to_ascending(
+  --  constant s                  : std_logic_vector
+  -- ) return std_logic_vector;
+  --
+  -- function to_ascending(
+  --  constant s                  : unsigned
+  -- ) return unsigned
+  --
+  -- function to_ascending(
+  --  constant s                  : signed
+  -- ) return signed;
+  --
+  -- Converts a signal to ascending range ( "to"-range ).
+  -- The argument s can have ascending or descending range.
+  ----------------------------------------------------------------------------
+  function to_ascending(
+    constant s                  : std_logic_vector
+  ) return std_logic_vector is
+    variable r : std_logic_vector(0 to s'length-1);
+  begin
+    for i in r'range loop
+      r(i) := s(i);
+    end loop;
+    return r;
+  end function to_ascending;
+
+  function to_ascending(
+    constant s                  : unsigned
+  ) return unsigned is
+    variable r : unsigned(0 to s'length-1);
+  begin
+    for i in r'range loop
+      r(i) := s(i);
+    end loop;
+    return r;
+  end function to_ascending;
+
+  function to_ascending(
+    constant s                  : signed
+  ) return signed is
+    variable r : signed(0 to s'length-1);
+  begin
+    for i in r'range loop
+      r(i) := s(i);
+    end loop;
+    return r;
+  end function to_ascending;
+
+  ----------------------------------------------------------------------------
+  -- to_descending
+  --
+  -- function to_descending(
+  --  constant s                  : std_logic_vector
+  -- ) return std_logic_vector;
+  --
+  -- function to_descending(
+  --  constant s                  : unsigned
+  -- ) return unsigned
+  --
+  -- function to_descending(
+  --  constant s                  : signed
+  -- ) return signed;
+  --
+  -- Converts a signal to descending range ( "downto"-range ).
+  -- The argument s can have ascending or descending range.
+  ----------------------------------------------------------------------------
+  function to_descending(
+    constant s                  : std_logic_vector
+  ) return std_logic_vector is
+    variable r : std_logic_vector(s'length-1 downto 0);
+  begin
+    for i in r'range loop
+      r(i) := s(i);
+    end loop;
+    return r;
+  end function to_descending;
+  
+  function to_descending(
+    constant s                  : unsigned
+  ) return unsigned is
+    variable r : unsigned(s'length-1 downto 0);
+  begin
+    for i in r'range loop
+      r(i) := s(i);
+    end loop;
+    return r;
+  end function to_descending;
+
+  function to_descending(
+    constant s                  : signed
+  ) return signed is
+    variable r : signed(s'length-1 downto 0);
+  begin
+    for i in r'range loop
+      r(i) := s(i);
+    end loop;
+    return r;
+  end function to_descending;
+  
+  ----------------------------------------------------------------------------
+  -- hxstr
+  -- function hxstr(
+  --  constant s                  : std_logic_vector;
+  --  constant prefix             : string := ""
+  -- ) return string;
+  --
+  -- function hxstr(
+  --  constant s                  : unsigned;
+  --  constant prefix             : string := ""
+  -- ) return string;
+  --
+  -- function hxstr(
+  --  constant s                  : signed;
+  --  constant prefix             : string := ""
+  -- ) return string;
+  --
+  -- Converts a signal to a string in hexadecimal format.
+  -- An optional prefix can be specified, e.g. "0x".
+  --
+  -- The signal can have ascending range ( "to-range" ) or descending range 
+  -- ("downto-range").
+  --
+  -- hxstr is a wrapper function for hstr in txt_util.
+  -- hstr only support std_logic_vector with descending range.
+  --
+  -- Examples:
+  -- print("value=" & hxstr(s));
+  -- print("value=" & hxstr(s, "0x"));
+  ----------------------------------------------------------------------------
+  function hxstr(
+    constant s                  : std_logic_vector;
+    constant prefix             : string := ""
+  ) return string is
+  begin
+    return prefix & hstr(to_descending(s));
+  end function hxstr;
+  
+  function hxstr(
+    constant s                  : unsigned;
+    constant prefix             : string := ""
+  ) return string is
+  begin
+    return prefix & hstr(to_descending(std_logic_vector(s)));
+  end function hxstr;
+  
+  function hxstr(
+    constant s                  : signed;
+    constant prefix             : string := ""
+  ) return string is
+  begin
+    return prefix & hstr(to_descending(std_logic_vector(s)));
+  end function hxstr;
   
   ----------------------------------------------------------------------------
   -- pltbutils internal procedure(s), called from other pltbutils procedures.
