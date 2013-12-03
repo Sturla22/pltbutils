@@ -1505,13 +1505,13 @@ package body pltbutils_func_pkg is
   --  constant s                  : signed
   -- ) return signed;
   --
-  -- Converts a signal to ascending range ( "to"-range ).
+  -- Converts a signal or variable to ascending range ("to-range").
   -- The argument s can have ascending or descending range.
   ----------------------------------------------------------------------------
   function to_ascending(
     constant s                  : std_logic_vector
   ) return std_logic_vector is
-    variable r : std_logic_vector(0 to s'length-1);
+    variable r : std_logic_vector(s'low to s'high);
   begin
     for i in r'range loop
       r(i) := s(i);
@@ -1522,7 +1522,7 @@ package body pltbutils_func_pkg is
   function to_ascending(
     constant s                  : unsigned
   ) return unsigned is
-    variable r : unsigned(0 to s'length-1);
+    variable r : unsigned(s'low to s'high);
   begin
     for i in r'range loop
       r(i) := s(i);
@@ -1533,7 +1533,7 @@ package body pltbutils_func_pkg is
   function to_ascending(
     constant s                  : signed
   ) return signed is
-    variable r : signed(0 to s'length-1);
+    variable r : signed(s'low to s'high);
   begin
     for i in r'range loop
       r(i) := s(i);
@@ -1556,13 +1556,13 @@ package body pltbutils_func_pkg is
   --  constant s                  : signed
   -- ) return signed;
   --
-  -- Converts a signal to descending range ( "downto"-range ).
+  -- Converts a signal or variable to descending range ("downto-range").
   -- The argument s can have ascending or descending range.
   ----------------------------------------------------------------------------
   function to_descending(
     constant s                  : std_logic_vector
   ) return std_logic_vector is
-    variable r : std_logic_vector(s'length-1 downto 0);
+    variable r : std_logic_vector(s'high downto s'low);
   begin
     for i in r'range loop
       r(i) := s(i);
@@ -1573,7 +1573,7 @@ package body pltbutils_func_pkg is
   function to_descending(
     constant s                  : unsigned
   ) return unsigned is
-    variable r : unsigned(s'length-1 downto 0);
+    variable r : unsigned(s'high downto s'low);
   begin
     for i in r'range loop
       r(i) := s(i);
@@ -1584,7 +1584,7 @@ package body pltbutils_func_pkg is
   function to_descending(
     constant s                  : signed
   ) return signed is
-    variable r : signed(s'length-1 downto 0);
+    variable r : signed(s'high downto s'low);
   begin
     for i in r'range loop
       r(i) := s(i);
