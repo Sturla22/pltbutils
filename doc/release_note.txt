@@ -1,5 +1,10 @@
 pltbutils release_note.txt
 
+alpha0004 December 03, 2013
+1. Corrected returned ranges from to_ascending() and to_descending()
+   in pltbutils_func_pkg.vhd, to make them work with vectors where the lowest
+   bit does not have number 0.
+
 alpha0003 December 02, 2013
 1. Added a line feed before printing the test name for clarity,
    in procedure testname() in pltbutils.vhd .
