@@ -124,6 +124,7 @@ begin
    
   -- Testcase
   p_tc1 : process
+    variable v_expected_tests_cnt  : integer := 0;
     variable v_expected_checks_cnt : integer := 0;
     variable v_expected_errors_cnt : integer := 0;
   begin
@@ -136,21 +137,27 @@ begin
       severity error;
     print("<Done testing startsim()>");
    
-    print("<Testing testname() with auto-incrementing test_num>");   
-    testname("TestName1", pltbutils_sc);    
+    print("<Testing starttest() with auto-incrementing test_num>");   
+    starttest("TestName1", pltbutils_sc);
+    v_expected_tests_cnt := v_expected_tests_cnt + 1;    
     wait until rising_edge(clk);
     assert test_num  = 1
-      report "test_num after startsim() incorrect"
+      report "test_num after starttest() incorrect"
       severity error;
-    print("<Done testing testname() with auto-incrementing test_num()>");
+    print("<Done testing starttest() with auto-incrementing test_num()>");
 
-    print("<Testing testname() with explicit test_num>");   
-    testname(3, "TestName2", pltbutils_sc);
+    print("<Testing endtest()>");   
+    endtest(pltbutils_sc);    
+    print("<Done testing endtest()>");
+
+    print("<Testing starttest() with explicit test_num>");   
+    starttest(3, "TestName2", pltbutils_sc);
+    v_expected_tests_cnt := v_expected_tests_cnt + 1;        
     wait until rising_edge(clk);
     assert test_num  = 3
       report "test_num after startsim() incorrect"
       severity error;
-    print("<Done testing testname() with explicit test_num>");
+    print("<Done testing starttest() with explicit test_num>");
     
     print("<Testing waitclks()>"); 
     clk_cnt_clr <= true;
@@ -419,9 +426,14 @@ begin
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
     expected_errors_cnt   <= v_expected_errors_cnt;
     print("<Done testing check() boolean expresson>");
+
+    print("<Testing endtest()>");   
+    endtest(pltbutils_sc);    
+    print("<Done testing endtest()>");
     
     wait until rising_edge(clk);
     print("<Testing endsim()>");
+    print("Expected number of tests:  " & str(v_expected_tests_cnt));
     print("Expected number of checks: " & str(v_expected_checks_cnt));
     print("Expected number of errors: " & str(v_expected_errors_cnt));
     wait until rising_edge(clk);
