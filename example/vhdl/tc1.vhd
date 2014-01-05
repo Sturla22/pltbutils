@@ -68,21 +68,23 @@ begin
     x           <= (others => '0');
     y           <= (others => '0');
         
-    testname(1, "Reset test", pltbutils_sc);
+    starttest(1, "Reset test", pltbutils_sc);
     waitclks(2, clk, pltbutils_sc);    
     check("Sum during reset",       sum,         0, pltbutils_sc);
     check("Carry out during reset", carry_out, '0', pltbutils_sc);
     rst         <= '0';
+    endtest(pltbutils_sc);
     
-    testname(2, "Simple sum test", pltbutils_sc);
+    starttest(2, "Simple sum test", pltbutils_sc);
     carry_in <= '0';
     x <= std_logic_vector(to_unsigned(1, x'length));
     y <= std_logic_vector(to_unsigned(2, x'length));
     waitclks(2, clk, pltbutils_sc);
     check("Sum",       sum,         3, pltbutils_sc); 
     check("Carry out", carry_out, '0', pltbutils_sc); 
+    endtest(pltbutils_sc);
     
-    testname(3, "Simple carry in test", pltbutils_sc);
+    starttest(3, "Simple carry in test", pltbutils_sc);
     print(G_DISABLE_BUGS=0, pltbutils_sc, "Bug here somewhere");
     carry_in <= '1';
     x <= std_logic_vector(to_unsigned(1, x'length));
@@ -91,14 +93,16 @@ begin
     check("Sum",       sum,         4, pltbutils_sc); 
     check("Carry out", carry_out, '0', pltbutils_sc);
     print(pltbutils_sc, "");
+    endtest(pltbutils_sc);
 
-    testname(4, "Simple carry out test", pltbutils_sc);
+    starttest(4, "Simple carry out test", pltbutils_sc);
     carry_in <= '0';
     x <= std_logic_vector(to_unsigned(2**G_WIDTH-1, x'length));
     y <= std_logic_vector(to_unsigned(1, x'length));
     waitclks(2, clk, pltbutils_sc);
     check("Sum",       sum,         0, pltbutils_sc); 
     check("Carry out", carry_out, '1', pltbutils_sc);
+    endtest(pltbutils_sc);
 
     endsim(pltbutils_sc, true);
     wait;
