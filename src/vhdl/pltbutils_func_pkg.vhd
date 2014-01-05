@@ -21,7 +21,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013 Authors and OPENCORES.ORG                 ----
+---- Copyright (C) 2013-2014 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -49,9 +49,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use std.textio.all;
-use std.env.all; -- VHDL-2008
 use work.txt_util.all;
 use work.pltbutils_type_pkg.all; -- Use for VHDL-2002, comment out for VHDL-93
+use work.pltbutils_user_cfg_pkg.all;
 
 package pltbutils_func_pkg is
 
@@ -62,18 +62,32 @@ package pltbutils_func_pkg is
   
   -- Counters for number of checks and number of errors
   -- VHDL-2002:
+  shared variable v_pltbutils_testcase_name : pltbutils_p_string_t;
+  shared variable v_pltbutils_testcase_name_len : pltbutils_p_integer_t;
   shared variable v_pltbutils_test_num  : pltbutils_p_integer_t;
   shared variable v_pltbutils_test_name : pltbutils_p_string_t;
+  shared variable v_pltbutils_test_name_len : pltbutils_p_integer_t;
   shared variable v_pltbutils_info      : pltbutils_p_string_t;
+  shared variable v_pltbutils_info_len  : pltbutils_p_integer_t;
+  shared variable v_pltbutils_test_cnt  : pltbutils_p_integer_t;
   shared variable v_pltbutils_chk_cnt   : pltbutils_p_integer_t;
   shared variable v_pltbutils_err_cnt   : pltbutils_p_integer_t;
+  shared variable v_pltbutils_chk_cnt_in_test : pltbutils_p_integer_t;
+  shared variable v_pltbutils_err_cnt_in_test : pltbutils_p_integer_t;
   shared variable v_pltbutils_stop_sim  : pltbutils_p_std_logic_t;
   -- VHDL-1993:
+  --shared variable v_pltbutils_testcase_name : string(1 to C_PLTBUTILS_STRLEN) := (others => ' ');
+  --shared variable v_pltbutils_testcase_name_len : integer := 1;
   --shared variable v_pltbutils_test_num  : natural := 0;
   --shared variable v_pltbutils_test_name : string(1 to C_PLTBUTILS_STRLEN) := (others => ' ');
+  --shared variable v_pltbutils_test_name_len : integer := 1;
   --shared variable v_pltbutils_info      : string(1 to C_PLTBUTILS_STRLEN) := (others => ' ');
+  --shared variable v_pltbutils_info_len  : integer := 1;
+  --shared variable v_pltbutils_test_cnt  : natural := 0;
   --shared variable v_pltbutils_chk_cnt   : natural := 0;
   --shared variable v_pltbutils_err_cnt   : natural := 0;
+  --shared variable v_pltbutils_chk_cnt_in_test : natural := 0;
+  --shared variable v_pltbutils_err_cnt_in_test : natural := 0;
   --shared variable v_pltbutils_stop_sim  : std_logic := '0';
   
   -- Global status- and control signal
@@ -101,7 +115,18 @@ package pltbutils_func_pkg is
     constant force               : in boolean := false
   );
   
-  -- testname
+  -- starttest
+  procedure starttest(
+    constant num                : in    integer := -1;
+    constant name               : in    string;
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  );
+  procedure starttest(
+    constant name               : in    string;
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  );
+
+  -- testname (depricated)
   procedure testname(
     constant num                : in    integer := -1;
     constant name               : in    string;
@@ -112,6 +137,11 @@ package pltbutils_func_pkg is
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );
   
+  -- endtest
+  procedure endtest(
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  );
+
   -- print, printv, print2
   procedure print(
     constant active             : in    boolean;
@@ -254,75 +284,83 @@ package pltbutils_func_pkg is
   -- check
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    integer;
+    constant actual             : in    integer;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );  
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic;
+    constant actual             : in    std_logic;
     constant expected           : in    std_logic;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );  
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic;
+    constant actual             : in    std_logic;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );  
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic_vector;
+    constant actual             : in    std_logic_vector;
     constant expected           : in    std_logic_vector;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic_vector;
+    constant actual             : in    std_logic_vector;
     constant expected           : in    std_logic_vector;
     constant mask               : in    std_logic_vector;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic_vector;
+    constant actual             : in    std_logic_vector;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );  
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic_vector;
+    constant actual             : in    std_logic_vector;
     constant expected           : in    integer;
     constant mask               : in    std_logic_vector;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );  
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    unsigned;
+    constant actual             : in    unsigned;
     constant expected           : in    unsigned;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    unsigned;
+    constant actual             : in    unsigned;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );  
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    signed;
+    constant actual             : in    signed;
     constant expected           : in    signed;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    signed;
+    constant actual             : in    signed;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );  
   procedure check(
     constant rpt                : in    string;
     constant expr               : in    boolean;
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  );
+   procedure check(
+    constant rpt                : in    string;
+    constant expr               : in    boolean;
+    constant actual             : in    string;
+    constant expected           : in    string;
+    constant mask               : in    string;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   );
   
@@ -351,22 +389,82 @@ package pltbutils_func_pkg is
   -- hxstr
   function hxstr(
     constant s                  : std_logic_vector;
-    constant prefix             : string := ""
+    constant prefix             : string := "";
+    constant postfix            : string := ""
   ) return string;
   function hxstr(
     constant s                  : unsigned;
-    constant prefix             : string := ""
+    constant prefix             : string := "";
+    constant postfix            : string := ""
   ) return string;
   function hxstr(
     constant s                  : signed;
-    constant prefix             : string := ""
+    constant prefix             : string := "";
+    constant postfix            : string := ""
   ) return string;
 
   -- pltbutils internal procedure(s), do not call from user's code
   procedure pltbutils_sc_update(
     signal pltbutils_sc : out pltbutils_sc_t
   );
+
+  procedure startsim_msg(
+    constant testcase_name      : in string;
+    constant timestamp          : in time
+  );
   
+  procedure endsim_msg(
+    constant testcase_name      : in string;
+    constant timestamp          : in time;
+    constant num_tests          : in integer;
+    constant num_checks         : in integer;
+    constant num_errors         : in integer;
+    constant show_success_fail  : in boolean
+  );
+  
+  procedure starttest_msg(
+    constant test_num           : in integer;
+    constant test_name          : in string;
+    constant timestamp          : in time
+  );
+  
+  procedure endtest_msg(
+    constant test_num           : in integer;
+    constant test_name          : in string;
+    constant timestamp          : in time;
+    constant num_checks_in_test : in integer;
+    constant num_errors_in_test : in integer
+  );  
+  
+  procedure check_msg(
+    constant rpt                : in string;
+    constant expr               : in boolean;    
+    constant actual             : in string;
+    constant expected           : in string;
+    constant mask               : in string;
+    constant test_num           : in integer;      
+    constant test_name          : in string;
+    constant check_num          : in integer;
+    constant err_cnt_in_test    : in integer
+  );
+  
+  procedure pltbutils_error(
+    constant rpt                : in string;
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  );
+
+  procedure error_msg(
+    constant rpt                : in string;
+    constant timestamp          : in time;
+    constant test_num           : in integer;      
+    constant test_name          : in string;
+    constant err_cnt_in_test    : in integer
+  );
+  
+  procedure stopsim(
+    constant timestamp          : in time
+  );
+    
 end package pltbutils_func_pkg;
 
 package body pltbutils_func_pkg is
@@ -406,24 +504,37 @@ package body pltbutils_func_pkg is
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
     variable dummy : integer;
+    variable timestamp : time;
   begin
+    timestamp := now;
+    if C_PLTBUTILS_USE_STD_STARTSIM_MSG then
+      startsim_msg(testcase_name, timestamp);
+    end if;
+    if C_PLTBUTILS_USE_CUSTOM_STARTSIM_MSG then
+      custom_startsim_msg(testcase_name, timestamp);
+    end if;
     printv(v_pltbutils_info, testcase_name);
-    print(lf & "--- START OF SIMULATION ---");
-    print("Testcase: " & testcase_name);
-    print(time'image(now));
     -- VHDL-2002:
+    v_pltbutils_testcase_name.set(testcase_name);
+    v_pltbutils_testcase_name_len.set(testcase_name'length);
     v_pltbutils_stop_sim.clr;
     v_pltbutils_test_num.clr;
     v_pltbutils_test_name.set("START OF SIMULATION");
+    v_pltbutils_test_name_len.set(19);
     v_pltbutils_chk_cnt.clr;
     v_pltbutils_err_cnt.clr;
+    v_pltbutils_chk_cnt_in_test.clr;
+    v_pltbutils_err_cnt_in_test.clr;
     pltbutils_sc_update(pltbutils_sc);
     -- VHDL-1993:
     --v_pltbutils_stop_sim := '0';
     --v_pltbutils_test_num := 0;
     --printv(v_pltbutils_test_name, "START OF SIMULATION");
+    --v_pltbutils_test_name_len := 19;
     --v_pltbutils_chk_cnt := 0;
     --v_pltbutils_err_cnt := 0;
+    --v_pltbutils_chk_cnt_in_test := 0;
+    --v_pltbutils_err_cnt_in_test := 0;
     --pltbutils_sc_update(pltbutils_sc);
   end procedure startsim;
 
@@ -482,56 +593,60 @@ package body pltbutils_func_pkg is
     constant show_success_fail  : in  boolean := false;
     constant force              : in  boolean := false
   ) is
-    variable l : line;
+    variable timestamp : time;
+    variable name_len  : integer;
   begin
-    printv(v_pltbutils_info, "");
-    print(lf & "--- END OF SIMULATION ---");
-    print("Note: the results presented below are based on the PlTbUtil's check() procedure calls."); 
-    print("      The design may contain more errors, for which there are no check() calls.");
-    write(l, now, right, 14);
-    writeline(output, l);
-    write(l, v_pltbutils_chk_cnt.value, right, 11); -- VHDL-2002
-    --write(l, v_pltbutils_chk_cnt, right, 11); -- VHDL-1993
-    write(l, string'(" Checks"));
-    writeline(output, l);
-    write(l, v_pltbutils_err_cnt.value, right, 11); -- VHDL-2002
-    --write(l, v_pltbutils_chk_cnt, right, 11); -- VHDL-1993
-    write(l, string'(" Errors"));
-    writeline(output, l);
-
-    if show_success_fail then
-       if v_pltbutils_err_cnt.value = 0 and v_pltbutils_chk_cnt.value > 0 then -- VHDL-2002
-       --if v_pltbutils_err_cnt = 0 and v_pltbutils_chk_cnt > 0 then -- VHDL-1993
-        print("*** SUCCESS ***");
-      elsif v_pltbutils_chk_cnt.value > 0 then -- VHDL-2002
-      --elsif v_pltbutils_chk_cnt > 0 then -- VHDL-1993
-        print("*** FAIL ***");
-      else
-        print("*** NO CHECKS ***");
-      end if;
+    timestamp := now;
+    name_len := v_pltbutils_testcase_name_len.value; -- VHDL-2002
+    --name_len : v_pltbutils_sc_testcase_name_len; -- VHDL-1993
+    if C_PLTBUTILS_USE_STD_ENDSIM_MSG then
+      -- VHDL-2002:
+      endsim_msg(v_pltbutils_testcase_name.value(1 to name_len),
+        timestamp, v_pltbutils_test_cnt.value, v_pltbutils_chk_cnt.value,
+        v_pltbutils_err_cnt.value, show_success_fail);
+      -- VHDL-1993:
+      --endsim_msg(v_pltbutils_testcase_name(1 to name_len),
+      --  timestamp, v_pltbutils_test_cnt, v_pltbutils_chk_cnt,
+      --  v_pltbutils_err_cnt, show_success_fail);
     end if;
+    if C_PLTBUTILS_USE_CUSTOM_ENDSIM_MSG then
+      -- VHDL-2002:
+      custom_endsim_msg(v_pltbutils_testcase_name.value(1 to name_len),
+        timestamp, v_pltbutils_test_cnt.value, v_pltbutils_chk_cnt.value,
+        v_pltbutils_err_cnt.value, show_success_fail);
+      -- VHDL-1993:
+      --custom_endsim_msg(v_pltbutils_testcase_name(1 to name_len),
+      --  timestamp, v_pltbutils_test_cnt, v_pltbutils_chk_cnt,
+      --  v_pltbutils_err_cnt, show_success_fail);
+    end if;
+    printv(v_pltbutils_info, "");
     -- VHDL-2002:
     v_pltbutils_stop_sim.set('1');
     v_pltbutils_test_num.clr;
     v_pltbutils_test_name.set("END OF SIMULATION");
+    v_pltbutils_test_name_len.set(17);
     -- VHDL-1993:
     --v_pltbutils_stop_sim := '1';
     --v_pltbutils_test_num := 0;
     --printv(v_pltbutils_test_name, "END OF SIMULATION");
+    --v_pltbutils_test_name_len := 17;
     pltbutils_sc_update(pltbutils_sc);
     wait for C_WAIT_BEFORE_STOP_TIME;
-    stop(0); -- VHDL-2008
-    assert not force
-    report "--- FORCE END OF SIMULATION ---" &
-           " (ignore this false failure message, it's not a real failure)"
-    severity failure;
+    if force then
+      if C_PLTBUTILS_USE_STD_STOPSIM then
+        stopsim(now);
+      end if;
+      if C_PLTBUTILS_USE_CUSTOM_STOPSIM then
+        custom_stopsim(now);
+      end if;
+    end if;
     wait;
   end procedure endsim;
 
   ----------------------------------------------------------------------------
-  -- testname
+  -- starttest
   --
-  -- procedure testname(
+  -- procedure starttest(
   --   constant num                : in    integer := -1;
   --   constant name               : in    string;
   --   signal   pltbutils_sc       : out   pltbutils_sc_t
@@ -558,35 +673,73 @@ package body pltbutils_func_pkg is
   -- in the testbench code, though.
   --
   -- Examples:
-  -- testname("Reset test", pltbutils_sc);
-  -- testname(1, "Reset test", pltbutils_sc);
+  -- starttest("Reset test", pltbutils_sc);
+  -- starttest(1, "Reset test", pltbutils_sc);
   ----------------------------------------------------------------------------
-  procedure testname(
+  procedure starttest(
     constant num                : in    integer := -1;
     constant name               : in    string;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
+    variable timestamp : time;
   begin
+    timestamp := now;
     -- VHDL-2002:
     if num = -1 then
       v_pltbutils_test_num.inc;
     else
       v_pltbutils_test_num.set(num);
     end if;
+    v_pltbutils_test_cnt.inc;
     v_pltbutils_test_name.set(name);
+    v_pltbutils_test_name_len.set(name'length);
+    v_pltbutils_err_cnt_in_test.clr;
     pltbutils_sc_update(pltbutils_sc);
-    print(lf & "Test " & str(v_pltbutils_test_num.value) & ": " & name);    
+    if C_PLTBUTILS_USE_STD_STARTTEST_MSG then
+      starttest_msg(v_pltbutils_test_num.value, name, timestamp);
+    end if;
+    if C_PLTBUTILS_USE_CUSTOM_STARTTEST_MSG then
+      custom_starttest_msg(v_pltbutils_test_num.value, name, timestamp);
+    end if;
+    
     -- VHDL-1993:
     --if num = -1 then
     --  b_pltbutils_test_num := v_pltbutils_test_num + 1;
     --else
     --  v_pltbutils_test_num  := num;
     --end if;
+    --v_pltbutils_test_cnt := v_pltbutils_test_cnt + 1;
     --printv(v_pltbutils_test_name, name);
+    --v_pltbutils_test_name_len := name'length;
+    --v_pltbutils_err_cnt_in_test := 0;
     --pltbutils_sc_update(pltbutils_sc);
-    --print("Test " & str(v_pltbutils_test_num) & ": " & name);
+    --if C_PLTBUTILS_USE_STD_STARTTEST_MSG then
+    --  starttest_msg(v_pltbutils_test_num, name, timestamp);
+    --end if;
+    --if C_PLTBUTILS_USE_CUSTOM_STARTTEST_MSG then
+    --  custom_starttest_msg(v_pltbutils_test_num, name, timestamp);
+    --end if;
+  end procedure starttest;
+  
+  procedure starttest(
+    constant name               : in    string;
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  ) is
+  begin
+    starttest(-1, name, pltbutils_sc);
+  end procedure starttest;
+  
+  -- Depricated. Will be removed. Use starttest() instead.
+  procedure testname(
+    constant num                : in    integer := -1;
+    constant name               : in    string;
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  ) is
+  begin
+    starttest(num, name, pltbutils_sc);
   end procedure testname;
   
+  -- Depricated. Will be removed. Use starttest() instead.
   procedure testname(
     constant name               : in    string;
     signal   pltbutils_sc       : out   pltbutils_sc_t
@@ -594,6 +747,54 @@ package body pltbutils_func_pkg is
   begin
     testname(-1, name, pltbutils_sc);
   end procedure testname;
+  
+  ----------------------------------------------------------------------------
+  -- endtest
+  --
+  -- procedure endtest(
+  --   signal   pltbutils_sc       : out   pltbutils_sc_t
+  -- ) 
+  --
+  -- Prints an end-of-test message to the screen.
+  --
+  -- Arguments: 
+  --   pltbutils_sc             PlTbUtils' global status- and control signal.
+  --                            Must be set to pltbutils_sc.
+  --
+  -- Example:
+  -- endtest(pltbutils_sc);
+  ----------------------------------------------------------------------------
+  procedure endtest(
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  ) is
+    variable timestamp : time;
+    variable v_name_len : integer;
+  begin
+    timestamp := now;
+    -- Uncommented for VHDL-2002 Protected types, otherwise commented:
+    v_name_len := v_pltbutils_test_name_len.value; -- VHDL-2002
+    if C_PLTBUTILS_USE_STD_ENDTEST_MSG then
+      endtest_msg(v_pltbutils_test_num.value, v_pltbutils_test_name.value(1 to v_name_len),
+        timestamp, v_pltbutils_chk_cnt_in_test.value, v_pltbutils_err_cnt_in_test.value);
+    end if;  
+    if C_PLTBUTILS_USE_CUSTOM_ENDTEST_MSG then
+      custom_endtest_msg(v_pltbutils_test_num.value, v_pltbutils_test_name.value(1 to v_name_len),
+        timestamp, v_pltbutils_chk_cnt_in_test.value, v_pltbutils_err_cnt_in_test.value);
+    end if;  
+    -- Uncommented for not using VHDL-2002 Protected Types, otherwise commented:
+    --name_len := v_pltbutils_test_name_len; -- VHDL-1993
+    --if C_PLTBUTILS_USE_STD_ENDTEST_MSG then
+    --  endtest_msg(v_pltbutils_test_num, v_pltbutils_test_name(1 to v_name_len),
+    --    timestamp, v_pltbutils_chk_cnt_in_test, v_pltbutils_err_cnt_in_test);
+    --end if;  
+    --if C_PLTBUTILS_USE_CUSTOM_ENDTEST_MSG then
+    --  custom_endtest_msg(v_pltbutils_test_num, v_pltbutils_test_name(1 to v_name_len),
+    --    timestamp, v_pltbutils_chk_cnt_in_test, v_pltbutils_err_cnt_in_test);
+    --end if;  
+
+    printv(v_pltbutils_test_name, " ");
+    pltbutils_sc_update(pltbutils_sc);
+  end procedure endtest;
   
   ----------------------------------------------------------------------------
   -- print printv print2
@@ -874,12 +1075,7 @@ package body pltbutils_func_pkg is
       i := i - 1;
     end loop;
     if now >= v_timeout_time then
-      assert false
-      report "waitclks() timeout"
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-      pltbutils_sc_update(pltbutils_sc);  
+      pltbutils_error("waitclks() timeout", pltbutils_sc);
     end if;
   end procedure waitclks;
     
@@ -938,12 +1134,7 @@ package body pltbutils_func_pkg is
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      assert false
-      report "waitsig() timeout"
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-      pltbutils_sc_update(pltbutils_sc);  
+      pltbutils_error("waitsig() timeout", pltbutils_sc);
     end if;
   end procedure waitsig;
 
@@ -963,12 +1154,7 @@ package body pltbutils_func_pkg is
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      assert false
-      report "waitsig() timeout"
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-      pltbutils_sc_update(pltbutils_sc);  
+      pltbutils_error("waitsig() timeout", pltbutils_sc);
     end if;
   end procedure waitsig;
   
@@ -992,12 +1178,7 @@ package body pltbutils_func_pkg is
       waitsig(s, v_value, clk, 
               pltbutils_sc, falling, timeout);
     else
-      assert false
-        report "waitsig() illegal value to wait for: " & integer'image(value)
-        severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-      pltbutils_sc_update(pltbutils_sc);      
+      pltbutils_error("waitsig() timeout", pltbutils_sc);
     end if;
   end procedure waitsig;  
   
@@ -1017,12 +1198,7 @@ package body pltbutils_func_pkg is
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      assert false
-      report "waitsig() timeout"
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-      pltbutils_sc_update(pltbutils_sc);  
+      pltbutils_error("waitsig() timeout", pltbutils_sc);
     end if;
   end procedure waitsig;  
 
@@ -1056,12 +1232,7 @@ package body pltbutils_func_pkg is
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      assert false
-      report "waitsig() timeout"
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-      pltbutils_sc_update(pltbutils_sc);  
+      pltbutils_error("waitsig() timeout", pltbutils_sc);
     end if;
   end procedure waitsig;  
   
@@ -1095,12 +1266,7 @@ package body pltbutils_func_pkg is
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      assert false
-      report "waitsig() timeout"
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-      pltbutils_sc_update(pltbutils_sc);  
+      pltbutils_error("waitsig() timeout", pltbutils_sc);
     end if;
   end procedure waitsig;  
 
@@ -1123,14 +1289,14 @@ package body pltbutils_func_pkg is
   --
   -- procedure check(
   --  constant rpt              : in    string;
-  --  constant data             : in    integer|std_logic|std_logic_vector|unsigned|signed;
+  --  constant actual           : in    integer|std_logic|std_logic_vector|unsigned|signed;
   --  constant expected         : in    integer|std_logic|std_logic_vector|unsigned|signed;
   --  signal   pltbutils_sc     : out   pltbutils_sc_t
   --  )
   --
   -- procedure check(
   --  constant rpt              : in    string;
-  --  constant data             : in    std_logic_vector;
+  --  constant actual           : in    std_logic_vector;
   --  constant expected         : in    std_logic_vector;
   --  constant mask             : in    std_logic_vector;
   --  signal   pltbutils_sc     : out   pltbutils_sc_t
@@ -1155,7 +1321,7 @@ package body pltbutils_func_pkg is
   --                            value, becase check() prints that 
   --                            automatically.
   --
-  --   data                     The signal or variable to be checked.
+  --   actual                   The signal or variable to be checked.
   --                            Supported types: integer, std_logic, 
   --                            std_logic_vector, unsigned, signed.
   --
@@ -1184,279 +1350,130 @@ package body pltbutils_func_pkg is
   -- check integer
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    integer;
+    constant actual             : in    integer;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    v_pltbutils_chk_cnt.inc; -- VHDL-2002
-    --v_pltbutils_chk_cnt := v_pltbutils_chk_cnt + 1; -- VHDL-1993
-    if data   /= expected then
-      assert false
-      report "Check " & 
-             str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
-             --str(v_pltbutils_chk_cnt) & -- VHDL-1993
-             "; " & rpt &
-             "; Data=" & str(data) &
-             " Expected=" & str(expected) &
-             " " & --str(character'(lf)) &
-             "  in test " & 
-             str(v_pltbutils_test_num.value) & -- VHDL-2002
-             --str(v_pltbutils_test_num) & -- VHDL-1993
-             " " & 
-             v_pltbutils_test_name.value -- VHDL-2002
-             --v_pltbutils_test_name -- VHDL-1993
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHLD-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-    end if;
-    pltbutils_sc_update(pltbutils_sc);
+    check(rpt, actual = expected, str(actual), str(expected), "", pltbutils_sc);
   end procedure check;
 
   -- check std_logic
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic;
+    constant actual             : in    std_logic;
     constant expected           : in    std_logic;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    v_pltbutils_chk_cnt.inc; -- VHDL-2002
-    --v_pltbutils_chk_cnt := v_pltbutils_chk_cnt + 1; -- VHDL-1993
-    if data /= expected   then
-      assert false
-      report "Check " & 
-             str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
-             --str(v_pltbutils_chk_cnt) & -- VHDL-1993
-             "; " & rpt   &
-             "; Data=" & str(data) &
-             " Expected=" & str(expected) &
-             " " & --str(character'(lf)) &
-             "  in test " & 
-             str(v_pltbutils_test_num.value) & -- VHDL-2002
-             --str(v_pltbutils_test_num) & -- VHDL-1993
-             " " & 
-             v_pltbutils_test_name.value -- VHDL-2002
-             --v_pltbutils_test_name -- VHDL-1993
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHLD-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-    end if;
-    pltbutils_sc_update(pltbutils_sc);
+    check(rpt, actual = expected, str(actual), str(expected), "", pltbutils_sc);
   end procedure check;
   
   -- check std_logic against integer
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic;
+    constant actual             : in    std_logic;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
-    variable v_expected : std_logic; 
+   -- variable v_expected : std_logic;
+    --variable equal : boolean;   
   begin
-    if expected = 0 then
-      check(rpt , data, std_logic'('0'), pltbutils_sc);
-    elsif expected = 1 then
-      check(rpt , data, std_logic'('1'), pltbutils_sc);
-    else
-      v_pltbutils_chk_cnt.inc; -- VHDL-2002
-      --v_pltbutils_chk_cnt := v_pltbutils_chk_cnt + 1; -- VHDL-1993
-      assert false
-      report "Check " & 
-             str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
-             --str(v_pltbutils_chk_cnt) & -- VHDL-1993
-             "; " & rpt &
-             "; Data=" & str(data) &
-             " Expected=" & str(expected) &
-             " " & --str(character'(lf)) &
-             "  in test " & 
-             str(v_pltbutils_test_num.value) & -- VHDL-2002
-             --str(v_pltbutils_test_num) & -- VHDL-1993
-             " " & 
-             v_pltbutils_test_name.value -- VHDL-2002
-             --v_pltbutils_test_name -- VHDL-1993
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHLD-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-      pltbutils_sc_update(pltbutils_sc);  
-    end if;
+    check(rpt, ((actual = '0' and expected = 0) or (actual = '1' and expected = 1)),
+          str(actual), str(expected), "", pltbutils_sc);
   end procedure check;  
         
   -- check std_logic_vector
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic_vector;
+    constant actual             : in    std_logic_vector;
     constant expected           : in    std_logic_vector;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    v_pltbutils_chk_cnt.inc; -- VHDL-2002
-    --v_pltbutils_chk_cnt := v_pltbutils_chk_cnt + 1; -- VHDL-1993
-    if data   /= expected   then
-      assert false
-      report "Check " & 
-             str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
-             --str(v_pltbutils_chk_cnt) & -- VHDL-1993
-             "; " & rpt   &
-             "; Data=" & hxstr(data, "0x") &
-             " Expected=" & hxstr(expected, "0x") &
-             " " & --str('lf') &
-             "  in test " & 
-             str(v_pltbutils_test_num.value) & -- VHDL-2002
-             --str(v_pltbutils_test_num) & -- VHDL-1993
-             " " & 
-             v_pltbutils_test_name.value -- VHDL-2002
-             --v_pltbutils_test_name -- VHDL-1993
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-    end if;
-    pltbutils_sc_update(pltbutils_sc);
+    check(rpt, actual = expected, hxstr(actual, "0x"), hxstr(expected, "0x"), "", pltbutils_sc);
   end procedure check;
   
   -- check std_logic_vector with mask
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic_vector;
+    constant actual             : in    std_logic_vector;
     constant expected           : in    std_logic_vector;
     constant mask               : in    std_logic_vector;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    v_pltbutils_chk_cnt.inc; -- VHDL-2002
-    --v_pltbutils_chk_cnt := v_pltbutils_chk_cnt + 1; -- VHDL-1993
-    if (data  and mask) /= (expected and mask) then
-      assert false
-      report "Check " & 
-             str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
-             --str(v_pltbutils_chk_cnt) & -- VHDL-1993
-             "; " & rpt &
-             "; Data=" & hxstr(data, "0x") &
-             " Expected=" & hxstr(expected, "0x") &
-             " Mask=" & hxstr(mask, "0x") &
-             " " & --str('lf') &
-             "  in test " & 
-             str(v_pltbutils_test_num.value) & -- VHDL-2002
-             --str(v_pltbutils_test_num) & -- VHDL-1993
-             " " & 
-             v_pltbutils_test_name.value -- VHDL-2002
-             --v_pltbutils_test_name -- VHDL-1993
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-    end if;
-    pltbutils_sc_update(pltbutils_sc);
+    check(rpt, (actual and mask) = (expected and mask),
+          hxstr(actual, "0x"), hxstr(expected, "0x"), hxstr(mask, "0x"), pltbutils_sc);
   end procedure check;  
   
   -- check std_logic_vector against integer
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic_vector;
+    constant actual             : in    std_logic_vector;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    check(rpt, data, std_logic_vector(to_signed(expected, data'length)), pltbutils_sc);
+    check(rpt, actual, std_logic_vector(to_signed(expected, actual'length)), pltbutils_sc);
   end procedure check;
 
   -- check std_logic_vector with mask against integer
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    std_logic_vector;
+    constant actual             : in    std_logic_vector;
     constant expected           : in    integer;
     constant mask               : in    std_logic_vector;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    check(rpt, data, std_logic_vector(to_signed(expected, data'length)), mask, pltbutils_sc);
+    check(rpt, actual, std_logic_vector(to_signed(expected, actual'length)), mask, pltbutils_sc);
   end procedure check;
   
   -- check unsigned
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    unsigned;
+    constant actual             : in    unsigned;
     constant expected           : in    unsigned;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    v_pltbutils_chk_cnt.inc; -- VHDL-2002
-    --v_pltbutils_chk_cnt := v_pltbutils_chk_cnt + 1; -- VHDL-1993
-    if data   /= expected   then
-      assert false
-      report "Check " & 
-             str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
-             --str(v_pltbutils_chk_cnt) & -- VHDL-1993
-             "; " & rpt   &
-             "; Data=" & hxstr(data, "0x") &
-             " Expected=" & hxstr(expected, "0x") &
-             " " & --str('lf') &
-             "  in test " & 
-             str(v_pltbutils_test_num.value) & -- VHDL-2002
-             --str(v_pltbutils_test_num) & -- VHDL-1993
-             " " & 
-             v_pltbutils_test_name.value -- VHDL-2002
-             --v_pltbutils_test_name -- VHDL-1993
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-    end if;
-    pltbutils_sc_update(pltbutils_sc);
+    check(rpt, actual = expected, hxstr(actual, "0x"), hxstr(expected, "0x"), "", pltbutils_sc);
   end procedure check;
   
   -- check unsigned against integer
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    unsigned;
+    constant actual             : in    unsigned;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    check(rpt, data, to_unsigned(expected, data'length), pltbutils_sc);
+    check(rpt, actual, to_unsigned(expected, actual'length), pltbutils_sc);
   end procedure check;  
   
   -- check signed
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    signed;
+    constant actual             : in    signed;
     constant expected           : in    signed;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    v_pltbutils_chk_cnt.inc; -- VHDL-2002
-    --v_pltbutils_chk_cnt := v_pltbutils_chk_cnt + 1; -- VHDL-1993
-    if data /= expected   then
-      assert false
-      report "Check " & 
-             str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
-             --str(v_pltbutils_chk_cnt) & -- VHDL-1993
-             "; " & rpt   &
-             "; Data=" & hxstr(data, "0x") &
-             " Expected=" & hxstr(expected, "0x") &
-             " " & --str('lf') &
-             "  in test " & 
-             str(v_pltbutils_test_num.value) & -- VHDL-2002
-             --str(v_pltbutils_test_num) & -- VHDL-1993
-             " " & 
-             v_pltbutils_test_name.value -- VHDL-2002
-             --v_pltbutils_test_name -- VHDL-1993
-      severity error;
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-    end if;
-    pltbutils_sc_update(pltbutils_sc);
+    check(rpt, actual = expected, hxstr(actual, "0x"), hxstr(expected, "0x"), "", pltbutils_sc);    
   end procedure check;
   
   -- check signed against integer
-  -- TODO: find the bug reported by tb_pltbutils when expected   is negative (-1):
+  -- TODO: find the bug reported by tb_pltbutils when expected  is negative (-1):
   --       ** Error: (vsim-86) numstd_conv_unsigned_nu: NATURAL arg value is negative (-1)
   procedure check(
     constant rpt                : in    string;
-    constant data               : in    signed;
+    constant actual             : in    signed;
     constant expected           : in    integer;
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
-    check(rpt, data, to_signed(expected, data'length), pltbutils_sc);
+    check(rpt, actual, to_signed(expected, actual'length), pltbutils_sc);
   end procedure check;  
   
   -- check with boolean expression
@@ -1468,27 +1485,54 @@ package body pltbutils_func_pkg is
     signal   pltbutils_sc       : out   pltbutils_sc_t
   ) is
   begin
+    check(rpt, expr, "", "", "", pltbutils_sc);    
+  end procedure check;  
+  
+  procedure check(
+    constant rpt                : in    string;
+    constant expr               : in    boolean;
+    constant actual             : in    string;
+    constant expected           : in    string;
+    constant mask               : in    string;
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  ) is
+    variable v_test_name_len    : integer := 1;
+    variable actual_str         : string(1 to 32) := (others => ' ');
+    variable actual_str_len     : integer := 1;
+    variable expected_str       : string(1 to 32) := (others => ' ');
+    variable expected_str_len   : integer := 1;
+    variable mask_str           : string(1 to 32) := (others => ' ');
+    variable mask_str_len       : integer := 1;
+  begin
     v_pltbutils_chk_cnt.inc; -- VHDL-2002
     --v_pltbutils_chk_cnt := v_pltbutils_chk_cnt + 1; -- VHDL-1993
     if not expr then
-      assert false
-      report "Check " & 
-             str(v_pltbutils_chk_cnt.value) & -- VHDL-2002
-             --str(v_pltbutils_chk_cnt) & -- VHDL-1993
-             "; " & rpt   &
-             " " & --str('lf') &
-             "  in test " & 
-             str(v_pltbutils_test_num.value) & -- VHDL-2002
-             --str(v_pltbutils_test_num) & -- VHDL-1993
-             " " & 
-             v_pltbutils_test_name.value -- VHDL-2002
-             --v_pltbutils_test_name -- VHDL-1993
-      severity error;
       v_pltbutils_err_cnt.inc; -- VHDL-2002
+      v_pltbutils_err_cnt_in_test.inc; -- VHDL-2002
       --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
+      --v_pltbutils_err_cnt_in_test := v_pltbutils_err_cnt_in_test + 1; -- VHDL-1993
+    end if;
+    v_test_name_len := v_pltbutils_test_name_len.value;
+    if C_PLTBUTILS_USE_STD_CHECK_MSG then
+      check_msg(rpt, expr, actual, expected, mask, v_pltbutils_test_num.value,
+        v_pltbutils_test_name.value(1 to v_test_name_len), v_pltbutils_chk_cnt.value, 
+        v_pltbutils_err_cnt_in_test.value); -- VHDL-2002
+      --check_msg(rpt, actual, expected, mask, v_pltbutils_test_num,
+      --  v_pltbutils_test_name(1 to v_test_name_len), v_pltbutils_chk_cnt,
+      --  v_pltbutils_err_cnt_in_test); -- VHDL-2002
+    end if;
+    if C_PLTBUTILS_USE_CUSTOM_CHECK_MSG then
+      -- VHDL-2002:
+      custom_check_msg(rpt, expr, actual, expected, mask, v_pltbutils_test_num.value,
+        v_pltbutils_test_name.value(1 to v_test_name_len), v_pltbutils_chk_cnt.value, 
+        v_pltbutils_err_cnt_in_test.value);
+      -- VHDL-1993:
+      --custom_check_msg(rpt, actual, expected, mask, v_pltbutils_test_num,
+      --  v_pltbutils_test_name(1 to v_test_name_len), v_pltbutils_chk_cnt,
+      --  v_pltbutils_err_cnt_in_test);
     end if;
     pltbutils_sc_update(pltbutils_sc);
-  end procedure check;  
+  end procedure check;
   
   ----------------------------------------------------------------------------
   -- to_ascending
@@ -1596,17 +1640,20 @@ package body pltbutils_func_pkg is
   -- hxstr
   -- function hxstr(
   --  constant s                  : std_logic_vector;
-  --  constant prefix             : string := ""
+  --  constant prefix             : string := "";
+  --  constant postfix            : string := ""
   -- ) return string;
   --
   -- function hxstr(
   --  constant s                  : unsigned;
-  --  constant prefix             : string := ""
+  --  constant prefix             : string := "";
+  --  constant postfix            : string := ""
   -- ) return string;
   --
   -- function hxstr(
   --  constant s                  : signed;
-  --  constant prefix             : string := ""
+  --  constant prefix             : string := "";
+  --  constant postfix            : string := ""
   -- ) return string;
   --
   -- Converts a signal to a string in hexadecimal format.
@@ -1624,26 +1671,29 @@ package body pltbutils_func_pkg is
   ----------------------------------------------------------------------------
   function hxstr(
     constant s                  : std_logic_vector;
-    constant prefix             : string := ""
+    constant prefix             : string := "";
+    constant postfix            : string := ""
   ) return string is
   begin
-    return prefix & hstr(to_descending(s));
+    return prefix & hstr(to_descending(s)) & postfix;
   end function hxstr;
   
   function hxstr(
     constant s                  : unsigned;
-    constant prefix             : string := ""
+    constant prefix             : string := "";
+    constant postfix            : string := ""
   ) return string is
   begin
-    return prefix & hstr(to_descending(std_logic_vector(s)));
+    return prefix & hstr(to_descending(std_logic_vector(s))) & postfix;
   end function hxstr;
   
   function hxstr(
     constant s                  : signed;
-    constant prefix             : string := ""
+    constant prefix             : string := "";
+    constant postfix            : string := ""
   ) return string is
   begin
-    return prefix & hstr(to_descending(std_logic_vector(s)));
+    return prefix & hstr(to_descending(std_logic_vector(s))) & postfix;
   end function hxstr;
   
   ----------------------------------------------------------------------------
@@ -1670,5 +1720,172 @@ package body pltbutils_func_pkg is
     --pltbutils_sc.err_cnt    <= v_pltbutils_err_cnt;
     --pltbutils_sc.stop_sim   <= v_pltbutils_stop_sim;
   end procedure pltbutils_sc_update;
+  
+  procedure startsim_msg(
+    constant testcase_name      : in string;
+    constant timestamp          : in time
+  ) is
+  begin
+    print(lf & "--- START OF SIMULATION ---");
+    print("Testcase: " & testcase_name);
+    print(time'image(timestamp));
+  end procedure startsim_msg;
+
+  procedure endsim_msg(
+    constant testcase_name      : in string;
+    constant timestamp          : in time;
+    constant num_tests          : in integer;
+    constant num_checks         : in integer;
+    constant num_errors         : in integer;
+    constant show_success_fail  : in boolean
+  ) is
+    variable l : line;
+  begin
+    print(lf & "--- END OF SIMULATION ---");
+    print("Note: the results presented below are based on the PlTbUtil's check() procedure calls."); 
+    print("      The design may contain more errors, for which there are no check() calls.");
+    write(l, timestamp, right, 14);
+    writeline(output, l);
+    write(l, num_tests, right, 11);
+    write(l, string'(" Tests"));
+    writeline(output, l);
+    write(l, num_checks, right, 11);
+    write(l, string'(" Checks"));
+    writeline(output, l);
+    write(l, num_errors, right, 11);
+    write(l, string'(" Errors"));
+    writeline(output, l);
+    if show_success_fail then
+      if num_errors = 0 and num_checks > 0 then
+        print("*** SUCCESS ***");
+      elsif num_checks > 0 then
+        print("*** FAIL ***");
+      else
+        print("*** NO CHECKS ***");
+      end if;
+    end if;    
+  end procedure endsim_msg;
+  
+  procedure starttest_msg(
+    constant test_num           : in integer;
+    constant test_name          : in string;
+    constant timestamp          : in time
+  ) is
+  begin
+    print(lf & "Test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");    
+  end procedure starttest_msg;
+  
+  procedure endtest_msg(
+    constant test_num           : in integer;
+    constant test_name          : in string;
+    constant timestamp          : in time;
+    constant num_checks_in_test : in integer;
+    constant num_errors_in_test : in integer
+  ) is
+  begin
+    print("Done with test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
+  end procedure endtest_msg;
+  
+  procedure check_msg(
+    constant rpt                : in string;
+    constant expr               : in boolean;    
+    constant actual             : in string;
+    constant expected           : in string;
+    constant mask               : in string;
+    constant test_num           : in integer;      
+    constant test_name          : in string;
+    constant check_num          : in integer;
+    constant err_cnt_in_test    : in integer
+  ) is
+    variable comparison_str     : string(1 to 32) := (others => ' ');
+    variable comparison_str_len : integer := 1;
+    variable actual_str         : string(1 to 32) := (others => ' ');
+    variable actual_str_len     : integer := 1;
+    variable expected_str       : string(1 to 32) := (others => ' ');
+    variable expected_str_len   : integer := 1;
+    variable mask_str           : string(1 to 32) := (others => ' ');
+    variable mask_str_len       : integer := 1;
+  begin
+    if not expr then -- Output message only if the check fails
+      if actual /= "" then
+        actual_str_len := 8 + actual'length;
+        actual_str(1 to actual_str_len) := " Actual=" & actual;
+      end if;        
+      if expected /= "" then
+        expected_str_len := 10 + expected'length;
+        expected_str(1 to expected_str_len) := " Expected=" & expected;
+      end if;        
+      if mask /= "" then
+        mask_str_len := 6 + mask'length;
+        mask_str(1 to mask_str_len) := " Mask=" & mask;
+      end if;        
+      assert false
+        report "Check " & str(check_num) & "; " & rpt & "; " &
+               actual_str(1 to actual_str_len) & 
+               expected_str(1 to expected_str_len) &
+               mask_str(1 to mask_str_len) &
+               "  in test " & str(test_num) & " " & test_name
+        severity error;
+    end if;
+  end procedure check_msg;  
+  
+  procedure pltbutils_error(
+    constant rpt                : in string;
+    signal   pltbutils_sc       : out   pltbutils_sc_t
+  ) is
+  begin
+    -- VHDL-2002:
+    v_pltbutils_err_cnt.inc;
+    if C_PLTBUTILS_USE_STD_ERROR_MSG then
+      error_msg(rpt, now, 
+        v_pltbutils_test_num.value, 
+        v_pltbutils_test_name.value(1 to v_pltbutils_test_name_len.value),
+        v_pltbutils_err_cnt_in_test.value);
+    end if;
+    if C_PLTBUTILS_USE_CUSTOM_ERROR_MSG then
+      custom_error_msg(rpt, now, 
+        v_pltbutils_test_num.value, 
+        v_pltbutils_test_name.value(1 to v_pltbutils_test_name_len.value),
+        v_pltbutils_err_cnt_in_test.value);
+    end if;
+    -- VHDL-1993:
+    --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1;
+    --if C_PLTBUTILS_USE_STD_ERROR_MSG then
+    --  error_msg(rpt, now, 
+    --    v_pltbutils_test_num, 
+    --    v_pltbutils_test_name(1 to v_pltbutils_test_name_len),
+    --    v_pltbutils_err_cnt_in_test);
+    --end if;
+    --if C_PLTBUTILS_USE_CUSTOM_ERROR_MSG then
+    --  custom_error_msg(rpt, now, 
+    --    v_pltbutils_test_num, 
+    --    v_pltbutils_test_name(1 to v_pltbutils_test_name_len),
+    --    v_pltbutils_err_cnt_in_test);
+    --end if;
+    pltbutils_sc_update(pltbutils_sc);  
+  end procedure pltbutils_error;
+  
+  procedure error_msg(
+    constant rpt                : in string;
+    constant timestamp          : in time;
+    constant test_num           : in integer;      
+    constant test_name          : in string;
+    constant err_cnt_in_test    : in integer
+  ) is
+  begin
+    assert false
+    report rpt & " in test " & str(test_num) & ": " & test_name
+    severity error;
+  end procedure error_msg;
+  
+  procedure stopsim(
+    constant timestamp          : in time
+  ) is
+  begin
+    assert false
+    report "--- FORCE END OF SIMULATION ---" &
+           " (ignore this false failure message, it's not a real failure)"
+    severity failure;    
+  end procedure stopsim;  
     
 end package body pltbutils_func_pkg;
