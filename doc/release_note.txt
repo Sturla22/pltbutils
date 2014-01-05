@@ -1,11 +1,20 @@
 pltbutils release_note.txt
 
-alpha0004 December 03, 2013
+
+alpha0005 January 05, 2014
+1. In pltbutils_func_pkg.vhd, added starttest() and endtest().
+2. testname() is now depricated, and will be removed. Use starttest() instead.
+3. Added pltbutils_user_cfg_pkg.vhd and modified pltbutils_func_pkg.vhd to
+   support user configurable report messages, to support continous
+   integration environments, e.g. TeamCity.
+4. Updated specification.
+
+alpha0004 December 3, 2013
 1. Corrected returned ranges from to_ascending() and to_descending()
    in pltbutils_func_pkg.vhd, to make them work with vectors where the lowest
    bit does not have number 0.
 
-alpha0003 December 02, 2013
+alpha0003 December 2, 2013
 1. Added a line feed before printing the test name for clarity,
    in procedure testname() in pltbutils.vhd .
 2. Added functions to_ascending(), to_descending() and hxstr()
@@ -27,7 +36,10 @@ alpha0002 November 10, 2013
    The inverted clock output can be used when a differential
    clock is needed.
 5. Added overloaded procedures waitsig().   
-6. Updated specification
+6. Updated specification.
   
 alpha0001 September 2, 2013
 1. First commit
+
+April 14, 2013
+1. PlTbUtils project registered on OpenCores.
