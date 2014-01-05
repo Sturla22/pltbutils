@@ -5,6 +5,7 @@ vcom -novopt -work work \
      ../../../example/vhdl/dut_example.vhd \
      ../../../src/vhdl/txt_util.vhd \
      ../../../src/vhdl/pltbutils_type_pkg.vhd \
+     ../../../src/vhdl/pltbutils_user_cfg_pkg.vhd \
      ../../../src/vhdl/pltbutils_func_pkg.vhd \
      ../../../src/vhdl/pltbutils_comp.vhd \
      ../../../src/vhdl/pltbutils_comp_pkg.vhd \
