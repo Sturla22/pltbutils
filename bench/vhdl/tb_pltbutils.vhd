@@ -27,7 +27,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013 Authors and OPENCORES.ORG                 ----
+---- Copyright (C) 2013-2014 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -68,12 +68,8 @@ end entity tb_pltbutils;
 architecture bhv of tb_pltbutils is
 
   -- Simulation status- and control signals
-  signal test_num       : integer;
-  signal test_name      : string(pltbutils_sc.test_name'range);
-  signal info           : string(pltbutils_sc.info'range);
-  signal checks         : integer;
-  signal errors         : integer;
-  signal stop_sim       : std_logic;
+  -- for accessing .stop_sim and for viewing in waveform window
+  signal pltbs          : pltbs_t := C_PLTBS_INIT;
 
   -- Expected number of checks and number of errors to be reported
   -- by pltbutils. The counting is made by variables, but the
@@ -93,14 +89,6 @@ architecture bhv of tb_pltbutils is
   signal s_s            : unsigned(7 downto 0);
   
 begin
-
-  -- Simulation status and control for viewing in waveform window
-  test_num  <= pltbutils_sc.test_num;
-  test_name <= pltbutils_sc.test_name;
-  info      <= pltbutils_sc.info;
-  checks    <= pltbutils_sc.chk_cnt;
-  errors    <= pltbutils_sc.err_cnt;
-  stop_sim  <= pltbutils_sc.stop_sim;
       
   -- Clock generator
   clkgen0 : pltbutils_clkgen
@@ -109,7 +97,7 @@ begin
     )
     port map(
       clk_o         => clk,
-      stop_sim_i    => stop_sim
+      stop_sim_i    => pltbs.stop_sim
     );
     
   -- Clock cycle counter
@@ -124,37 +112,38 @@ begin
    
   -- Testcase
   p_tc1 : process
+    variable pltbv                 : pltbv_t := C_PLTBV_INIT;
     variable v_expected_tests_cnt  : integer := 0;
     variable v_expected_checks_cnt : integer := 0;
     variable v_expected_errors_cnt : integer := 0;
   begin
   
     print("<Testing startsim()>");
-    startsim("tc1", pltbutils_sc);
+    startsim("tc1", pltbv, pltbs);
     wait until rising_edge(clk);
-    assert test_num  = 0
+    assert (pltbv.test_num = 0) and (pltbs.test_num  = 0)
       report "test_num after startsim() incorrect"
       severity error;
     print("<Done testing startsim()>");
    
     print("<Testing starttest() with auto-incrementing test_num>");   
-    starttest("TestName1", pltbutils_sc);
+    starttest("TestName1", pltbv, pltbs);
     v_expected_tests_cnt := v_expected_tests_cnt + 1;    
     wait until rising_edge(clk);
-    assert test_num  = 1
+    assert (pltbv.test_num = 1) and (pltbs.test_num  = 1)
       report "test_num after starttest() incorrect"
       severity error;
     print("<Done testing starttest() with auto-incrementing test_num()>");
 
     print("<Testing endtest()>");   
-    endtest(pltbutils_sc);    
+    endtest(pltbv, pltbs);    
     print("<Done testing endtest()>");
 
     print("<Testing starttest() with explicit test_num>");   
-    starttest(3, "TestName2", pltbutils_sc);
+    starttest(3, "TestName2", pltbv, pltbs);
     v_expected_tests_cnt := v_expected_tests_cnt + 1;        
     wait until rising_edge(clk);
-    assert test_num  = 3
+    assert (pltbv.test_num = 3) and (pltbs.test_num  = 3)
       report "test_num after startsim() incorrect"
       severity error;
     print("<Done testing starttest() with explicit test_num>");
@@ -164,7 +153,7 @@ begin
     wait until rising_edge(clk);
     clk_cnt_clr <= false;
     wait until rising_edge(clk);
-    waitclks(10, clk, pltbutils_sc);   
+    waitclks(10, clk, pltbv, pltbs);   
     assert clk_cnt = 10
       report "clk_cnt after waitclks() incorrect:" & integer'image(clk_cnt) &
              " expected:" & integer'image(10)
@@ -174,24 +163,24 @@ begin
     print("<Testing check() integer>");
     s_i <= 0;    
     wait until rising_edge(clk);
-    check("Testing correct integer = 0", s_i, 0, pltbutils_sc);
+    check("Testing correct integer = 0", s_i, 0, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_i <= 1;    
     wait until rising_edge(clk);
-    check("Testing correct integer = 1", s_i, 1, pltbutils_sc);
+    check("Testing correct integer = 1", s_i, 1, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_i <= 17;    
     wait until rising_edge(clk);
-    check("Testing incorrect integer = 17", s_i, 18, pltbutils_sc);
+    check("Testing incorrect integer = 17", s_i, 18, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
     expected_errors_cnt   <= v_expected_errors_cnt;
     s_i <= -1;    
     wait until rising_edge(clk);
-    check("Testing negative integer = -1", s_i, -1, pltbutils_sc);
+    check("Testing negative integer = -1", s_i, -1, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;    
     expected_checks_cnt   <= v_expected_checks_cnt;
     
@@ -200,17 +189,17 @@ begin
     print("<Testing check() std_logic>");
     s_sl <= '0';    
     wait until rising_edge(clk);
-    check("Testing correct std_logic = '0'", s_sl, '0', pltbutils_sc);
+    check("Testing correct std_logic = '0'", s_sl, '0', pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_sl <= '1';    
     wait until rising_edge(clk);
-    check("Testing correct std_logic = '1'", s_sl, '1', pltbutils_sc);
+    check("Testing correct std_logic = '1'", s_sl, '1', pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_sl <= 'X';    
     wait until rising_edge(clk);
-    check("Testing incorrect std_logic = '1'", s_sl, '1', pltbutils_sc);
+    check("Testing incorrect std_logic = '1'", s_sl, '1', pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
@@ -220,24 +209,24 @@ begin
     print("<Testing check() std_logic against integer>");
     s_sl <= '0';    
     wait until rising_edge(clk);
-    check("Testing correct std_logic = '0'", s_sl, 0, pltbutils_sc);
+    check("Testing correct std_logic = '0'", s_sl, 0, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_sl <= '1';    
     wait until rising_edge(clk);
-    check("Testing correct std_logic = '1'", s_sl, 1, pltbutils_sc);
+    check("Testing correct std_logic = '1'", s_sl, 1, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_sl <= 'X';    
     wait until rising_edge(clk);
-    check("Testing incorrect std_logic = '1'", s_sl, 1, pltbutils_sc);
+    check("Testing incorrect std_logic = '1'", s_sl, 1, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
     expected_errors_cnt   <= v_expected_errors_cnt;
     s_sl <= '1';    
     wait until rising_edge(clk);
-    check("Testing std_logic = '1' with incorrect expected", s_sl, 2, pltbutils_sc);
+    check("Testing std_logic = '1' with incorrect expected", s_sl, 2, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
@@ -247,17 +236,17 @@ begin
     print("<Testing check() std_logic_vector>");
     s_slv <= x"00";    
     wait until rising_edge(clk);
-    check("Testing correct std_logic_vector = x'00'", s_slv, x"00", pltbutils_sc);
+    check("Testing correct std_logic_vector = x'00'", s_slv, x"00", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_slv <= x"47";    
     wait until rising_edge(clk);
-    check("Testing correct std_logic_vector = x'47'", s_slv, x"47", pltbutils_sc);
+    check("Testing correct std_logic_vector = x'47'", s_slv, x"47", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_slv <= x"11";    
     wait until rising_edge(clk);
-    check("Testing incorrect std_logic_vector = x'11'", s_slv, x"10", pltbutils_sc);
+    check("Testing incorrect std_logic_vector = x'11'", s_slv, x"10", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
@@ -267,12 +256,12 @@ begin
     print("<Testing check() std_logic_vector with mask>");
     s_slv <= x"47";    
     wait until rising_edge(clk);
-    check("Testing std_logic_vector = x'47' with correct nibble mask", s_slv, x"57", x"0F", pltbutils_sc);
+    check("Testing std_logic_vector = x'47' with correct nibble mask", s_slv, x"57", x"0F", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_slv <= x"47";    
     wait until rising_edge(clk);
-    check("Testing std_logic_vector = x'47' with incorrect nibble mask", s_slv, x"57", x"F0", pltbutils_sc);
+    check("Testing std_logic_vector = x'47' with incorrect nibble mask", s_slv, x"57", x"F0", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
@@ -282,24 +271,24 @@ begin
     print("<Testing check() std_logic_vector against integer>");
     s_slv <= x"00";    
     wait until rising_edge(clk);
-    check("Testing correct std_logic_vector = x'00'", s_slv, 0, pltbutils_sc);
+    check("Testing correct std_logic_vector = x'00'", s_slv, 0, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_slv <= x"47";    
     wait until rising_edge(clk);
-    check("Testing correct std_logic_vector = x'47'", s_slv, 16#47#, pltbutils_sc);
+    check("Testing correct std_logic_vector = x'47'", s_slv, 16#47#, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_slv <= x"11";    
     wait until rising_edge(clk);
-    check("Testing incorrect std_logic_vector = x'11'", s_slv, 16#10#, pltbutils_sc);
+    check("Testing incorrect std_logic_vector = x'11'", s_slv, 16#10#, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
     expected_errors_cnt   <= v_expected_errors_cnt;
     s_slv <= x"FF";    
     wait until rising_edge(clk);
-    check("Testing negative std_logic_vector = x'FF'", s_slv, -1, pltbutils_sc);
+    check("Testing negative std_logic_vector = x'FF'", s_slv, -1, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     print("<Done testing check() std_logic_vector against integer>");
@@ -307,12 +296,12 @@ begin
     print("<Testing check() std_logic_vector with mask against integer>");
     s_slv <= x"47";    
     wait until rising_edge(clk);
-    check("Testing std_logic_vector = x'47' with correct nibble mask", s_slv, 16#57#, x"0F", pltbutils_sc);
+    check("Testing std_logic_vector = x'47' with correct nibble mask", s_slv, 16#57#, x"0F", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_slv <= x"47";    
     wait until rising_edge(clk);
-    check("Testing std_logic_vector = x'47' with incorrect nibble mask", s_slv, 16#57#, x"F0", pltbutils_sc);
+    check("Testing std_logic_vector = x'47' with incorrect nibble mask", s_slv, 16#57#, x"F0", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
@@ -322,17 +311,17 @@ begin
     print("<Testing check() unsigned>");
     s_u <= x"00";    
     wait until rising_edge(clk);
-    check("Testing correct unsigned = x'00'", s_u, x"00", pltbutils_sc);
+    check("Testing correct unsigned = x'00'", s_u, x"00", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_u <= x"47";    
     wait until rising_edge(clk);
-    check("Testing correct unsigned = x'47'", s_u, x"47", pltbutils_sc);
+    check("Testing correct unsigned = x'47'", s_u, x"47", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_u <= x"11";    
     wait until rising_edge(clk);
-    check("Testing incorrect unsigned = x'11'", s_u, x"10", pltbutils_sc);
+    check("Testing incorrect unsigned = x'11'", s_u, x"10", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
@@ -342,17 +331,17 @@ begin
     print("<Testing check() unsigned against integer>");
     s_u <= x"00";    
     wait until rising_edge(clk);
-    check("Testing correct unsigned = x'00'", s_u, 0, pltbutils_sc);
+    check("Testing correct unsigned = x'00'", s_u, 0, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_u <= x"47";    
     wait until rising_edge(clk);
-    check("Testing correct unsigned = x'47'", s_u, 16#47#, pltbutils_sc);
+    check("Testing correct unsigned = x'47'", s_u, 16#47#, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_u <= x"11";    
     wait until rising_edge(clk);
-    check("Testing incorrect unsigned = x'11'", s_u, 16#10#, pltbutils_sc);
+    check("Testing incorrect unsigned = x'11'", s_u, 16#10#, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
@@ -362,24 +351,24 @@ begin
     print("<Testing check() signed>");
     s_s <= x"00";    
     wait until rising_edge(clk);
-    check("Testing correct signed = x'00'", s_s, x"00", pltbutils_sc);
+    check("Testing correct signed = x'00'", s_s, x"00", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_s <= x"47";    
     wait until rising_edge(clk);
-    check("Testing correct signed = x'47'", s_s, x"47", pltbutils_sc);
+    check("Testing correct signed = x'47'", s_s, x"47", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_s <= x"11";    
     wait until rising_edge(clk);
-    check("Testing incorrect signed = x'11'", s_s, x"10", pltbutils_sc);
+    check("Testing incorrect signed = x'11'", s_s, x"10", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
     expected_errors_cnt   <= v_expected_errors_cnt;
     s_s <= x"FF";    
     wait until rising_edge(clk);
-    check("Testing negative signed = x'FF'", s_s, x"FF", pltbutils_sc);
+    check("Testing negative signed = x'FF'", s_s, x"FF", pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;    
     expected_checks_cnt   <= v_expected_checks_cnt;
     print("<Done testing check() signed>");
@@ -387,17 +376,17 @@ begin
     print("<Testing check() signed against integer>");
     s_s <= x"00";    
     wait until rising_edge(clk);
-    check("Testing correct signed = x'00'", s_s, 0, pltbutils_sc);
+    check("Testing correct signed = x'00'", s_s, 0, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_s <= x"47";    
     wait until rising_edge(clk);
-    check("Testing correct signed = x'47'", s_s, 16#47#, pltbutils_sc);
+    check("Testing correct signed = x'47'", s_s, 16#47#, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_s <= x"11";    
     wait until rising_edge(clk);
-    check("Testing incorrect signed = x'11'", s_s, 16#10#, pltbutils_sc);
+    check("Testing incorrect signed = x'11'", s_s, 16#10#, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
@@ -407,7 +396,7 @@ begin
     print("The following check fails in ModelSim for unknown reason." &
           " It causes mismatch between expected number of errors" &
           " and the number presented by endsim()");
-    check("Testing negative signed = x'FF'", s_s, -1, pltbutils_sc);
+    check("Testing negative signed = x'FF'", s_s, -1, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;    
     expected_checks_cnt   <= v_expected_checks_cnt;
     print("<Done testing check() signed against integer>");    
@@ -415,12 +404,12 @@ begin
     print("<Testing check() boolean expression>");
     s_i <= 0;    
     wait until rising_edge(clk);
-    check("Testing correct boolean expression 0 = 16#00#", s_i = 16#00#, pltbutils_sc);
+    check("Testing correct boolean expression 0 = 16#00#", s_i = 16#00#, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     s_i <= 47;    
     wait until rising_edge(clk);
-    check("Testing incorrect boolean expression 47 < 16#10#", s_i < 16#10#, pltbutils_sc);
+    check("Testing incorrect boolean expression 47 < 16#10#", s_i < 16#10#, pltbv, pltbs);
     v_expected_checks_cnt := v_expected_checks_cnt + 1;
     expected_checks_cnt   <= v_expected_checks_cnt;
     v_expected_errors_cnt := v_expected_errors_cnt + 1;
@@ -428,7 +417,7 @@ begin
     print("<Done testing check() boolean expresson>");
 
     print("<Testing endtest()>");   
-    endtest(pltbutils_sc);    
+    endtest(pltbv, pltbs);    
     print("<Done testing endtest()>");
     
     wait until rising_edge(clk);
@@ -437,7 +426,7 @@ begin
     print("Expected number of checks: " & str(v_expected_checks_cnt));
     print("Expected number of errors: " & str(v_expected_errors_cnt));
     wait until rising_edge(clk);
-    endsim(pltbutils_sc, true);
+    endsim(pltbv, pltbs, true);
     wait until rising_edge(clk);
     print("<Done testing endsim()>");
     wait;
