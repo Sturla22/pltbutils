@@ -1,12 +1,12 @@
 ----------------------------------------------------------------------
 ----                                                              ----
 ---- PlTbUtils Example Testcase Architecture for                  ----
----- Template Testbench                                            ----
+---- Template Testbench                                           ----
 ----                                                              ----
 ---- This file is part of the PlTbUtils project                   ----
 ---- http://opencores.org/project,pltbutils                       ----
 ----                                                              ----
----- Description:                                                  ----
+---- Description:                                                 ----
 ---- PlTbUtils is a collection of functions, procedures and       ----
 ---- components for easily creating stimuli and checking response ----
 ---- in automatic self-checking testbenches.                      ----
@@ -23,7 +23,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013 Authors and OPENCORES.ORG                 ----
+---- Copyright (C) 2013-2014 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -50,30 +50,33 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+--use work.txt_util.all;
 use work.pltbutils_func_pkg.all;
 
 architecture tc1 of tc_template is
 begin
   p_tc1 : process
+    variable pltbv  : pltbv_t := C_PLTBV_INIT;
   begin
-    startsim("tc1", pltbutils_sc);
+    startsim("tc1", pltbv, pltbs);
     rst         <= '1'; -- Template example
     -- < Template info: initialize other DUT stimuli here. >
         
-    testname(1, "Reset test", pltbutils_sc); -- Template example
-    waitclks(2, clk, pltbutils_sc); -- Template example
-    check("template_signal during reset", template_signal, 0, pltbutils_sc); -- Template example
+    starttest(1, "Reset test", pltbv, pltbs); -- Template example
+    waitclks(2, clk, pltbv, pltbs); -- Template example
+    check("template_signal during reset", template_signal, 0, pltbv, pltbs); -- Template example
     -- < Template info: check other DUT outputs here. 
     rst  <= '0'; -- Template example
+    endtest(pltbv, pltbs);
     
-    testname(2, "Template test", pltbutils_sc);
+    starttest(2, "Template test", pltbv, pltbs);
     -- < Template info: set all relevant DUT inputs here. >
-    waitclks(2, clk, pltbutils_sc); -- Template example
+    waitclks(2, clk, pltbv, pltbs); -- Template example
     -- < Template info: check all relevant DUT outputs here. >
-    
+    endtest(pltbv, pltbs);
     -- < Template info: add more tests here. >
 
-    endsim(pltbutils_sc, true);
+    endsim(pltbv, pltbs, true);
     wait;
   end process p_tc1;
 end architecture tc1;
