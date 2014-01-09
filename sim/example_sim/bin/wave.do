@@ -1,12 +1,20 @@
 onerror {resume}
+quietly virtual signal -install /tb_example {/tb_example/pltbs.test_num  } Test_number
+quietly virtual signal -install /tb_example {/tb_example/pltbs.test_name  } Test_name
+quietly virtual signal -install /tb_example {/tb_example/pltbs.info  } Info
+quietly virtual signal -install /tb_example {/tb_example/pltbs.chk_cnt  } Checks
+quietly virtual signal -install /tb_example {/tb_example/pltbs.err_cnt  } Errors
+quietly virtual signal -install /tb_example {/tb_example/pltbs.stop_sim  } StopSim
+quietly virtual signal -install /tb_example {/tb_example/pltbs.test_num  } TestNumber
+quietly virtual signal -install /tb_example {/tb_example/pltbs.test_name  } TestName
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider {Simulation info}
-add wave -noupdate /tb_example/info
-add wave -noupdate /tb_example/test_num
-add wave -noupdate /tb_example/test_name
-add wave -noupdate /tb_example/checks
-add wave -noupdate /tb_example/errors
-add wave -noupdate /tb_example/stop_sim
+add wave -noupdate /tb_example/TestNumber
+add wave -noupdate /tb_example/TestName
+add wave -noupdate /tb_example/Info
+add wave -noupdate /tb_example/Checks
+add wave -noupdate /tb_example/Errors
+add wave -noupdate /tb_example/StopSim
 add wave -noupdate -divider Tb
 add wave -noupdate /tb_example/clk
 add wave -noupdate /tb_example/rst
@@ -44,4 +52,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {999992571 ps} {1000000391 ps}
+WaveRestoreZoom {0 ps} {131072 ps}
