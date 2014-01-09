@@ -26,7 +26,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013 Authors and OPENCORES.ORG                 ----
+---- Copyright (C) 2013-2014 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -52,12 +52,14 @@
 ----------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
+use work.pltbutils_func_pkg.all;
 
 entity tc_template is
   generic (
     -- < Template info: add generics here if needed, or remove the generic block >    
   );
   port (
+    pltbs           : out pltbs_t;
     clk             : in  std_logic; -- Template example
     rst             : out std_logic; -- Template example
     -- < Template info: add more ports for testcase component here. >
