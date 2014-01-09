@@ -54,10 +54,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use std.textio.all;
+--use std.textio.all;
 --use std.env.all; -- Uncomment if using stop or finish in custom_stopsim() below.
 use work.txt_util.all;
-use work.pltbutils_type_pkg.all; -- Use for VHDL-2002 protected types, comment out for VHDL-93
 
 package pltbutils_user_cfg_pkg is
 
@@ -80,6 +79,10 @@ package pltbutils_user_cfg_pkg is
 
   --- Procedure declarations ---
   -- The user should NOT modify these.
+  
+  procedure custom_stopsim(
+    constant timestamp          : in time
+  );
   
   procedure custom_startsim_msg(
     constant testcase_name      : in string;
@@ -111,6 +114,7 @@ package pltbutils_user_cfg_pkg is
   
   procedure custom_check_msg(
     constant rpt                : in string;
+    constant timestamp          : in time;
     constant expr               : in boolean;    
     constant actual             : in string;
     constant expected           : in string;
@@ -128,11 +132,7 @@ package pltbutils_user_cfg_pkg is
     constant test_name          : in string;
     constant err_cnt_in_test    : in integer
   );
-  
-  procedure custom_stopsim(
-    constant timestamp          : in time
-  );
-  
+    
   --- User's function and procedure declarations ---
   -- Example for use with TeamCity. Remove, modify or replace
   -- to suit other other continous integration tools or scripts, if you need to.
@@ -147,6 +147,29 @@ package body pltbutils_user_cfg_pkg is
   --- Procedure definitions ---
   -- The user should NOT modify the arguments,
   -- but the behaviour is free to modify to fit the user's requirements.
+  
+  procedure custom_stopsim(
+    constant timestamp          : in time
+  ) is
+  begin
+    -- The best way to stop a simulation differs between different simulators.
+    -- Below are some examples. Modify to suit your simulator.
+  
+    -- Works with some simulators that supports VHDL-2008. 
+    -- Requires that 'use std.env.all' at the top of the file is uncommented.
+    --stop;
+    
+    -- Works with some simulators that support VHDL-2008. 
+    -- Requires that 'use std.env.all' at the top of the file is uncommented.
+    --finish;
+    
+    -- Works in all simulators known by the author, but ugly.
+    assert false
+    report "--- FORCE END OF SIMULATION ---" &
+           " (ignore this false failure message, it's not a real failure)"
+    severity failure;
+    
+  end procedure custom_stopsim;  
 
   -- Example custom messages for TeamCity.
   -- Edit to suit other continous integration tools or scripts, if you need to.
@@ -199,6 +222,7 @@ package body pltbutils_user_cfg_pkg is
 
   procedure custom_check_msg(
     constant rpt                : in string;
+    constant timestamp          : in time;
     constant expr               : in boolean;    
     constant actual             : in string;
     constant expected           : in string;
@@ -264,29 +288,6 @@ package body pltbutils_user_cfg_pkg is
     end if;
   end procedure custom_error_msg;
   
-  procedure custom_stopsim(
-    constant timestamp          : in time
-  ) is
-  begin
-    -- The best way to stop a simulation differs between different simulators.
-    -- Below are some examples. Modify to suit your simulator.
-  
-    -- Works with some simulators. 
-    -- Requires that 'use std.env.all' at the top of the file is uncommented.
-    --stop; -- VHDL-2008
-    
-    -- Works with some simulators. 
-    -- Requires that 'use std.env.all' at the top of the file is uncommented.
-    --finish; -- VHDL-2008
-    
-    -- Works in all simulators known by the author, but ugly.
-    assert false
-    report "--- FORCE END OF SIMULATION ---" &
-           " (ignore this false failure message, it's not a real failure)"
-    severity failure;
-    
-  end procedure custom_stopsim;
-
   --- User's function and procedure definitions ---
   -- Example for use with TeamCity. Remove, modify or replace
   -- to suit other other continous integration tools or scripts, if you need to.
