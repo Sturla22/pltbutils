@@ -22,7 +22,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013 Authors and OPENCORES.ORG                 ----
+---- Copyright (C) 2013-2014 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -48,8 +48,6 @@
 ----------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
-use std.textio.all;
-use work.txt_util.all;
 use work.pltbutils_func_pkg.all;
 use work.pltbutils_comp_pkg.all;
 
@@ -64,17 +62,8 @@ end entity tb_example;
 architecture bhv of tb_example is
 
   -- Simulation status- and control signals
-  signal test_num       : integer;
-  -- VHDL-1993:
-  --signal test_name      : string(pltbutils_test_name'range);
-  --signal info           : string(pltbutils_info'range);
-  -- VHDL-2002:
-  signal test_name      : string(pltbutils_sc.test_name'range);
-  signal info           : string(pltbutils_sc.info'range);
-
-  signal checks         : integer;
-  signal errors         : integer;
-  signal stop_sim       : std_logic;
+  -- for accessing .stop_sim and for viewing in waveform window
+  signal pltbs          : pltbs_t := C_PLTBS_INIT;
   
   -- DUT stimuli and response signals
   signal clk            : std_logic;
@@ -86,21 +75,6 @@ architecture bhv of tb_example is
   signal carry_out      : std_logic;
   
 begin
-
-  -- Simulation status and control for viewing in waveform window
-  -- VHDL-1993:
-  --test_num  <= pltbutils_test_num;
-  --test_name <= pltbutils_test_name;
-  --checks    <= pltbutils_chk_cnt;
-  --errors    <= pltbutils_err_cnt;
-  -- VHDL-2002:
-  test_num  <= pltbutils_sc.test_num;
-  test_name <= pltbutils_sc.test_name;
-  info      <= pltbutils_sc.info;
-  checks    <= pltbutils_sc.chk_cnt;
-  errors    <= pltbutils_sc.err_cnt;
-  stop_sim  <= pltbutils_sc.stop_sim;
-  
   
   dut0 : entity work.dut_example
     generic map (
@@ -123,7 +97,7 @@ begin
     )
     port map(
       clk_o             => clk,
-      stop_sim_i        => stop_sim
+      stop_sim_i        => pltbs.stop_sim
     );
    
   tc0 : entity work.tc_example
@@ -132,6 +106,7 @@ begin
       G_DISABLE_BUGS    => G_DISABLE_BUGS
     )
     port map(
+      pltbs             => pltbs,
       clk               => clk,
       rst               => rst,
       carry_in          => carry_in,
