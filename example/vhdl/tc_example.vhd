@@ -48,6 +48,7 @@
 ----------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
+use work.pltbutils_func_pkg.all;
 
 entity tc_example is
   generic (
@@ -55,6 +56,7 @@ entity tc_example is
     G_DISABLE_BUGS  : integer range 0 to 1 := 0
   );
   port (
+    pltbs           : out pltbs_t;
     clk             : in  std_logic;
     rst             : out std_logic;
     carry_in        : out std_logic;
