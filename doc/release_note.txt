@@ -1,5 +1,22 @@
 pltbutils release_note.txt
 
+alpha0006 January 09, 2014
+1. Replaced shared variables with a normal variable, and global signals with
+   a normal signal.
+   VHDL-2000 and later requires that shared variables use protected types,
+   but protected types weren't available in earlier VHDL versions.
+   As a consequence, some simulators in VHDL-200x mode require protected
+   types. But some simulators still don't support protected types at all.
+   To make pltbutils work in all (or at least in most) VHDL simulators,
+   shared variables have now been removed. 
+   In previous versions of pltbutils, protected types were used by default.
+   There were comments in the pltbutils code as an aid to modify the code
+   for simulators that don't support protected types, but it was too much
+   work to do the modifications. One possible solution could have been to
+   make separate variants of pltbutils; one with, and one without protected
+   types. But that solution was not tempting.
+2. Removed src/vhdl/pltbutils_type_pkg.vhd .
+3. Added doc/required_updates.txt .
 
 alpha0005 January 05, 2014
 1. In pltbutils_func_pkg.vhd, added starttest() and endtest().
