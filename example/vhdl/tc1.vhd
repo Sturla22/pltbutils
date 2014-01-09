@@ -27,7 +27,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013 Authors and OPENCORES.ORG                 ----
+---- Copyright (C) 2013-2014 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -54,57 +54,59 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.txt_util.all;
 use work.pltbutils_func_pkg.all;
 
 -- NOTE: The purpose of the following code is to demonstrate some of the 
--- features in PlTbUtils, not to do a thorough verification.
+-- features of PlTbUtils, not to do a thorough verification.
 architecture tc1 of tc_example is
 begin
   p_tc1 : process
+    variable pltbv  : pltbv_t := C_PLTBV_INIT;
   begin
-    startsim("tc1", pltbutils_sc);
+    startsim("tc1", pltbv, pltbs);
     rst         <= '1';
     carry_in    <= '0';
     x           <= (others => '0');
     y           <= (others => '0');
         
-    starttest(1, "Reset test", pltbutils_sc);
-    waitclks(2, clk, pltbutils_sc);    
-    check("Sum during reset",       sum,         0, pltbutils_sc);
-    check("Carry out during reset", carry_out, '0', pltbutils_sc);
+    starttest(1, "Reset test", pltbv, pltbs);
+    waitclks(2, clk, pltbv, pltbs);    
+    check("Sum during reset",       sum,         0, pltbv, pltbs);
+    check("Carry out during reset", carry_out, '0', pltbv, pltbs);
     rst         <= '0';
-    endtest(pltbutils_sc);
+    endtest(pltbv, pltbs);
     
-    starttest(2, "Simple sum test", pltbutils_sc);
+    starttest(2, "Simple sum test", pltbv, pltbs);
     carry_in <= '0';
     x <= std_logic_vector(to_unsigned(1, x'length));
     y <= std_logic_vector(to_unsigned(2, x'length));
-    waitclks(2, clk, pltbutils_sc);
-    check("Sum",       sum,         3, pltbutils_sc); 
-    check("Carry out", carry_out, '0', pltbutils_sc); 
-    endtest(pltbutils_sc);
+    waitclks(2, clk, pltbv, pltbs);
+    check("Sum",       sum,         3, pltbv, pltbs); 
+    check("Carry out", carry_out, '0', pltbv, pltbs); 
+    endtest(pltbv, pltbs);
     
-    starttest(3, "Simple carry in test", pltbutils_sc);
-    print(G_DISABLE_BUGS=0, pltbutils_sc, "Bug here somewhere");
+    starttest(3, "Simple carry in test", pltbv, pltbs);
+    print(G_DISABLE_BUGS=0, pltbv, pltbs, "Bug here somewhere");
     carry_in <= '1';
     x <= std_logic_vector(to_unsigned(1, x'length));
     y <= std_logic_vector(to_unsigned(2, x'length));
-    waitclks(2, clk, pltbutils_sc);
-    check("Sum",       sum,         4, pltbutils_sc); 
-    check("Carry out", carry_out, '0', pltbutils_sc);
-    print(pltbutils_sc, "");
-    endtest(pltbutils_sc);
+    waitclks(2, clk, pltbv, pltbs);
+    check("Sum",       sum,         4, pltbv, pltbs); 
+    check("Carry out", carry_out, '0', pltbv, pltbs);
+    print(G_DISABLE_BUGS=0, pltbv, pltbs, "");
+    endtest(pltbv, pltbs);
 
-    starttest(4, "Simple carry out test", pltbutils_sc);
+    starttest(4, "Simple carry out test", pltbv, pltbs);
     carry_in <= '0';
     x <= std_logic_vector(to_unsigned(2**G_WIDTH-1, x'length));
     y <= std_logic_vector(to_unsigned(1, x'length));
-    waitclks(2, clk, pltbutils_sc);
-    check("Sum",       sum,         0, pltbutils_sc); 
-    check("Carry out", carry_out, '1', pltbutils_sc);
-    endtest(pltbutils_sc);
+    waitclks(2, clk, pltbv, pltbs);
+    check("Sum",       sum,         0, pltbv, pltbs); 
+    check("Carry out", carry_out, '1', pltbv, pltbs);
+    endtest(pltbv, pltbs);
 
-    endsim(pltbutils_sc, true);
+    endsim(pltbv, pltbs, true);
     wait;
   end process p_tc1;
 end architecture tc1;
