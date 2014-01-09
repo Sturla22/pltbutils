@@ -50,7 +50,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use std.textio.all;
 use work.txt_util.all;
-use work.pltbutils_type_pkg.all; -- Use for VHDL-2002, comment out for VHDL-93
 use work.pltbutils_user_cfg_pkg.all;
 
 package pltbutils_func_pkg is
@@ -59,40 +58,44 @@ package pltbutils_func_pkg is
   constant C_PLTBUTILS_STRLEN  : natural := 80;
   constant C_PLTBUTILS_TIMEOUT : time    := 10 sec;
   constant C_WAIT_BEFORE_STOP_TIME : time := 1 us;
-  
-  -- Counters for number of checks and number of errors
-  -- VHDL-2002:
-  shared variable v_pltbutils_testcase_name : pltbutils_p_string_t;
-  shared variable v_pltbutils_testcase_name_len : pltbutils_p_integer_t;
-  shared variable v_pltbutils_test_num  : pltbutils_p_integer_t;
-  shared variable v_pltbutils_test_name : pltbutils_p_string_t;
-  shared variable v_pltbutils_test_name_len : pltbutils_p_integer_t;
-  shared variable v_pltbutils_info      : pltbutils_p_string_t;
-  shared variable v_pltbutils_info_len  : pltbutils_p_integer_t;
-  shared variable v_pltbutils_test_cnt  : pltbutils_p_integer_t;
-  shared variable v_pltbutils_chk_cnt   : pltbutils_p_integer_t;
-  shared variable v_pltbutils_err_cnt   : pltbutils_p_integer_t;
-  shared variable v_pltbutils_chk_cnt_in_test : pltbutils_p_integer_t;
-  shared variable v_pltbutils_err_cnt_in_test : pltbutils_p_integer_t;
-  shared variable v_pltbutils_stop_sim  : pltbutils_p_std_logic_t;
-  -- VHDL-1993:
-  --shared variable v_pltbutils_testcase_name : string(1 to C_PLTBUTILS_STRLEN) := (others => ' ');
-  --shared variable v_pltbutils_testcase_name_len : integer := 1;
-  --shared variable v_pltbutils_test_num  : natural := 0;
-  --shared variable v_pltbutils_test_name : string(1 to C_PLTBUTILS_STRLEN) := (others => ' ');
-  --shared variable v_pltbutils_test_name_len : integer := 1;
-  --shared variable v_pltbutils_info      : string(1 to C_PLTBUTILS_STRLEN) := (others => ' ');
-  --shared variable v_pltbutils_info_len  : integer := 1;
-  --shared variable v_pltbutils_test_cnt  : natural := 0;
-  --shared variable v_pltbutils_chk_cnt   : natural := 0;
-  --shared variable v_pltbutils_err_cnt   : natural := 0;
-  --shared variable v_pltbutils_chk_cnt_in_test : natural := 0;
-  --shared variable v_pltbutils_err_cnt_in_test : natural := 0;
-  --shared variable v_pltbutils_stop_sim  : std_logic := '0';
-  
-  -- Global status- and control signal
-  type pltbutils_sc_t is 
-    record 
+
+  -- Type for status- and control variable
+  type pltbv_t is
+    record
+      testcase_name    : string(1 to C_PLTBUTILS_STRLEN);
+      testcase_name_len: integer;
+      test_num         : integer;
+      test_name        : string(1 to C_PLTBUTILS_STRLEN);
+      test_name_len    : integer;
+      info             : string(1 to C_PLTBUTILS_STRLEN);
+      info_len         : integer;
+      test_cnt         : integer;
+      chk_cnt          : integer;
+      err_cnt          : integer;
+      chk_cnt_in_test  : integer;
+      err_cnt_in_test  : integer;
+      stop_sim         : std_logic;
+    end record;
+    
+  constant C_PLTBV_INIT : pltbv_t := (
+    (others => ' '),   -- testcase_name
+    1,                 -- testcase_name_len
+    0,                 -- test_num
+    (others => ' '),   -- test_name
+    1,                 -- test_name_len
+    (others => ' '),   -- info
+    1,                 -- info_len
+    0,                 -- test_cnt
+    0,                 -- chk_cnt
+    0,                 -- err_cnt
+    0,                 -- chk_cnt_in_test
+    0,                 -- err_cnt_in_test
+    '0'                -- stop_sim
+  );
+
+  -- Status- and control signal (subset of pltbv_t)
+  type pltbs_t is
+    record
       test_num  : natural;
       test_name : string(1 to C_PLTBUTILS_STRLEN);
       info      : string(1 to C_PLTBUTILS_STRLEN);
@@ -100,46 +103,48 @@ package pltbutils_func_pkg is
       err_cnt   : natural;
       stop_sim  : std_logic;
     end record;
-  signal pltbutils_sc : pltbutils_sc_t;
- 
-  -- startsim 
+    
+  constant C_PLTBS_INIT : pltbs_t := (
+    0,                  -- test_num
+    (others => ' '),    -- test_name    
+    (others => ' '),    -- info
+    0,                  -- chk_cnt
+    0,                  -- err_cnt
+    '0'                 -- stop_sim
+  );
+  
+  -- startsim
   procedure startsim(
     constant testcase_name      : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
-  
+
   -- endsim
   procedure endsim(
-    signal   pltbutils_sc        : out pltbutils_sc_t;
-    constant show_success_fail   : in   boolean := false;
-    constant force               : in boolean := false
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
+    constant show_success_fail  : in    boolean := false;
+    constant force              : in    boolean := false
   );
-  
+
   -- starttest
   procedure starttest(
     constant num                : in    integer := -1;
     constant name               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
   procedure starttest(
     constant name               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
 
-  -- testname (depricated)
-  procedure testname(
-    constant num                : in    integer := -1;
-    constant name               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  );
-  procedure testname(
-    constant name               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  );
-  
   -- endtest
   procedure endtest(
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
 
   -- print, printv, print2
@@ -161,22 +166,15 @@ package pltbutils_func_pkg is
     variable s                  : out   string;
     constant txt                : in    string
   );
-  procedure printv(
+  procedure print(
     constant active             : in    boolean;
-    variable s                  : inout pltbutils_p_string_t;
-    constant txt                : in    string
-  );
-  procedure printv(
-    variable s                  : inout pltbutils_p_string_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant txt                : in    string
   );
   procedure print(
-    constant active             : in    boolean;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
-    constant txt                : in    string
-  );
-  procedure print(
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant txt                : in    string
   );
   procedure print2(
@@ -190,11 +188,13 @@ package pltbutils_func_pkg is
   );
   procedure print2(
     constant active             : in    boolean;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant txt                : in    string
   );
   procedure print2(
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant txt                : in    string
   );
 
@@ -202,17 +202,19 @@ package pltbutils_func_pkg is
   procedure waitclks(
     constant N                  : in    natural;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
-  
+
   -- waitsig
   procedure waitsig(
     signal   s                  : in    integer;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
@@ -220,7 +222,8 @@ package pltbutils_func_pkg is
     signal   s                  : in    std_logic;
     constant value              : in    std_logic;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
@@ -228,15 +231,17 @@ package pltbutils_func_pkg is
     signal   s                  : in    std_logic;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
-  );  
+  );
   procedure waitsig(
     signal   s                  : in    std_logic_vector;
     constant value              : in    std_logic_vector;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
@@ -244,7 +249,8 @@ package pltbutils_func_pkg is
     signal   s                  : in    std_logic_vector;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
@@ -252,15 +258,17 @@ package pltbutils_func_pkg is
     signal   s                  : in    unsigned;
     constant value              : in    unsigned;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
-  );  
+  );
   procedure waitsig(
     signal   s                  : in    unsigned;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
@@ -268,7 +276,8 @@ package pltbutils_func_pkg is
     signal   s                  : in    signed;
     constant value              : in    signed;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
@@ -276,84 +285,97 @@ package pltbutils_func_pkg is
     signal   s                  : in    signed;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
-  );  
-  
+  );
+
   -- check
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    integer;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  );  
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic;
     constant expected           : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  );  
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  );  
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic_vector;
     constant expected           : in    std_logic_vector;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic_vector;
     constant expected           : in    std_logic_vector;
     constant mask               : in    std_logic_vector;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic_vector;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  );  
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic_vector;
     constant expected           : in    integer;
     constant mask               : in    std_logic_vector;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  );  
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    unsigned;
     constant expected           : in    unsigned;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    unsigned;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  );  
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    signed;
     constant expected           : in    signed;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    signed;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  );  
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
   procedure check(
     constant rpt                : in    string;
     constant expr               : in    boolean;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
    procedure check(
     constant rpt                : in    string;
@@ -361,9 +383,10 @@ package pltbutils_func_pkg is
     constant actual             : in    string;
     constant expected           : in    string;
     constant mask               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
-  
+
   -- to_ascending
   function to_ascending(
     constant s                  : std_logic_vector
@@ -385,7 +408,7 @@ package pltbutils_func_pkg is
   function to_descending(
     constant s                  : signed
   ) return signed;
-  
+
   -- hxstr
   function hxstr(
     constant s                  : std_logic_vector;
@@ -404,15 +427,26 @@ package pltbutils_func_pkg is
   ) return string;
 
   -- pltbutils internal procedure(s), do not call from user's code
-  procedure pltbutils_sc_update(
-    signal pltbutils_sc : out pltbutils_sc_t
+  procedure pltbs_update(
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
+
+  procedure stopsim(
+    constant timestamp          : in time
+  );
+
+  procedure pltbutils_error(
+    constant rpt                : in string;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   );
 
   procedure startsim_msg(
     constant testcase_name      : in string;
     constant timestamp          : in time
   );
-  
+
   procedure endsim_msg(
     constant testcase_name      : in string;
     constant timestamp          : in time;
@@ -421,50 +455,42 @@ package pltbutils_func_pkg is
     constant num_errors         : in integer;
     constant show_success_fail  : in boolean
   );
-  
+
   procedure starttest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
     constant timestamp          : in time
   );
-  
+
   procedure endtest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
     constant timestamp          : in time;
     constant num_checks_in_test : in integer;
     constant num_errors_in_test : in integer
-  );  
-  
+  );
+
   procedure check_msg(
     constant rpt                : in string;
-    constant expr               : in boolean;    
+    constant timestamp          : in time;
+    constant expr               : in boolean;
     constant actual             : in string;
     constant expected           : in string;
     constant mask               : in string;
-    constant test_num           : in integer;      
+    constant test_num           : in integer;
     constant test_name          : in string;
     constant check_num          : in integer;
     constant err_cnt_in_test    : in integer
-  );
-  
-  procedure pltbutils_error(
-    constant rpt                : in string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
   );
 
   procedure error_msg(
     constant rpt                : in string;
     constant timestamp          : in time;
-    constant test_num           : in integer;      
+    constant test_num           : in integer;
     constant test_name          : in string;
     constant err_cnt_in_test    : in integer
   );
-  
-  procedure stopsim(
-    constant timestamp          : in time
-  );
-    
+
 end package pltbutils_func_pkg;
 
 package body pltbutils_func_pkg is
@@ -474,18 +500,19 @@ package body pltbutils_func_pkg is
   --
   -- procedure startsim(
   --   constant testcase_name      : in    string;
-  --   signal   pltbutils_sc       : out   pltbutils_sc_t
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t
   -- )
   --
   -- Displays a message at start of simulation message, and initializes
-  -- PlTbUtils' global status and control signal.
+  -- PlTbUtils' status and control variable and -signal.
   -- Call startsim() only once.
   --
   -- Arguments:
   --   testcase_name            Name of the test case, e.g. "tc1".
   --
-  --   pltbutils_sc             PlTbUtils' global status- and control signal.
-  --                            Must be set to pltbutils_sc.
+  --   pltbv, pltbs             PlTbUtils' status- and control variable and
+  --                            -signal.
   --
   -- NOTE:
   -- The start-of-simulation message is not only intended to be informative
@@ -497,65 +524,51 @@ package body pltbutils_func_pkg is
   -- DO NOT OUTPUT AN IDENTICAL MESSAGE anywhere else.
   --
   -- Example:
-  -- startsim("tc1", pltbutils_sc);
+  -- startsim("tc1", pltbv, pltbs);
   ----------------------------------------------------------------------------
   procedure startsim(
     constant testcase_name      : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
-    variable dummy : integer;
-    variable timestamp : time;
+    variable timestamp          : time;
   begin
     timestamp := now;
+    pltbv := C_PLTBV_INIT;
+    printv(pltbv.testcase_name, testcase_name);
+    pltbv.testcase_name_len := testcase_name'length;
+    printv(pltbv.test_name, "START OF SIMULATION");
+    pltbv.test_name_len     := 19;
+    printv(pltbv.info, testcase_name);
+    pltbv.info_len          := testcase_name'length;
+    pltbs_update(pltbv, pltbs);
     if C_PLTBUTILS_USE_STD_STARTSIM_MSG then
       startsim_msg(testcase_name, timestamp);
     end if;
     if C_PLTBUTILS_USE_CUSTOM_STARTSIM_MSG then
       custom_startsim_msg(testcase_name, timestamp);
     end if;
-    printv(v_pltbutils_info, testcase_name);
-    -- VHDL-2002:
-    v_pltbutils_testcase_name.set(testcase_name);
-    v_pltbutils_testcase_name_len.set(testcase_name'length);
-    v_pltbutils_stop_sim.clr;
-    v_pltbutils_test_num.clr;
-    v_pltbutils_test_name.set("START OF SIMULATION");
-    v_pltbutils_test_name_len.set(19);
-    v_pltbutils_chk_cnt.clr;
-    v_pltbutils_err_cnt.clr;
-    v_pltbutils_chk_cnt_in_test.clr;
-    v_pltbutils_err_cnt_in_test.clr;
-    pltbutils_sc_update(pltbutils_sc);
-    -- VHDL-1993:
-    --v_pltbutils_stop_sim := '0';
-    --v_pltbutils_test_num := 0;
-    --printv(v_pltbutils_test_name, "START OF SIMULATION");
-    --v_pltbutils_test_name_len := 19;
-    --v_pltbutils_chk_cnt := 0;
-    --v_pltbutils_err_cnt := 0;
-    --v_pltbutils_chk_cnt_in_test := 0;
-    --v_pltbutils_err_cnt_in_test := 0;
-    --pltbutils_sc_update(pltbutils_sc);
   end procedure startsim;
 
   ----------------------------------------------------------------------------
   -- endsim
   --
   -- procedure endsim(
-  --   signal   pltbutils_sc       : out pltbutils_sc_t;
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t;
   --   constant show_success_fail  : in  boolean := false;
   --   constant force              : in  boolean := false
   -- )
   --
   -- Displays a message at end of simulation message, presents the simulation
-  -- results, and stops the simulation. 
+  -- results, and stops the simulation.
   -- Call endsim() it only once.
   --
-  -- Arguments: 
-  --   pltbutils_sc             PlTbUtils' global status- and control signal.
-  --                            Must be set to pltbutils_sc.
+  -- Arguments:
+  --   pltbv, pltbs             PlTbUtils' status- and control variable and
+  --                            -signal.
   --
-  --   show_success_fail        If true, endsim() shows "*** SUCCESS ***", 
+  --   show_success_fail        If true, endsim() shows "*** SUCCESS ***",
   --                            "*** FAIL ***", or "*** NO CHECKS ***".
   --                            Optional, default is false.
   --
@@ -566,8 +579,8 @@ package body pltbutils_func_pkg is
   --                            Optional, default is false.
   --
   -- The testbench should be designed so that all clocks stop when endsim()
-  -- sets the signal stop_sim to '1'. This should stop the simulator.
-  -- In some cases, that doesn't work, then set the force argument to true, which
+  -- sets the signal pltbs.stop_sim to '1'. This should stop the simulator.
+  -- In some cases that doesn't work, then set the force argument to true, which
   -- causes a false assert failure, which should stop the simulator.
   -- Scripts searching transcript logs for errors and failures, should ignore
   -- the failure with "--- FORCE END OF SIMULATION ---" as part of the report.
@@ -579,58 +592,37 @@ package body pltbutils_func_pkg is
   -- of regression tests.
   -- For this reason, the message must be consistent and unique.
   --
-  -- DO NOT MODIFY the messages "--- END OF SIMULATION ---", 
+  -- DO NOT MODIFY the messages "--- END OF SIMULATION ---",
   -- "*** SUCCESS ***", "*** FAIL ***", "*** NO CHECKS ***".
   -- DO NOT OUTPUT IDENTICAL MESSAGES anywhere else.
   --
   -- Examples:
-  -- endsim(pltbutils_sc);
-  -- endsim(pltbutils_sc, true);
-  -- endsim(pltbutils_sc, true, true);
+  -- endsim(pltbv, pltbs);
+  -- endsim(pltbv, pltbs, true);
+  -- endsim(pltbv, pltbs, true, true);
   ----------------------------------------------------------------------------
   procedure endsim(
-    signal   pltbutils_sc       : out pltbutils_sc_t;
-    constant show_success_fail  : in  boolean := false;
-    constant force              : in  boolean := false
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
+    constant show_success_fail  : in    boolean := false;
+    constant force              : in    boolean := false
   ) is
     variable timestamp : time;
-    variable name_len  : integer;
   begin
     timestamp := now;
-    name_len := v_pltbutils_testcase_name_len.value; -- VHDL-2002
-    --name_len : v_pltbutils_sc_testcase_name_len; -- VHDL-1993
     if C_PLTBUTILS_USE_STD_ENDSIM_MSG then
-      -- VHDL-2002:
-      endsim_msg(v_pltbutils_testcase_name.value(1 to name_len),
-        timestamp, v_pltbutils_test_cnt.value, v_pltbutils_chk_cnt.value,
-        v_pltbutils_err_cnt.value, show_success_fail);
-      -- VHDL-1993:
-      --endsim_msg(v_pltbutils_testcase_name(1 to name_len),
-      --  timestamp, v_pltbutils_test_cnt, v_pltbutils_chk_cnt,
-      --  v_pltbutils_err_cnt, show_success_fail);
+      endsim_msg(pltbv.testcase_name(1 to pltbv.testcase_name_len), timestamp,
+        pltbv.test_cnt, pltbv.chk_cnt, pltbv.err_cnt, show_success_fail);
     end if;
     if C_PLTBUTILS_USE_CUSTOM_ENDSIM_MSG then
-      -- VHDL-2002:
-      custom_endsim_msg(v_pltbutils_testcase_name.value(1 to name_len),
-        timestamp, v_pltbutils_test_cnt.value, v_pltbutils_chk_cnt.value,
-        v_pltbutils_err_cnt.value, show_success_fail);
-      -- VHDL-1993:
-      --custom_endsim_msg(v_pltbutils_testcase_name(1 to name_len),
-      --  timestamp, v_pltbutils_test_cnt, v_pltbutils_chk_cnt,
-      --  v_pltbutils_err_cnt, show_success_fail);
+      custom_endsim_msg(pltbv.testcase_name(1 to pltbv.testcase_name_len), timestamp,
+        pltbv.test_cnt, pltbv.chk_cnt, pltbv.err_cnt, show_success_fail);
     end if;
-    printv(v_pltbutils_info, "");
-    -- VHDL-2002:
-    v_pltbutils_stop_sim.set('1');
-    v_pltbutils_test_num.clr;
-    v_pltbutils_test_name.set("END OF SIMULATION");
-    v_pltbutils_test_name_len.set(17);
-    -- VHDL-1993:
-    --v_pltbutils_stop_sim := '1';
-    --v_pltbutils_test_num := 0;
-    --printv(v_pltbutils_test_name, "END OF SIMULATION");
-    --v_pltbutils_test_name_len := 17;
-    pltbutils_sc_update(pltbutils_sc);
+    pltbv.test_num      := 0;
+    printv(pltbv.test_name, "END OF SIMULATION");
+    pltbv.test_name_len := 17;
+    pltbv.stop_sim      := '1';
+    pltbs_update(pltbv, pltbs);
     wait for C_WAIT_BEFORE_STOP_TIME;
     if force then
       if C_PLTBUTILS_USE_STD_STOPSIM then
@@ -649,175 +641,132 @@ package body pltbutils_func_pkg is
   -- procedure starttest(
   --   constant num                : in    integer := -1;
   --   constant name               : in    string;
-  --   signal   pltbutils_sc       : out   pltbutils_sc_t
-  -- ) 
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t
+  -- )
   --
   -- Sets a number (optional) and a name for a test. The number and name will
   -- be printed to the screen, and displayed in the simulator's waveform
-  -- window. 
+  -- window.
   -- The test number and name is also included if there errors reported by the
   -- check() procedure calls.
   --
-  -- Arguments: 
+  -- Arguments:
   --   num                      Test number. Optional, default is to increment
   --                            the current test number.
   --
   --   name                     Test name.
   --
-  --   pltbutils_sc             PlTbUtils' global status- and control signal.
-  --                            Must be set to pltbutils_sc.
+  --   pltbv, pltbs             PlTbUtils' status- and control variable and
+  --                            -signal.
   --
   -- If the test number is omitted, a new test number is automatically
-  -- computed by incrementing the current test number. 
+  -- computed by incrementing the current test number.
   -- Manually setting the test number may make it easier to find the test code
   -- in the testbench code, though.
   --
   -- Examples:
-  -- starttest("Reset test", pltbutils_sc);
-  -- starttest(1, "Reset test", pltbutils_sc);
+  -- starttest("Reset test", pltbv, pltbs);
+  -- starttest(1, "Reset test", pltbv, pltbs);
   ----------------------------------------------------------------------------
   procedure starttest(
     constant num                : in    integer := -1;
     constant name               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
     variable timestamp : time;
   begin
     timestamp := now;
-    -- VHDL-2002:
     if num = -1 then
-      v_pltbutils_test_num.inc;
+      pltbv.test_num := pltbv.test_num + 1;
     else
-      v_pltbutils_test_num.set(num);
+      pltbv.test_num := num;
     end if;
-    v_pltbutils_test_cnt.inc;
-    v_pltbutils_test_name.set(name);
-    v_pltbutils_test_name_len.set(name'length);
-    v_pltbutils_err_cnt_in_test.clr;
-    pltbutils_sc_update(pltbutils_sc);
+    printv(pltbv.test_name, name);
+    pltbv.test_name_len := name'length;
+    pltbv.test_cnt := pltbv.test_cnt + 1;
+    pltbv.chk_cnt_in_test := 0;
+    pltbv.err_cnt_in_test := 0;
+    pltbs_update(pltbv, pltbs);
     if C_PLTBUTILS_USE_STD_STARTTEST_MSG then
-      starttest_msg(v_pltbutils_test_num.value, name, timestamp);
+     starttest_msg(pltbv.test_num, name, timestamp);
     end if;
     if C_PLTBUTILS_USE_CUSTOM_STARTTEST_MSG then
-      custom_starttest_msg(v_pltbutils_test_num.value, name, timestamp);
+     custom_starttest_msg(pltbv.test_num, name, timestamp);
     end if;
-    
-    -- VHDL-1993:
-    --if num = -1 then
-    --  b_pltbutils_test_num := v_pltbutils_test_num + 1;
-    --else
-    --  v_pltbutils_test_num  := num;
-    --end if;
-    --v_pltbutils_test_cnt := v_pltbutils_test_cnt + 1;
-    --printv(v_pltbutils_test_name, name);
-    --v_pltbutils_test_name_len := name'length;
-    --v_pltbutils_err_cnt_in_test := 0;
-    --pltbutils_sc_update(pltbutils_sc);
-    --if C_PLTBUTILS_USE_STD_STARTTEST_MSG then
-    --  starttest_msg(v_pltbutils_test_num, name, timestamp);
-    --end if;
-    --if C_PLTBUTILS_USE_CUSTOM_STARTTEST_MSG then
-    --  custom_starttest_msg(v_pltbutils_test_num, name, timestamp);
-    --end if;
   end procedure starttest;
-  
+
   procedure starttest(
     constant name               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    starttest(-1, name, pltbutils_sc);
+    starttest(-1, name, pltbv, pltbs);
   end procedure starttest;
-  
-  -- Depricated. Will be removed. Use starttest() instead.
-  procedure testname(
-    constant num                : in    integer := -1;
-    constant name               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  ) is
-  begin
-    starttest(num, name, pltbutils_sc);
-  end procedure testname;
-  
-  -- Depricated. Will be removed. Use starttest() instead.
-  procedure testname(
-    constant name               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  ) is
-  begin
-    testname(-1, name, pltbutils_sc);
-  end procedure testname;
-  
+
   ----------------------------------------------------------------------------
   -- endtest
   --
   -- procedure endtest(
-  --   signal   pltbutils_sc       : out   pltbutils_sc_t
-  -- ) 
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t
+  -- )
   --
   -- Prints an end-of-test message to the screen.
   --
-  -- Arguments: 
-  --   pltbutils_sc             PlTbUtils' global status- and control signal.
-  --                            Must be set to pltbutils_sc.
+  -- Arguments:
+  --   pltbv, pltbs             PlTbUtils' status- and control variable and
+  --                            -signal.
   --
   -- Example:
-  -- endtest(pltbutils_sc);
+  -- endtest(pltbv, pltbs);
   ----------------------------------------------------------------------------
   procedure endtest(
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
     variable timestamp : time;
-    variable v_name_len : integer;
   begin
     timestamp := now;
-    -- Uncommented for VHDL-2002 Protected types, otherwise commented:
-    v_name_len := v_pltbutils_test_name_len.value; -- VHDL-2002
     if C_PLTBUTILS_USE_STD_ENDTEST_MSG then
-      endtest_msg(v_pltbutils_test_num.value, v_pltbutils_test_name.value(1 to v_name_len),
-        timestamp, v_pltbutils_chk_cnt_in_test.value, v_pltbutils_err_cnt_in_test.value);
-    end if;  
+      endtest_msg(pltbv.test_num, pltbv.test_name(1 to pltbv.test_name_len),
+        timestamp, pltbv.chk_cnt_in_test, pltbv.err_cnt_in_test);
+    end if;
     if C_PLTBUTILS_USE_CUSTOM_ENDTEST_MSG then
-      custom_endtest_msg(v_pltbutils_test_num.value, v_pltbutils_test_name.value(1 to v_name_len),
-        timestamp, v_pltbutils_chk_cnt_in_test.value, v_pltbutils_err_cnt_in_test.value);
-    end if;  
-    -- Uncommented for not using VHDL-2002 Protected Types, otherwise commented:
-    --name_len := v_pltbutils_test_name_len; -- VHDL-1993
-    --if C_PLTBUTILS_USE_STD_ENDTEST_MSG then
-    --  endtest_msg(v_pltbutils_test_num, v_pltbutils_test_name(1 to v_name_len),
-    --    timestamp, v_pltbutils_chk_cnt_in_test, v_pltbutils_err_cnt_in_test);
-    --end if;  
-    --if C_PLTBUTILS_USE_CUSTOM_ENDTEST_MSG then
-    --  custom_endtest_msg(v_pltbutils_test_num, v_pltbutils_test_name(1 to v_name_len),
-    --    timestamp, v_pltbutils_chk_cnt_in_test, v_pltbutils_err_cnt_in_test);
-    --end if;  
-
-    printv(v_pltbutils_test_name, " ");
-    pltbutils_sc_update(pltbutils_sc);
+      custom_endtest_msg(pltbv.test_num, pltbv.test_name(1 to pltbv.test_name_len),
+        timestamp, pltbv.chk_cnt_in_test, pltbv.err_cnt_in_test);
+    end if;
+    printv(pltbv.test_name, " ");
+    pltbv.test_name_len := 1;
+    pltbs_update(pltbv, pltbs);
   end procedure endtest;
-  
+
   ----------------------------------------------------------------------------
   -- print printv print2
   --
-  -- procedure print(   
-  --   signal   s                  : out   string;
-  --   constant txt                : in    string
-  -- ) 
-  --
-  -- procedure print(   
-  --   constant active             : in    boolean;
-  --   signal   s                  : out   string;
-  --   constant txt                : in    string
-  -- ) 
-  --
   -- procedure print(
-  --   signal   pltbutils_sc       : out   pltbutils_sc_t;
+  --   signal   s                  : out   string;
   --   constant txt                : in    string
   -- )
   --
   -- procedure print(
   --   constant active             : in    boolean;
-  --   signal   pltbutils_sc       : out   pltbutils_sc_t;
+  --   signal   s                  : out   string;
+  --   constant txt                : in    string
+  -- )
+  --
+  -- procedure print(
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t;
+  --   constant txt                : in    string
+  -- )
+  --
+  -- procedure print(
+  --   constant active             : in    boolean;
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t;
   --   constant txt                : in    string
   -- )
   --
@@ -832,36 +781,37 @@ package body pltbutils_func_pkg is
   --   constant txt                : in    string
   -- )
   --
-  -- procedure print2(    
+  -- procedure print2(
   --   signal   s                  : out   string;
   --   constant txt                : in    string
   -- )
   --
-  -- procedure print2(    
+  -- procedure print2(
   --   constant active             : in    boolean;
   --   signal   s                  : out   string;
   --   constant txt                : in    string
   -- )
   --
-  -- procedure print2(    
-  --   signal   pltbutils          : out   pltbutils_sc_t;
+  -- procedure print2(
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t;
   --   constant txt                : in    string
   -- )
   --
-  -- procedure print2(    
+  -- procedure print2(
   --   constant active             : in    boolean;
-  --   signal   pltbutils          : out   pltbutils_sc_t;
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t;
   --   constant txt                : in    string
   -- )
   --
   -- print() prints text messages to a signal for viewing in the simulator's
   -- waveform window. printv() does the same thing, but to a variable instead.
-  -- print2() prints both to a signal and to the transcript window. 
-  -- The type of the output can be string or pltbutils_sc_t.
-  -- If the type is pltbutils_sc_t, the name can be no other than pltbutils_sc.
+  -- print2() prints both to a signal and to the transcript window.
+  -- The type of the output can be string or pltbv_t+pltbs_t.
   --
-  -- Arguments: 
-  --   s                        Signal or variable of type string to be 
+  -- Arguments:
+  --   s                        Signal or variable of type string to be
   --                            printed to.
   --
   --   txt                      The text.
@@ -869,21 +819,20 @@ package body pltbutils_func_pkg is
   --   active                   The text is only printed if active is true.
   --                            Useful for debug switches, etc.
   --
-  --   pltbutils_sc             PlTbUtils' global status- and control signal 
-  --                            of type pltbutils_sc_t. 
-  --                            The name must be no other than pltbutils_sc.
+  --   pltbv, pltbs             PlTbUtils' status- and control variable and
+  --                            -signal.
   --
-  -- If the string txt  is longer than the signal s, the text will be truncated.
-  -- If txt  is shorter, s will be padded with spaces.
+  -- If the string txt is longer than the signal s, the text will be truncated.
+  -- If txt is shorter, s will be padded with spaces.
   --
   -- Examples:
   -- print(msg, "Hello, world"); -- Prints to signal msg
-  -- print(G_DEBUG, msg, "Hello, world"); -- Prints to signal msg if 
+  -- print(G_DEBUG, msg, "Hello, world"); -- Prints to signal msg if
   --                                      -- generic G_DEBUG is true
   -- printv(v_msg, "Hello, world"); -- Prints to variable msg
-  -- print(pltbutils_sc, "Hello, world"); -- Prints to "info" in waveform window
-  -- print2(msg, "Hello, world"); -- Prints to signal and transcript window 
-  -- print(pltbutils_sc, "Hello, world"); -- Prints to "info" in waveform and
+  -- print(pltbv, pltbs, "Hello, world"); -- Prints to "info" in waveform window
+  -- print2(msg, "Hello, world"); -- Prints to signal and transcript window
+  -- print2(pltbv, pltbs, "Hello, world"); -- Prints to "info" in waveform and
   --                                      -- transcript windows
   ----------------------------------------------------------------------------
   procedure print(
@@ -904,7 +853,7 @@ package body pltbutils_func_pkg is
       end loop;
     end if;
   end procedure print;
-  
+
   procedure print(
     signal   s                  : out   string;
     constant txt                : in    string
@@ -912,7 +861,7 @@ package body pltbutils_func_pkg is
   begin
     print(true, s, txt);
   end procedure print;
-  
+
   procedure printv(
     constant active             : in    boolean;
     variable s                  : out   string;
@@ -931,66 +880,48 @@ package body pltbutils_func_pkg is
       end loop;
     end if;
   end procedure printv;
-  
+
   procedure printv(
     variable s                  : out   string;
     constant txt                : in    string
   ) is
   begin
     printv(true, s, txt);
-  end procedure printv;  
-  
-  -- VHDL-2002:
-  procedure printv(
-    constant active             : in    boolean;
-    variable s                  : inout pltbutils_p_string_t;
-    constant txt                : in    string
-  ) is
-    variable j : positive := txt 'low;
-  begin
-    if active then
-      s.set(txt);
-    end if;
   end procedure printv;
-  
-  procedure printv(
-    variable s                  : inout pltbutils_p_string_t;
-    constant txt                : in    string
-  ) is
-  begin
-    printv(true, s, txt);
-  end procedure printv;  
 
-  -- Print to info element in pltbutils_sc, which shows up in waveform window
+  -- Print to info element in pltbv/pltbs, which shows up in waveform window
   procedure print(
     constant active             : in    boolean;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant txt                : in    string
   ) is
     variable j : positive := txt 'low;
   begin
     if active then
-      printv(v_pltbutils_info, txt );
-      pltbutils_sc_update(pltbutils_sc);
+      printv(pltbv.info, txt);
+      pltbv.info_len := txt'length;
+      pltbs_update(pltbv, pltbs);
     end if;
   end procedure print;
 
   procedure print(
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant txt                : in    string
   ) is
   begin
-    print(true, pltbutils_sc, txt);
-  end procedure print;  
-  
+    print(true, pltbv, pltbs, txt);
+  end procedure print;
+
   procedure print2(
     constant active             : in    boolean;
     signal   s                  : out   string;
     constant txt                : in    string
   ) is
   begin
-    if active then 
-      print(s, txt );
+    if active then
+      print(s, txt);
       print(txt);
     end if;
   end procedure print2;
@@ -1001,25 +932,27 @@ package body pltbutils_func_pkg is
   ) is
   begin
     print(true, s, txt);
-  end procedure print2;  
-  
-  procedure print2(
-    constant active             : in    boolean;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
-    constant txt                : in    string
-  ) is
-  begin
-    print(pltbutils_sc, txt );
-    print(txt);
   end procedure print2;
 
   procedure print2(
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    constant active             : in    boolean;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant txt                : in    string
   ) is
   begin
-    print(true, pltbutils_sc, txt);
-  end procedure print2;  
+    print(active, pltbv, pltbs, txt);
+    print(active, txt);
+  end procedure print2;
+
+  procedure print2(
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
+    constant txt                : in    string
+  ) is
+  begin
+    print(true, pltbv, pltbs, txt);
+  end procedure print2;
 
   ----------------------------------------------------------------------------
   -- waitclks
@@ -1027,7 +960,8 @@ package body pltbutils_func_pkg is
   -- procedure waitclks(
   --   constant n                  : in    natural;
   --   signal   clk                : in    std_logic;
-  --   signal   pltbutils_sc       : out   pltbutils_sc_t;
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t;
   --   constant falling            : in    boolean := false;
   --   constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   -- )
@@ -1036,29 +970,30 @@ package body pltbutils_func_pkg is
   -- Or, to be more precise, a specified number of specified clock edges of
   -- the specified clock.
   --
-  -- Arguments: 
+  -- Arguments:
   --   n                        Number of rising or falling clock edges to wait.
   --
   --   clk                      The clock to wait for.
   --
-  --   pltbutils_sc             PlTbUtils' global status- and control signal.
-  --                            Must be set to pltbutils_sc.
+  --   pltbv, pltbs             PlTbUtils' status- and control variable and
+  --                            -signal.
   --
   --   falling                  If true, waits for falling edges, otherwise
   --                            rising edges. Optional, default is false.
   --
   --   timeout                  Timeout time, in case the clock is not working.
-  --                            Optional, default is C_PLTBUTILS_TIMEOUT.  
+  --                            Optional, default is C_PLTBUTILS_TIMEOUT.
   --
   -- Examples:
-  -- waitclks(5, sys_clk, pltbutils_sc);
-  -- waitclks(5, sys_clk, pltbutils_sc, true);
-  -- waitclks(5, sys_clk, pltbutils_sc, true, 1 ms);
+  -- waitclks(5, sys_clk, pltbv, pltbs);
+  -- waitclks(5, sys_clk, pltbv, pltbs true);
+  -- waitclks(5, sys_clk, pltbv, pltbs, true, 1 ms);
   ----------------------------------------------------------------------------
   procedure waitclks(
     constant n                  : in    natural;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
@@ -1075,10 +1010,10 @@ package body pltbutils_func_pkg is
       i := i - 1;
     end loop;
     if now >= v_timeout_time then
-      pltbutils_error("waitclks() timeout", pltbutils_sc);
+      pltbutils_error("waitclks() timeout", pltbv, pltbs);
     end if;
   end procedure waitclks;
-    
+
   ----------------------------------------------------------------------------
   -- waitsig
   --
@@ -1086,7 +1021,8 @@ package body pltbutils_func_pkg is
   --   signal   s                  : in    integer|std_logic|std_logic_vector|unsigned|signed;
   --   constant value              : in    integer|std_logic|std_logic_vector|unsigned|signed;
   --   signal   clk                : in    std_logic;
-  --   signal   pltbutils_sc       : out   pltbutils_sc_t;
+  --   variable pltbv              : inout pltbv_t;
+  --   signal   pltbs              : out   pltbs_t;
   --   constant falling            : in    boolean := false;
   --   constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   -- )
@@ -1094,9 +1030,9 @@ package body pltbutils_func_pkg is
   -- Waits until a signal has reached a specified value after specified clock
   -- edge.
   --
-  -- Arguments: 
+  -- Arguments:
   --   s                        The signal to test.
-  --                            Supported types: integer, std_logic, 
+  --                            Supported types: integer, std_logic,
   --                            std_logic_vector, unsigned, signed.
   --
   --   value                    Value to wait for.
@@ -1104,25 +1040,26 @@ package body pltbutils_func_pkg is
   --
   --   clk                      The clock.
   --
-  --   pltbutils_sc             PlTbUtils' global status- and control signal.
-  --                            Must be set to pltbutils_sc.
+  --   pltbv, pltbs             PlTbUtils' status- and control variable and
+  --                            -signal.
   --
   --   falling                  If true, waits for falling edges, otherwise
   --                            rising edges. Optional, default is false.
   --
   --   timeout                  Timeout time, in case the clock is not working.
-  --                            Optional, default is C_PLTBUTILS_TIMEOUT.  
+  --                            Optional, default is C_PLTBUTILS_TIMEOUT.
   --
   -- Examples:
-  -- waitsig(wr_en, '1', sys_clk, pltbutils_sc);
-  -- waitsig(rd_en,   1, sys_clk, pltbutils_sc, true);
-  -- waitclks(full, '1', sys_clk, pltbutils_sc, true, 1 ms);
-  ---------------------------------------------------------------------------- 
+  -- waitsig(wr_en, '1', sys_clk, pltbv, pltbs);
+  -- waitsig(rd_en,   1, sys_clk, pltbv, pltbs, true);
+  -- waitclks(full, '1', sys_clk, pltbv, pltbs, true, 1 ms);
+  ----------------------------------------------------------------------------
   procedure waitsig(
     signal   s                  : in    integer;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
@@ -1130,11 +1067,11 @@ package body pltbutils_func_pkg is
   begin
     v_timeout_time := now + timeout;
     l1 : loop
-      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      waitclks(1, clk, pltbv, pltbs, falling, timeout);
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      pltbutils_error("waitsig() timeout", pltbutils_sc);
+      pltbutils_error("waitsig() timeout", pltbv, pltbs);
     end if;
   end procedure waitsig;
 
@@ -1142,7 +1079,8 @@ package body pltbutils_func_pkg is
     signal   s                  : in    std_logic;
     constant value              : in    std_logic;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
@@ -1150,19 +1088,20 @@ package body pltbutils_func_pkg is
   begin
     v_timeout_time := now + timeout;
     l1 : loop
-      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      waitclks(1, clk, pltbv, pltbs, falling, timeout);
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      pltbutils_error("waitsig() timeout", pltbutils_sc);
+      pltbutils_error("waitsig() timeout", pltbv, pltbs);
     end if;
   end procedure waitsig;
-  
+
   procedure waitsig(
     signal   s                  : in    std_logic;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
@@ -1175,18 +1114,18 @@ package body pltbutils_func_pkg is
       when others => v_value := 'X';
     end case;
     if v_value /= 'X' then
-      waitsig(s, v_value, clk, 
-              pltbutils_sc, falling, timeout);
+      waitsig(s, v_value, clk, pltbv, pltbs, falling, timeout);
     else
-      pltbutils_error("waitsig() timeout", pltbutils_sc);
+      pltbutils_error("waitsig() timeout", pltbv, pltbs);
     end if;
-  end procedure waitsig;  
-  
+  end procedure waitsig;
+
   procedure waitsig(
     signal   s                  : in    std_logic_vector;
     constant value              : in    std_logic_vector;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
@@ -1194,33 +1133,35 @@ package body pltbutils_func_pkg is
   begin
     v_timeout_time := now + timeout;
     l1 : loop
-      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      waitclks(1, clk, pltbv, pltbs, falling, timeout);
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      pltbutils_error("waitsig() timeout", pltbutils_sc);
+      pltbutils_error("waitsig() timeout", pltbv, pltbs);
     end if;
-  end procedure waitsig;  
+  end procedure waitsig;
 
   procedure waitsig(
     signal   s                  : in    std_logic_vector;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
     variable v_timeout_time     : time;
   begin
-    waitsig(s, std_logic_vector(to_unsigned(value, s'length)), clk, 
-            pltbutils_sc, falling, timeout);
-  end procedure waitsig;  
-  
+    waitsig(s, std_logic_vector(to_unsigned(value, s'length)), clk,
+            pltbv, pltbs, falling, timeout);
+  end procedure waitsig;
+
   procedure waitsig(
     signal   s                  : in    unsigned;
     constant value              : in    unsigned;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
@@ -1228,33 +1169,35 @@ package body pltbutils_func_pkg is
   begin
     v_timeout_time := now + timeout;
     l1 : loop
-      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      waitclks(1, clk, pltbv, pltbs, falling, timeout);
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      pltbutils_error("waitsig() timeout", pltbutils_sc);
+      pltbutils_error("waitsig() timeout", pltbv, pltbs);
     end if;
-  end procedure waitsig;  
-  
+  end procedure waitsig;
+
   procedure waitsig(
     signal   s                  : in    unsigned;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
     variable v_timeout_time     : time;
   begin
-    waitsig(s, to_unsigned(value, s'length), clk, 
-            pltbutils_sc, falling, timeout);
-  end procedure waitsig;  
- 
+    waitsig(s, to_unsigned(value, s'length), clk,
+            pltbv, pltbs, falling, timeout);
+  end procedure waitsig;
+
   procedure waitsig(
     signal   s                  : in    signed;
     constant value              : in    signed;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
@@ -1262,73 +1205,77 @@ package body pltbutils_func_pkg is
   begin
     v_timeout_time := now + timeout;
     l1 : loop
-      waitclks(1, clk, pltbutils_sc, falling, timeout); 
+      waitclks(1, clk, pltbv, pltbs, falling, timeout);
       exit l1 when s = value or now >= v_timeout_time;
     end loop;
     if now >= v_timeout_time then
-      pltbutils_error("waitsig() timeout", pltbutils_sc);
+      pltbutils_error("waitsig() timeout", pltbv, pltbs);
     end if;
-  end procedure waitsig;  
+  end procedure waitsig;
 
   procedure waitsig(
     signal   s                  : in    signed;
     constant value              : in    integer;
     signal   clk                : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   ) is
     variable v_timeout_time     : time;
   begin
-    waitsig(s, to_signed(value, s'length), clk, 
-            pltbutils_sc, falling, timeout);
-  end procedure waitsig;  
- 
+    waitsig(s, to_signed(value, s'length), clk,
+            pltbv, pltbs, falling, timeout);
+  end procedure waitsig;
+
   ----------------------------------------------------------------------------
   -- check
   --
   -- procedure check(
-  --  constant rpt              : in    string;
-  --  constant actual           : in    integer|std_logic|std_logic_vector|unsigned|signed;
-  --  constant expected         : in    integer|std_logic|std_logic_vector|unsigned|signed;
-  --  signal   pltbutils_sc     : out   pltbutils_sc_t
-  --  )
+  --   constant rpt             : in    string;
+  --   constant actual          : in    integer|std_logic|std_logic_vector|unsigned|signed;
+  --   constant expected        : in    integer|std_logic|std_logic_vector|unsigned|signed;
+  --   variable pltbv           : inout pltbv_t;
+  --   signal   pltbs           : out   pltbs_t
+  -- )
   --
   -- procedure check(
-  --  constant rpt              : in    string;
-  --  constant actual           : in    std_logic_vector;
-  --  constant expected         : in    std_logic_vector;
-  --  constant mask             : in    std_logic_vector;
-  --  signal   pltbutils_sc     : out   pltbutils_sc_t
-  --  )
+  --   constant rpt             : in    string;
+  --   constant actual          : in    std_logic_vector;
+  --   constant expected        : in    std_logic_vector;
+  --   constant mask            : in    std_logic_vector;
+  --   variable pltbv           : inout pltbv_t;
+  --   signal   pltbs           : out   pltbs_t
+  -- )
   --
   -- procedure check(
-  --   constant rpt            : in    string;
-  --   constant expr           : in    boolean;
-  --   signal   pltbutils_sc   : out   pltbutils_sc_t
+  --   constant rpt             : in    string;
+  --   constant expr            : in    boolean;
+  --   variable pltbv           : inout pltbv_t;
+  --   signal   pltbs           : out   pltbs_t
   -- )
   --
   -- Checks that the value of a signal or variable is equal to expected.
   -- If not equal, displays an error message and increments the error counter.
   --
-  -- Arguments: 
-  --   rpt                      Report message to be displayed in case of 
-  --                            mismatch. 
+  -- Arguments:
+  --   rpt                      Report message to be displayed in case of
+  --                            mismatch.
   --                            It is recommended that the message is unique
   --                            and that it contains the name of the signal
-  --                            or variable being checked. 
-  --                            The message should NOT contain the expected 
-  --                            value, becase check() prints that 
+  --                            or variable being checked.
+  --                            The message should NOT contain the expected
+  --                            value, becase check() prints that
   --                            automatically.
   --
   --   actual                   The signal or variable to be checked.
-  --                            Supported types: integer, std_logic, 
+  --                            Supported types: integer, std_logic,
   --                            std_logic_vector, unsigned, signed.
   --
-  --   expected                 Expected value. 
+  --   expected                 Expected value.
   --                            Same type as data or integer.
   --
-  --   mask                     Bit mask and:ed to data and expected 
+  --   mask                     Bit mask and:ed to data and expected
   --                            before comparison.
   --                            Optional if data is std_logic_vector.
   --                            Not allowed for other types.
@@ -1336,26 +1283,27 @@ package body pltbutils_func_pkg is
   --   expr                     boolean expression for checking.
   --                            This makes it possible to check any kind of
   --                            expresion, not just equality.
-  -- 
-  --   pltbutils_sc             PlTbUtils' global status- and control signal.
-  --                            Must be set to the name pltbutils_sc.
+  --
+  --   pltbv, pltbs             PlTbUtils' status- and control variable and
+  --                            -signal.
   --
   -- Examples:
-  -- check("dat_o after reset", dat_o, 0, pltbutils_sc);
+  -- check("dat_o after reset", dat_o, 0, pltbv, pltbs);
   -- -- With mask:
-  -- check("Status field in reg_o after start", reg_o, x"01", x"03", pltbutils_sc);
+  -- check("Status field in reg_o after start", reg_o, x"01", x"03", pltbv, pltbs);
   -- -- Boolean expression:
-  -- check("Counter after data burst", cnt_o > 10, pltbutils_sc);
+  -- check("Counter after data burst", cnt_o > 10, pltbv, pltbs);
   ----------------------------------------------------------------------------
   -- check integer
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    integer;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, actual = expected, str(actual), str(expected), "", pltbutils_sc);
+    check(rpt, actual = expected, str(actual), str(expected), "", pltbv, pltbs);
   end procedure check;
 
   -- check std_logic
@@ -1363,59 +1311,62 @@ package body pltbutils_func_pkg is
     constant rpt                : in    string;
     constant actual             : in    std_logic;
     constant expected           : in    std_logic;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, actual = expected, str(actual), str(expected), "", pltbutils_sc);
+    check(rpt, actual = expected, str(actual), str(expected), "", pltbv, pltbs);
   end procedure check;
-  
+
   -- check std_logic against integer
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
-   -- variable v_expected : std_logic;
-    --variable equal : boolean;   
   begin
     check(rpt, ((actual = '0' and expected = 0) or (actual = '1' and expected = 1)),
-          str(actual), str(expected), "", pltbutils_sc);
-  end procedure check;  
-        
+          str(actual), str(expected), "", pltbv, pltbs);
+  end procedure check;
+
   -- check std_logic_vector
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic_vector;
     constant expected           : in    std_logic_vector;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, actual = expected, hxstr(actual, "0x"), hxstr(expected, "0x"), "", pltbutils_sc);
+    check(rpt, actual = expected, hxstr(actual, "0x"), hxstr(expected, "0x"), "", pltbv, pltbs);
   end procedure check;
-  
+
   -- check std_logic_vector with mask
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic_vector;
     constant expected           : in    std_logic_vector;
     constant mask               : in    std_logic_vector;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
     check(rpt, (actual and mask) = (expected and mask),
-          hxstr(actual, "0x"), hxstr(expected, "0x"), hxstr(mask, "0x"), pltbutils_sc);
-  end procedure check;  
-  
+          hxstr(actual, "0x"), hxstr(expected, "0x"), hxstr(mask, "0x"), pltbv, pltbs);
+  end procedure check;
+
   -- check std_logic_vector against integer
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    std_logic_vector;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, actual, std_logic_vector(to_signed(expected, actual'length)), pltbutils_sc);
+    check(rpt, actual, std_logic_vector(to_signed(expected, actual'length)), pltbv, pltbs);
   end procedure check;
 
   -- check std_logic_vector with mask against integer
@@ -1424,45 +1375,49 @@ package body pltbutils_func_pkg is
     constant actual             : in    std_logic_vector;
     constant expected           : in    integer;
     constant mask               : in    std_logic_vector;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, actual, std_logic_vector(to_signed(expected, actual'length)), mask, pltbutils_sc);
+    check(rpt, actual, std_logic_vector(to_signed(expected, actual'length)), mask, pltbv, pltbs);
   end procedure check;
-  
+
   -- check unsigned
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    unsigned;
     constant expected           : in    unsigned;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, actual = expected, hxstr(actual, "0x"), hxstr(expected, "0x"), "", pltbutils_sc);
+    check(rpt, actual = expected, hxstr(actual, "0x"), hxstr(expected, "0x"), "", pltbv, pltbs);
   end procedure check;
-  
+
   -- check unsigned against integer
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    unsigned;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, actual, to_unsigned(expected, actual'length), pltbutils_sc);
-  end procedure check;  
-  
+    check(rpt, actual, to_unsigned(expected, actual'length), pltbv, pltbs);
+  end procedure check;
+
   -- check signed
   procedure check(
     constant rpt                : in    string;
     constant actual             : in    signed;
     constant expected           : in    signed;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, actual = expected, hxstr(actual, "0x"), hxstr(expected, "0x"), "", pltbutils_sc);    
+    check(rpt, actual = expected, hxstr(actual, "0x"), hxstr(expected, "0x"), "", pltbv, pltbs);
   end procedure check;
-  
+
   -- check signed against integer
   -- TODO: find the bug reported by tb_pltbutils when expected  is negative (-1):
   --       ** Error: (vsim-86) numstd_conv_unsigned_nu: NATURAL arg value is negative (-1)
@@ -1470,70 +1425,56 @@ package body pltbutils_func_pkg is
     constant rpt                : in    string;
     constant actual             : in    signed;
     constant expected           : in    integer;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, actual, to_signed(expected, actual'length), pltbutils_sc);
-  end procedure check;  
-  
+    check(rpt, actual, to_signed(expected, actual'length), pltbv, pltbs);
+  end procedure check;
+
   -- check with boolean expression
   -- Check signal or variable with a boolean expression as argument C_EXPR.
   -- This allowes any kind of check.
   procedure check(
     constant rpt                : in    string;
     constant expr               : in    boolean;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
   begin
-    check(rpt, expr, "", "", "", pltbutils_sc);    
-  end procedure check;  
-  
+    check(rpt, expr, "", "", "", pltbv, pltbs);
+  end procedure check;
+
   procedure check(
     constant rpt                : in    string;
     constant expr               : in    boolean;
     constant actual             : in    string;
     constant expected           : in    string;
     constant mask               : in    string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
   ) is
-    variable v_test_name_len    : integer := 1;
-    variable actual_str         : string(1 to 32) := (others => ' ');
-    variable actual_str_len     : integer := 1;
-    variable expected_str       : string(1 to 32) := (others => ' ');
-    variable expected_str_len   : integer := 1;
-    variable mask_str           : string(1 to 32) := (others => ' ');
-    variable mask_str_len       : integer := 1;
+    variable timestamp          : time;
   begin
-    v_pltbutils_chk_cnt.inc; -- VHDL-2002
-    --v_pltbutils_chk_cnt := v_pltbutils_chk_cnt + 1; -- VHDL-1993
+    timestamp := now;
+    pltbv.chk_cnt := pltbv.chk_cnt + 1;
+    pltbv.chk_cnt_in_test := pltbv.chk_cnt_in_test + 1;
     if not expr then
-      v_pltbutils_err_cnt.inc; -- VHDL-2002
-      v_pltbutils_err_cnt_in_test.inc; -- VHDL-2002
-      --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1; -- VHDL-1993
-      --v_pltbutils_err_cnt_in_test := v_pltbutils_err_cnt_in_test + 1; -- VHDL-1993
+      pltbv.err_cnt := pltbv.err_cnt + 1;
+      pltbv.err_cnt_in_test := pltbv.err_cnt_in_test + 1;
     end if;
-    v_test_name_len := v_pltbutils_test_name_len.value;
+    pltbs_update(pltbv, pltbs);
     if C_PLTBUTILS_USE_STD_CHECK_MSG then
-      check_msg(rpt, expr, actual, expected, mask, v_pltbutils_test_num.value,
-        v_pltbutils_test_name.value(1 to v_test_name_len), v_pltbutils_chk_cnt.value, 
-        v_pltbutils_err_cnt_in_test.value); -- VHDL-2002
-      --check_msg(rpt, actual, expected, mask, v_pltbutils_test_num,
-      --  v_pltbutils_test_name(1 to v_test_name_len), v_pltbutils_chk_cnt,
-      --  v_pltbutils_err_cnt_in_test); -- VHDL-2002
+      check_msg(rpt, timestamp, expr, actual, expected, mask, pltbv.test_num,
+        pltbv.test_name(1 to pltbv.test_name_len), pltbv.chk_cnt, pltbv.err_cnt_in_test);
     end if;
     if C_PLTBUTILS_USE_CUSTOM_CHECK_MSG then
-      -- VHDL-2002:
-      custom_check_msg(rpt, expr, actual, expected, mask, v_pltbutils_test_num.value,
-        v_pltbutils_test_name.value(1 to v_test_name_len), v_pltbutils_chk_cnt.value, 
-        v_pltbutils_err_cnt_in_test.value);
-      -- VHDL-1993:
-      --custom_check_msg(rpt, actual, expected, mask, v_pltbutils_test_num,
-      --  v_pltbutils_test_name(1 to v_test_name_len), v_pltbutils_chk_cnt,
-      --  v_pltbutils_err_cnt_in_test);
+      custom_check_msg(rpt, timestamp, expr, actual, expected, mask, pltbv.test_num,
+        pltbv.test_name(1 to pltbv.test_name_len), pltbv.chk_cnt, pltbv.err_cnt_in_test);
     end if;
-    pltbutils_sc_update(pltbutils_sc);
+    pltbs_update(pltbv, pltbs);
   end procedure check;
-  
+
   ----------------------------------------------------------------------------
   -- to_ascending
   --
@@ -1613,7 +1554,7 @@ package body pltbutils_func_pkg is
     end loop;
     return r;
   end function to_descending;
-  
+
   function to_descending(
     constant s                  : unsigned
   ) return unsigned is
@@ -1635,7 +1576,7 @@ package body pltbutils_func_pkg is
     end loop;
     return r;
   end function to_descending;
-  
+
   ----------------------------------------------------------------------------
   -- hxstr
   -- function hxstr(
@@ -1659,7 +1600,7 @@ package body pltbutils_func_pkg is
   -- Converts a signal to a string in hexadecimal format.
   -- An optional prefix can be specified, e.g. "0x".
   --
-  -- The signal can have ascending range ( "to-range" ) or descending range 
+  -- The signal can have ascending range ( "to-range" ) or descending range
   -- ("downto-range").
   --
   -- hxstr is a wrapper function for hstr in txt_util.
@@ -1677,7 +1618,7 @@ package body pltbutils_func_pkg is
   begin
     return prefix & hstr(to_descending(s)) & postfix;
   end function hxstr;
-  
+
   function hxstr(
     constant s                  : unsigned;
     constant prefix             : string := "";
@@ -1686,7 +1627,7 @@ package body pltbutils_func_pkg is
   begin
     return prefix & hstr(to_descending(std_logic_vector(s))) & postfix;
   end function hxstr;
-  
+
   function hxstr(
     constant s                  : signed;
     constant prefix             : string := "";
@@ -1695,32 +1636,54 @@ package body pltbutils_func_pkg is
   begin
     return prefix & hstr(to_descending(std_logic_vector(s))) & postfix;
   end function hxstr;
-  
+
   ----------------------------------------------------------------------------
   -- pltbutils internal procedure(s), called from other pltbutils procedures.
   -- Do not to call this/these from user's code.
   -- This/these procedures are undocumented in the specification on purpose.
   ----------------------------------------------------------------------------
-  procedure pltbutils_sc_update(
-              signal pltbutils_sc : out pltbutils_sc_t
-            ) is
+  procedure pltbs_update(
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  ) is
   begin
-    -- VHDL-2002:
-    pltbutils_sc.test_num   <= v_pltbutils_test_num.value;
-    print(pltbutils_sc.test_name, v_pltbutils_test_name.value);
-    print(pltbutils_sc.info, v_pltbutils_info.value);
-    pltbutils_sc.chk_cnt    <= v_pltbutils_chk_cnt.value;
-    pltbutils_sc.err_cnt    <= v_pltbutils_err_cnt.value;
-    pltbutils_sc.stop_sim   <= v_pltbutils_stop_sim.value;    
-    -- VHDL-1993:
-    --pltbutils_sc.test_num   <= v_pltbutils_test_num;
-    --print(pltbutils_sc.test_name, v_pltbutils_test_name);
-    --print(pltbutils_sc.info, v_pltbutils_info);
-    --pltbutils_sc.chk_cnt    <= v_pltbutils_chk_cnt;
-    --pltbutils_sc.err_cnt    <= v_pltbutils_err_cnt;
-    --pltbutils_sc.stop_sim   <= v_pltbutils_stop_sim;
-  end procedure pltbutils_sc_update;
-  
+    pltbs.test_num  <= pltbv.test_num;
+    print(pltbs.test_name, pltbv.test_name);
+    print(pltbs.info, pltbv.info);
+    pltbs.chk_cnt   <= pltbv.chk_cnt;
+    pltbs.err_cnt   <= pltbv.err_cnt;
+    pltbs.stop_sim  <= pltbv.stop_sim;
+  end procedure pltbs_update;
+
+  procedure pltbutils_error(
+    constant rpt                : in string;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  ) is
+  begin
+    pltbv.err_cnt := pltbv.err_cnt + 1;
+    pltbv.err_cnt_in_test := pltbv.err_cnt_in_test + 1;
+    pltbs_update(pltbv, pltbs);
+    if C_PLTBUTILS_USE_STD_ERROR_MSG then
+      error_msg(rpt, now, pltbv.test_num,
+        pltbv.test_name(1 to pltbv.test_name_len), pltbv.err_cnt_in_test);
+    end if;
+    if C_PLTBUTILS_USE_CUSTOM_ERROR_MSG then
+      custom_error_msg(rpt, now, pltbv.test_num,
+        pltbv.test_name(1 to pltbv.test_name_len), pltbv.err_cnt_in_test);
+    end if;
+  end procedure pltbutils_error;
+
+  procedure stopsim(
+    constant timestamp          : in time
+  ) is
+  begin
+    assert false
+    report "--- FORCE END OF SIMULATION ---" &
+           " (ignore this false failure message, it's not a real failure)"
+    severity failure;
+  end procedure stopsim;
+
   procedure startsim_msg(
     constant testcase_name      : in string;
     constant timestamp          : in time
@@ -1742,7 +1705,7 @@ package body pltbutils_func_pkg is
     variable l : line;
   begin
     print(lf & "--- END OF SIMULATION ---");
-    print("Note: the results presented below are based on the PlTbUtil's check() procedure calls."); 
+    print("Note: the results presented below are based on the PlTbUtil's check() procedure calls.");
     print("      The design may contain more errors, for which there are no check() calls.");
     write(l, timestamp, right, 14);
     writeline(output, l);
@@ -1763,18 +1726,18 @@ package body pltbutils_func_pkg is
       else
         print("*** NO CHECKS ***");
       end if;
-    end if;    
+    end if;
   end procedure endsim_msg;
-  
+
   procedure starttest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
     constant timestamp          : in time
   ) is
   begin
-    print(lf & "Test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");    
+    print(lf & "Test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
   end procedure starttest_msg;
-  
+
   procedure endtest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
@@ -1785,14 +1748,15 @@ package body pltbutils_func_pkg is
   begin
     print("Done with test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
   end procedure endtest_msg;
-  
+
   procedure check_msg(
     constant rpt                : in string;
-    constant expr               : in boolean;    
+    constant timestamp          : in time;
+    constant expr               : in boolean;
     constant actual             : in string;
     constant expected           : in string;
     constant mask               : in string;
-    constant test_num           : in integer;      
+    constant test_num           : in integer;
     constant test_name          : in string;
     constant check_num          : in integer;
     constant err_cnt_in_test    : in integer
@@ -1810,65 +1774,29 @@ package body pltbutils_func_pkg is
       if actual /= "" then
         actual_str_len := 8 + actual'length;
         actual_str(1 to actual_str_len) := " Actual=" & actual;
-      end if;        
+      end if;
       if expected /= "" then
         expected_str_len := 10 + expected'length;
         expected_str(1 to expected_str_len) := " Expected=" & expected;
-      end if;        
+      end if;
       if mask /= "" then
         mask_str_len := 6 + mask'length;
         mask_str(1 to mask_str_len) := " Mask=" & mask;
-      end if;        
+      end if;
       assert false
         report "Check " & str(check_num) & "; " & rpt & "; " &
-               actual_str(1 to actual_str_len) & 
+               actual_str(1 to actual_str_len) &
                expected_str(1 to expected_str_len) &
                mask_str(1 to mask_str_len) &
                "  in test " & str(test_num) & " " & test_name
         severity error;
     end if;
-  end procedure check_msg;  
-  
-  procedure pltbutils_error(
-    constant rpt                : in string;
-    signal   pltbutils_sc       : out   pltbutils_sc_t
-  ) is
-  begin
-    -- VHDL-2002:
-    v_pltbutils_err_cnt.inc;
-    if C_PLTBUTILS_USE_STD_ERROR_MSG then
-      error_msg(rpt, now, 
-        v_pltbutils_test_num.value, 
-        v_pltbutils_test_name.value(1 to v_pltbutils_test_name_len.value),
-        v_pltbutils_err_cnt_in_test.value);
-    end if;
-    if C_PLTBUTILS_USE_CUSTOM_ERROR_MSG then
-      custom_error_msg(rpt, now, 
-        v_pltbutils_test_num.value, 
-        v_pltbutils_test_name.value(1 to v_pltbutils_test_name_len.value),
-        v_pltbutils_err_cnt_in_test.value);
-    end if;
-    -- VHDL-1993:
-    --v_pltbutils_err_cnt := v_pltbutils_err_cnt + 1;
-    --if C_PLTBUTILS_USE_STD_ERROR_MSG then
-    --  error_msg(rpt, now, 
-    --    v_pltbutils_test_num, 
-    --    v_pltbutils_test_name(1 to v_pltbutils_test_name_len),
-    --    v_pltbutils_err_cnt_in_test);
-    --end if;
-    --if C_PLTBUTILS_USE_CUSTOM_ERROR_MSG then
-    --  custom_error_msg(rpt, now, 
-    --    v_pltbutils_test_num, 
-    --    v_pltbutils_test_name(1 to v_pltbutils_test_name_len),
-    --    v_pltbutils_err_cnt_in_test);
-    --end if;
-    pltbutils_sc_update(pltbutils_sc);  
-  end procedure pltbutils_error;
-  
+  end procedure check_msg;
+
   procedure error_msg(
     constant rpt                : in string;
     constant timestamp          : in time;
-    constant test_num           : in integer;      
+    constant test_num           : in integer;
     constant test_name          : in string;
     constant err_cnt_in_test    : in integer
   ) is
@@ -1877,15 +1805,5 @@ package body pltbutils_func_pkg is
     report rpt & " in test " & str(test_num) & ": " & test_name
     severity error;
   end procedure error_msg;
-  
-  procedure stopsim(
-    constant timestamp          : in time
-  ) is
-  begin
-    assert false
-    report "--- FORCE END OF SIMULATION ---" &
-           " (ignore this false failure message, it's not a real failure)"
-    severity failure;    
-  end procedure stopsim;  
-    
+
 end package body pltbutils_func_pkg;
