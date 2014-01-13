@@ -2,13 +2,13 @@
 # ModelSim do-script for compiling design and testbench
 vlib work
 vcom -novopt -work work \
-     ../../../example/vhdl/dut_example.vhd \
+     ../../../examples/vhdl/rtl_example/dut_example.vhd \
      ../../../src/vhdl/txt_util.vhd \
      ../../../src/vhdl/pltbutils_user_cfg_pkg.vhd \
      ../../../src/vhdl/pltbutils_func_pkg.vhd \
      ../../../src/vhdl/pltbutils_comp.vhd \
      ../../../src/vhdl/pltbutils_comp_pkg.vhd \
-     ../../../example/vhdl/tc_example.vhd \
+     ../../../examples/vhdl/tb_example2/tc_example2.vhd \
      $1 \
-     ../../../example/vhdl/tb_example.vhd
+     ../../../examples/vhdl/tb_example2/tb_example2.vhd
      
