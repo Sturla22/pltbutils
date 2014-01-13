@@ -7,6 +7,9 @@ If you have made testbenches which use pltbutils, you may need to make
 modifications if you update to a newer version of pltbutils.
 This document lists required modifications to your testbenches.
 
+alpha0006 -> alpha0007
+Nothing.
+
 alpha0005 -> alpha0006
 For more information and examples, see specification_pltbutils.pdf .
 1. One less file to be compiled: 
