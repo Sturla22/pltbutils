@@ -50,7 +50,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.pltbutils_func_pkg.all;
 
-entity tc_example is
+entity tc_example2 is
   generic (
     G_WIDTH         : integer := 8;
     G_DISABLE_BUGS  : integer range 0 to 1 := 0
@@ -65,4 +65,4 @@ entity tc_example is
     sum             : in  std_logic_vector(G_WIDTH-1 downto 0);
     carry_out       : in  std_logic
   );
-end entity tc_example;
+end entity tc_example2;

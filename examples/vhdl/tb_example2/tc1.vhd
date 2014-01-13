@@ -6,18 +6,13 @@
 ---- This file is part of the PlTbUtils project                   ----
 ---- http://opencores.org/project,pltbutils                       ----
 ----                                                              ----
----- Description:                                                  ----
+---- Description:                                                 ----
 ---- PlTbUtils is a collection of functions, procedures and       ----
 ---- components for easily creating stimuli and checking response ----
 ---- in automatic self-checking testbenches.                      ----
 ----                                                              ----
----- This file is a template, which can be used as a base when    ----
----- testbenches which use PlTbUtils.                             ----
----- Copy this file to your preferred location and rename the     ----
----- copied file and its contents, by replacing the word          ---- 
----- "template" with a name for your design.                      ----
----- Also remove informative comments enclosed in < ... > .       ----
-----                                                              ----
+---- This file is an example which demonstrates how PlTbUtils     ----
+---- can be used.                                                 ----                                                              ----
 ----                                                              ----
 ---- To Do:                                                       ----
 ---- -                                                            ----
@@ -59,7 +54,7 @@ use work.pltbutils_func_pkg.all;
 
 -- NOTE: The purpose of the following code is to demonstrate some of the 
 -- features of PlTbUtils, not to do a thorough verification.
-architecture tc1 of tc_example is
+architecture tc1 of tc_example2 is
 begin
   p_tc1 : process
     variable pltbv  : pltbv_t := C_PLTBV_INIT;

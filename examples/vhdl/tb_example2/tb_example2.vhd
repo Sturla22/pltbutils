@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- PlTbUtils Example Testbench                                  ----
+---- PlTbUtils Testbench Example 2                                ----
 ----                                                              ----
 ---- This file is part of the PlTbUtils project                   ----
 ---- http://opencores.org/project,pltbutils                       ----
@@ -51,15 +51,15 @@ use ieee.std_logic_1164.all;
 use work.pltbutils_func_pkg.all;
 use work.pltbutils_comp_pkg.all;
 
-entity tb_example is
+entity tb_example2 is
   generic (
     G_WIDTH             : integer := 8;
     G_CLK_PERIOD        : time := 10 ns;
     G_DISABLE_BUGS      : integer range 0 to 1 := 0
   );
-end entity tb_example;
+end entity tb_example2;
 
-architecture bhv of tb_example is
+architecture bhv of tb_example2 is
 
   -- Simulation status- and control signals
   -- for accessing .stop_sim and for viewing in waveform window
@@ -100,7 +100,7 @@ begin
       stop_sim_i        => pltbs.stop_sim
     );
    
-  tc0 : entity work.tc_example
+  tc0 : entity work.tc_example2
     generic map (
       G_WIDTH           => G_WIDTH,
       G_DISABLE_BUGS    => G_DISABLE_BUGS
