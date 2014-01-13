@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- PlTbUtils Example Testcase Architecture for                  ----
+---- PlTbUtils Testcase Architecture for                          ----
 ---- Template Testbench                                           ----
 ----                                                              ----
 ---- This file is part of the PlTbUtils project                   ----
@@ -11,8 +11,12 @@
 ---- components for easily creating stimuli and checking response ----
 ---- in automatic self-checking testbenches.                      ----
 ----                                                              ----
----- This file is an example which demonstrates how PlTbUtils     ----
----- can be used.                                                 ----
+---- This file is a template, which can be used as a base when    ----
+---- testbenches which use PlTbUtils.                             ----
+---- Copy this file to your preferred location and rename the     ----
+---- copied file and its contents, by replacing the word          ---- 
+---- "templateXX" with a name for your design.                    ----
+---- Also remove informative comments enclosed in < ... > .       ----
 ----                                                              ----
 ----                                                              ----
 ---- To Do:                                                       ----
@@ -53,7 +57,7 @@ use ieee.numeric_std.all;
 --use work.txt_util.all;
 use work.pltbutils_func_pkg.all;
 
-architecture tc1 of tc_template is
+architecture tc1 of tc_template2 is
 begin
   p_tc1 : process
     variable pltbv  : pltbv_t := C_PLTBV_INIT;

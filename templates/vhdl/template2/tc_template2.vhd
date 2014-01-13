@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- PlTbUtils Example Testcase Entity for Template Testbench      ----
+---- PlTbUtils Testcase Entity for Template Testbench             ----
 ----                                                              ----
 ---- This file is part of the PlTbUtils project                   ----
 ---- http://opencores.org/project,pltbutils                       ----
@@ -14,7 +14,7 @@
 ---- testbenches which use PlTbUtils.                             ----
 ---- Copy this file to your preferred location and rename the     ----
 ---- copied file and its contents, by replacing the word          ---- 
----- "template" with a name for your design.                      ----
+---- "templateXX" with a name for your design.                    ----
 ---- Also remove informative comments enclosed in < ... > .       ----
 ----                                                              ----
 ----                                                              ----
@@ -54,7 +54,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.pltbutils_func_pkg.all;
 
-entity tc_template is
+entity tc_template2 is
   generic (
     -- < Template info: add generics here if needed, or remove the generic block >    
   );
@@ -68,4 +68,4 @@ entity tc_template is
     -- <                Exception: clocks are inputs both on DUT    >
     -- <                and here.                                   >
   );
-end entity tc_template;
+end entity tc_template2;

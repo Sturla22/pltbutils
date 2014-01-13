@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- PlTbUtils Testbench Template                                  ----
+---- PlTbUtils Testbench Template 2                               ----
 ----                                                              ----
 ---- This file is part of the PlTbUtils project                   ----
 ---- http://opencores.org/project,pltbutils                       ----
@@ -58,13 +58,13 @@ use work.pltbutils_func_pkg.all;
 use work.pltbutils_comp_pkg.all;
 -- < Template info: add more libraries here, if needed >
 
-entity tb_template is
+entity tb_template2 is
   generic (
     -- < Template info: add generics here if needed, or remove the generic block >    
   );
-end entity tb_template;
+end entity tb_template2;
 
-architecture bhv of tb_template is
+architecture bhv of tb_template2 is
 
   -- Simulation status- and control signals
   -- for accessing .stop_sim and for viewing in waveform window
@@ -96,7 +96,7 @@ begin
       stop_sim_i        => pltbs.stop_sim
     );
    
-  tc0 : entity work.tc_example
+  tc0 : entity work.tc_template2
     generic map (
       -- < Template info: add generics for testcase component here, if any. >
     )
