@@ -1,7 +1,6 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- PlTbUtils Example Testcase Architecture for                  ----
----- Template Testbench                                           ----
+---- PlTbUtils Testbench Template 1                               ----
 ----                                                              ----
 ---- This file is part of the PlTbUtils project                   ----
 ---- http://opencores.org/project,pltbutils                       ----
@@ -11,8 +10,12 @@
 ---- components for easily creating stimuli and checking response ----
 ---- in automatic self-checking testbenches.                      ----
 ----                                                              ----
----- This file is an example which demonstrates how PlTbUtils     ----
----- can be used.                                                 ----
+---- This file is a template, which can be used as a base when    ----
+---- testbenches which use PlTbUtils.                             ----
+---- Copy this file to your preferred location and rename the     ----
+---- copied file and its contents, by replacing the word          ---- 
+---- "template" with a name for your design.                      ----
+---- Also remove informative comments enclosed in < ... > .       ----
 ----                                                              ----
 ----                                                              ----
 ---- To Do:                                                       ----
@@ -49,12 +52,51 @@
 ----------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
---use work.txt_util.all;
+use std.textio.all;
+use work.txt_util.all;
 use work.pltbutils_func_pkg.all;
+use work.pltbutils_comp_pkg.all;
+-- < Template info: add more libraries here, if needed >
 
-architecture tc1 of tc_template is
+entity tb_template1 is
+  generic (
+    -- < Template info: add generics here if needed, or remove the generic block >    
+  );
+end entity tb_template1;
+
+architecture bhv of tb_template1 is
+
+  -- Simulation status- and control signals
+  -- for accessing .stop_sim and for viewing in waveform window
+  signal pltbs          : pltbs_t := C_PLTBS_INIT;
+  
+  -- DUT stimuli and response signals
+  signal clk            : std_logic;
+  signal rst            : std_logic;
+  -- < Template info: add more DUT stimuli and response signals here. >
+  
 begin
+
+  dut0 : entity work.template
+    generic map (
+      -- < Template info: add DUT generics here, if any. >      
+    )
+    port map (
+      clk_i             => clk, -- Template example
+      rst_i             => rst, -- Template example
+      -- < Template info: add more DUT ports here. >
+    );
+    
+  clkgen0 : pltbutils_clkgen
+    generic map(
+      G_PERIOD          => G_CLK_PERIOD
+    )
+    port map(
+      clk_o             => clk,
+      stop_sim_i        => pltbs.stop_sim
+    );
+   
+  -- Testcase process 
   p_tc1 : process
     variable pltbv  : pltbv_t := C_PLTBV_INIT;
   begin
@@ -79,4 +121,5 @@ begin
     endsim(pltbv, pltbs, true);
     wait;
   end process p_tc1;
-end architecture tc1;
+  
+end architecture bhv;

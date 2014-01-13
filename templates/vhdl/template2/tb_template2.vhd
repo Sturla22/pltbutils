@@ -1,12 +1,11 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- PlTbUtils Example Testcase Architecture for                  ----
----- Example Testbench                                            ----
+---- PlTbUtils Testbench Template 2                               ----
 ----                                                              ----
 ---- This file is part of the PlTbUtils project                   ----
 ---- http://opencores.org/project,pltbutils                       ----
 ----                                                              ----
----- Description:                                                  ----
+---- Description:                                                 ----
 ---- PlTbUtils is a collection of functions, procedures and       ----
 ---- components for easily creating stimuli and checking response ----
 ---- in automatic self-checking testbenches.                      ----
@@ -53,60 +52,58 @@
 ----------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+use std.textio.all;
 use work.txt_util.all;
 use work.pltbutils_func_pkg.all;
+use work.pltbutils_comp_pkg.all;
+-- < Template info: add more libraries here, if needed >
 
--- NOTE: The purpose of the following code is to demonstrate some of the 
--- features of PlTbUtils, not to do a thorough verification.
-architecture tc1 of tc_example is
+entity tb_template2 is
+  generic (
+    -- < Template info: add generics here if needed, or remove the generic block >    
+  );
+end entity tb_template2;
+
+architecture bhv of tb_template2 is
+
+  -- Simulation status- and control signals
+  -- for accessing .stop_sim and for viewing in waveform window
+  signal pltbs          : pltbs_t := C_PLTBS_INIT;
+  
+  -- DUT stimuli and response signals
+  signal clk            : std_logic;
+  signal rst            : std_logic;
+  -- < Template info: add more DUT stimuli and response signals here. >
+  
 begin
-  p_tc1 : process
-    variable pltbv  : pltbv_t := C_PLTBV_INIT;
-  begin
-    startsim("tc1", pltbv, pltbs);
-    rst         <= '1';
-    carry_in    <= '0';
-    x           <= (others => '0');
-    y           <= (others => '0');
-        
-    starttest(1, "Reset test", pltbv, pltbs);
-    waitclks(2, clk, pltbv, pltbs);    
-    check("Sum during reset",       sum,         0, pltbv, pltbs);
-    check("Carry out during reset", carry_out, '0', pltbv, pltbs);
-    rst         <= '0';
-    endtest(pltbv, pltbs);
-    
-    starttest(2, "Simple sum test", pltbv, pltbs);
-    carry_in <= '0';
-    x <= std_logic_vector(to_unsigned(1, x'length));
-    y <= std_logic_vector(to_unsigned(2, x'length));
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum",       sum,         3, pltbv, pltbs); 
-    check("Carry out", carry_out, '0', pltbv, pltbs); 
-    endtest(pltbv, pltbs);
-    
-    starttest(3, "Simple carry in test", pltbv, pltbs);
-    print(G_DISABLE_BUGS=0, pltbv, pltbs, "Bug here somewhere");
-    carry_in <= '1';
-    x <= std_logic_vector(to_unsigned(1, x'length));
-    y <= std_logic_vector(to_unsigned(2, x'length));
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum",       sum,         4, pltbv, pltbs); 
-    check("Carry out", carry_out, '0', pltbv, pltbs);
-    print(G_DISABLE_BUGS=0, pltbv, pltbs, "");
-    endtest(pltbv, pltbs);
 
-    starttest(4, "Simple carry out test", pltbv, pltbs);
-    carry_in <= '0';
-    x <= std_logic_vector(to_unsigned(2**G_WIDTH-1, x'length));
-    y <= std_logic_vector(to_unsigned(1, x'length));
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum",       sum,         0, pltbv, pltbs); 
-    check("Carry out", carry_out, '1', pltbv, pltbs);
-    endtest(pltbv, pltbs);
-
-    endsim(pltbv, pltbs, true);
-    wait;
-  end process p_tc1;
-end architecture tc1;
+  dut0 : entity work.template
+    generic map (
+      -- < Template info: add DUT generics here, if any. >      
+    )
+    port map (
+      clk_i             => clk, -- Template example
+      rst_i             => rst, -- Template example
+      -- < Template info: add more DUT ports here. >
+    );
+    
+  clkgen0 : pltbutils_clkgen
+    generic map(
+      G_PERIOD          => G_CLK_PERIOD
+    )
+    port map(
+      clk_o             => clk,
+      stop_sim_i        => pltbs.stop_sim
+    );
+   
+  tc0 : entity work.tc_template2
+    generic map (
+      -- < Template info: add generics for testcase component here, if any. >
+    )
+    port map(
+      clk               => clk, -- Template example
+      rst               => rst, -- Template example
+      -- < Template info: add more ports for testcase component here. >
+    );
+  
+end architecture bhv;

@@ -1,5 +1,19 @@
 pltbutils release_note.txt
 
+alpha0007 January 13, 2014
+1. Renamed example/vhdl/*.* to examples/vhdl/examples2/*.*
+   This is example code where the testcase process(es) are located
+   in a testcase component, enabling multiple testcase architectures.
+   Renamed sim/example_sim/ to sim/modelsim_tb_example2/
+2. Created examples/vhdl/examples1/ 
+   This is example code where the testcase process is located in the
+   testbench top.
+   Created sim/modelsim_tb_example1/
+3. Renamed sim/bench_sim/ to sim/modelsim_tb_pltbutils/
+4. Renamed template/vhdl/*.* to templates/vhdl/template2/*.*
+5. Created templates/vhdl/template1/ 
+6. Updated specification_pltbutils.docx/pdf to rev 0.5
+
 alpha0006 January 09, 2014
 1. Replaced shared variables with a normal variable, and global signals with
    a normal signal.

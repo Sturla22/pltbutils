@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- PlTbUtils Example Testcase Entity for Example Testbench      ----
+---- PlTbUtils Testcase Entity for Template Testbench             ----
 ----                                                              ----
 ---- This file is part of the PlTbUtils project                   ----
 ---- http://opencores.org/project,pltbutils                       ----
@@ -10,8 +10,12 @@
 ---- components for easily creating stimuli and checking response ----
 ---- in automatic self-checking testbenches.                      ----
 ----                                                              ----
----- This file is an example which demonstrates how PlTbUtils     ----
----- can be used.                                                 ----
+---- This file is a template, which can be used as a base when    ----
+---- testbenches which use PlTbUtils.                             ----
+---- Copy this file to your preferred location and rename the     ----
+---- copied file and its contents, by replacing the word          ---- 
+---- "templateXX" with a name for your design.                    ----
+---- Also remove informative comments enclosed in < ... > .       ----
 ----                                                              ----
 ----                                                              ----
 ---- To Do:                                                       ----
@@ -22,7 +26,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013 Authors and OPENCORES.ORG                 ----
+---- Copyright (C) 2013-2014 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -50,19 +54,18 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.pltbutils_func_pkg.all;
 
-entity tc_example is
+entity tc_template2 is
   generic (
-    G_WIDTH         : integer := 8;
-    G_DISABLE_BUGS  : integer range 0 to 1 := 0
+    -- < Template info: add generics here if needed, or remove the generic block >    
   );
   port (
     pltbs           : out pltbs_t;
-    clk             : in  std_logic;
-    rst             : out std_logic;
-    carry_in        : out std_logic;
-    x               : out std_logic_vector(G_WIDTH-1 downto 0);
-    y               : out std_logic_vector(G_WIDTH-1 downto 0);
-    sum             : in  std_logic_vector(G_WIDTH-1 downto 0);
-    carry_out       : in  std_logic
+    clk             : in  std_logic; -- Template example
+    rst             : out std_logic; -- Template example
+    -- < Template info: add more ports for testcase component here. >
+    -- <                Inputs on the DUT should be outputs here,   >
+    -- <                and vice versa.                             >
+    -- <                Exception: clocks are inputs both on DUT    >
+    -- <                and here.                                   >
   );
-end entity tc_example;
+end entity tc_template2;
