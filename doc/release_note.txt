@@ -1,5 +1,8 @@
 pltbutils release_note.txt
 
+beta0001 April 9, 2014
+1. Added check() for string.
+
 alpha0007 January 13, 2014
 1. Renamed example/vhdl/*.* to examples/vhdl/examples2/*.*
    This is example code where the testcase process(es) are located
