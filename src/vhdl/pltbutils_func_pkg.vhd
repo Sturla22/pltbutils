@@ -373,6 +373,13 @@ package pltbutils_func_pkg is
   );
   procedure check(
     constant rpt                : in    string;
+    constant actual             : in    string;
+    constant expected           : in    string;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );  
+  procedure check(
+    constant rpt                : in    string;
     constant expr               : in    boolean;
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t
@@ -1233,8 +1240,8 @@ package body pltbutils_func_pkg is
   --
   -- procedure check(
   --   constant rpt             : in    string;
-  --   constant actual          : in    integer|std_logic|std_logic_vector|unsigned|signed;
-  --   constant expected        : in    integer|std_logic|std_logic_vector|unsigned|signed;
+  --   constant actual          : in    integer|std_logic|std_logic_vector|unsigned|signed|string;
+  --   constant expected        : in    integer|std_logic|std_logic_vector|unsigned|signed|string;
   --   variable pltbv           : inout pltbv_t;
   --   signal   pltbs           : out   pltbs_t
   -- )
@@ -1431,7 +1438,30 @@ package body pltbutils_func_pkg is
   begin
     check(rpt, actual, to_signed(expected, actual'length), pltbv, pltbs);
   end procedure check;
-
+  
+  -- check string
+  procedure check(
+    constant rpt                : in    string;
+    constant actual             : in    string;
+    constant expected           : in    string;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  ) is
+    variable mismatch : boolean := false;
+  begin
+    if actual'length /= expected'length then
+      mismatch := true;
+    else
+      for i in 0 to actual'length-1 loop
+        if actual(i+actual'low) /= expected(i+expected'low) then
+          mismatch := true;
+          exit;
+        end if;
+      end loop;
+    end if;
+    check(rpt, not mismatch, actual, expected, "", pltbv, pltbs);
+  end procedure check;  
+  
   -- check with boolean expression
   -- Check signal or variable with a boolean expression as argument C_EXPR.
   -- This allowes any kind of check.
@@ -1761,27 +1791,25 @@ package body pltbutils_func_pkg is
     constant check_num          : in integer;
     constant err_cnt_in_test    : in integer
   ) is
-    variable comparison_str     : string(1 to 32) := (others => ' ');
-    variable comparison_str_len : integer := 1;
-    variable actual_str         : string(1 to 32) := (others => ' ');
     variable actual_str_len     : integer := 1;
-    variable expected_str       : string(1 to 32) := (others => ' ');
+    variable actual_str         : string(1 to actual'length+8) := (others => ' ');
+    variable expected_str       : string(1 to expected'length+10) := (others => ' ');
     variable expected_str_len   : integer := 1;
-    variable mask_str           : string(1 to 32) := (others => ' ');
+    variable mask_str           : string(1 to mask'length+6) := (others => ' ');
     variable mask_str_len       : integer := 1;
   begin
     if not expr then -- Output message only if the check fails
       if actual /= "" then
         actual_str_len := 8 + actual'length;
-        actual_str(1 to actual_str_len) := " Actual=" & actual;
+        actual_str := " Actual=" & actual;
       end if;
       if expected /= "" then
         expected_str_len := 10 + expected'length;
-        expected_str(1 to expected_str_len) := " Expected=" & expected;
+        expected_str := " Expected=" & expected;
       end if;
       if mask /= "" then
         mask_str_len := 6 + mask'length;
-        mask_str(1 to mask_str_len) := " Mask=" & mask;
+        mask_str := " Mask=" & mask;
       end if;
       assert false
         report "Check " & str(check_num) & "; " & rpt & "; " &
