@@ -87,6 +87,11 @@ architecture bhv of tb_pltbutils is
   signal s_slv          : std_logic_vector(7 downto 0);
   signal s_u            : unsigned(7 downto 0);
   signal s_s            : unsigned(7 downto 0);
+  signal s_str_exp      : string(1 to 44);
+  signal s_str1         : string(1 to 44);    
+  signal s_str2         : string(1 to 44);    
+  signal s_str3         : string(1 to 43);    
+  signal s_str4         : string(1 to 45);    
   
 begin
       
@@ -401,6 +406,38 @@ begin
     expected_checks_cnt   <= v_expected_checks_cnt;
     print("<Done testing check() signed against integer>");    
 
+    print("<Testing check() string>");
+    s_str_exp   <= string'("The quick brown fox jumps over the lazy dog.");
+    s_str1      <= string'("The quick brown fox jumps over the lazy dog.");    
+    s_str2      <= string'("The quick brown dog jumps over the lazy fox.");    
+    s_str3      <= string'("The quick brown fox jumps over the lazy dog");    
+    s_str4      <= string'("The quick brown fox jumps over the lazy dog..");    
+    wait until rising_edge(clk);
+    check("Testing correct string", s_str1, s_str_exp, pltbv, pltbs);
+    v_expected_checks_cnt := v_expected_checks_cnt + 1;
+    expected_checks_cnt   <= v_expected_checks_cnt;
+    s_s <= x"47";    
+    wait until rising_edge(clk);
+    check("Testing incorrect string with correct length", s_str2, s_str_exp, pltbv, pltbs);
+    v_expected_checks_cnt := v_expected_checks_cnt + 1;
+    expected_checks_cnt   <= v_expected_checks_cnt;
+    v_expected_errors_cnt := v_expected_errors_cnt + 1;
+    expected_errors_cnt   <= v_expected_errors_cnt;    
+    s_s <= x"11";    
+    wait until rising_edge(clk);
+    check("Testing too short string", s_str3, s_str_exp, pltbv, pltbs);
+    v_expected_checks_cnt := v_expected_checks_cnt + 1;
+    expected_checks_cnt   <= v_expected_checks_cnt;
+    v_expected_errors_cnt := v_expected_errors_cnt + 1;
+    expected_errors_cnt   <= v_expected_errors_cnt;
+    wait until rising_edge(clk);
+    check("Testing too long string", s_str4, s_str_exp, pltbv, pltbs);
+    v_expected_checks_cnt := v_expected_checks_cnt + 1;
+    expected_checks_cnt   <= v_expected_checks_cnt;
+    v_expected_errors_cnt := v_expected_errors_cnt + 1;
+    expected_errors_cnt   <= v_expected_errors_cnt;
+    print("<Done testing check() string>");
+    
     print("<Testing check() boolean expression>");
     s_i <= 0;    
     wait until rising_edge(clk);
