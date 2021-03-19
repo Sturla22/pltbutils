@@ -23,7 +23,7 @@
 ---- -                                                            ----
 ----                                                              ----
 ---- Author(s):                                                   ----
----- - Per Larsson, pela@opencores.org                            ----
+---- - Per Larsson, pela.opencores@gmail.com                      ----
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
@@ -65,6 +65,7 @@ package pltbutils_user_cfg_pkg is
   constant C_PLTBUTILS_USE_STD_STARTSIM_MSG     : boolean := true;
   constant C_PLTBUTILS_USE_STD_ENDSIM_MSG       : boolean := true;
   constant C_PLTBUTILS_USE_STD_STARTTEST_MSG    : boolean := true;
+  constant C_PLTBUTILS_USE_STD_SKIPTEST_MSG    : boolean := true;
   constant C_PLTBUTILS_USE_STD_ENDTEST_MSG      : boolean := true;
   constant C_PLTBUTILS_USE_STD_CHECK_MSG        : boolean := true;
   constant C_PLTBUTILS_USE_STD_ERROR_MSG        : boolean := true;
@@ -72,6 +73,7 @@ package pltbutils_user_cfg_pkg is
   constant C_PLTBUTILS_USE_CUSTOM_STARTSIM_MSG  : boolean := false;
   constant C_PLTBUTILS_USE_CUSTOM_ENDSIM_MSG    : boolean := false;
   constant C_PLTBUTILS_USE_CUSTOM_STARTTEST_MSG : boolean := false;
+  constant C_PLTBUTILS_USE_CUSTOM_SKIPTEST_MSG  : boolean := false;
   constant C_PLTBUTILS_USE_CUSTOM_ENDTEST_MSG   : boolean := false;
   constant C_PLTBUTILS_USE_CUSTOM_CHECK_MSG     : boolean := false;
   constant C_PLTBUTILS_USE_CUSTOM_ERROR_MSG     : boolean := false;
@@ -93,6 +95,7 @@ package pltbutils_user_cfg_pkg is
     constant testcase_name      : in string;
     constant timestamp          : in time;
     constant num_tests          : in integer;
+    constant num_skip_tests     : in integer;
     constant num_checks         : in integer;
     constant num_errors         : in integer;
     constant show_success_fail  : in boolean
@@ -104,10 +107,17 @@ package pltbutils_user_cfg_pkg is
     constant timestamp          : in time
   );  
   
+  procedure custom_skiptest_msg(
+    constant test_num           : in integer;
+    constant test_name          : in string;
+    constant timestamp          : in time
+  );  
+  
   procedure custom_endtest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
     constant timestamp          : in time;
+    constant test_active        : in boolean;    
     constant num_checks_in_test : in integer;
     constant num_errors_in_test : in integer
   );  
@@ -189,6 +199,7 @@ package body pltbutils_user_cfg_pkg is
     constant testcase_name      : in string;
     constant timestamp          : in time;
     constant num_tests          : in integer;
+    constant num_skip_tests     : in integer;
     constant num_checks         : in integer;
     constant num_errors         : in integer;
     constant show_success_fail  : in boolean
@@ -208,16 +219,29 @@ package body pltbutils_user_cfg_pkg is
     print("##teamcity[testStarted name='" & tcfilter(test_name) & "']");
   end procedure custom_starttest_msg;
 
+  procedure custom_skiptest_msg(
+    constant test_num           : in integer;
+    constant test_name          : in string;
+    constant timestamp          : in time
+  ) is
+  begin
+    -- TeamCity ignores test_num and timestamp
+    print("##teamcity[testIgnored name='" & tcfilter(test_name) & "']");
+  end procedure custom_skiptest_msg;
+
   procedure custom_endtest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
     constant timestamp          : in time;
+    constant test_active        : in boolean;
     constant num_checks_in_test : in integer;
     constant num_errors_in_test : in integer
   ) is
   begin
-    -- TeamCity ignores all arguments except test_name
-    print("##teamcity[testFinished name='" & tcfilter(test_name) & "']");
+    if test_active then
+      -- TeamCity ignores all arguments except test_name
+     print("##teamcity[testFinished name='" & tcfilter(test_name) & "']");
+    end if;
   end procedure custom_endtest_msg;
 
   procedure custom_check_msg(

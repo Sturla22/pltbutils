@@ -18,7 +18,7 @@
 ---- -                                                            ----
 ----                                                              ----
 ---- Author(s):                                                   ----
----- - Per Larsson, pela@opencores.org                            ----
+---- - Per Larsson, pela.opencores@gmail.com                      ----
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
@@ -108,7 +108,7 @@ begin
   p_tc1 : process
     variable pltbv  : pltbv_t := C_PLTBV_INIT;
   begin
-    startsim("tc1", pltbv, pltbs);
+    startsim("tc1", "", pltbv, pltbs);
     rst         <= '1';
     carry_in    <= '0';
     x           <= (others => '0');

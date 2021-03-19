@@ -17,7 +17,7 @@
 ---- -                                                            ----
 ----                                                              ----
 ---- Author(s):                                                   ----
----- - Per Larsson, pela@opencores.org                            ----
+---- - Per Larsson, pela.opencores@gmail.com                      ----
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
@@ -55,9 +55,10 @@ use work.pltbutils_user_cfg_pkg.all;
 package pltbutils_func_pkg is
 
   -- See the package body for a description of the functions and procedures.
-  constant C_PLTBUTILS_STRLEN  : natural := 80;
-  constant C_PLTBUTILS_TIMEOUT : time    := 10 sec;
-  constant C_WAIT_BEFORE_STOP_TIME : time := 1 us;
+  constant C_PLTBUTILS_STRLEN       : natural :=  80;
+  constant C_PLTBUTILS_SKIPTESTLEN  : natural := 512;
+  constant C_PLTBUTILS_TIMEOUT      : time    :=  10 sec;
+  constant C_WAIT_BEFORE_STOP_TIME  : time    :=   1 us;
 
   -- Type for status- and control variable
   type pltbv_t is
@@ -67,9 +68,12 @@ package pltbutils_func_pkg is
       test_num         : integer;
       test_name        : string(1 to C_PLTBUTILS_STRLEN);
       test_name_len    : integer;
+      skiptests        : std_logic_vector(0 to C_PLTBUTILS_SKIPTESTLEN-1);
+      test_active      : boolean;
       info             : string(1 to C_PLTBUTILS_STRLEN);
       info_len         : integer;
       test_cnt         : integer;
+      skiptest_cnt     : integer;
       chk_cnt          : integer;
       err_cnt          : integer;
       chk_cnt_in_test  : integer;
@@ -83,9 +87,12 @@ package pltbutils_func_pkg is
     0,                 -- test_num
     (others => ' '),   -- test_name
     1,                 -- test_name_len
+    (others => '0'),   -- skiptest
+    true,              -- test_active
     (others => ' '),   -- info
     1,                 -- info_len
     0,                 -- test_cnt
+    0,                 -- skiptest_cnt
     0,                 -- chk_cnt
     0,                 -- err_cnt
     0,                 -- chk_cnt_in_test
@@ -116,6 +123,7 @@ package pltbutils_func_pkg is
   -- startsim
   procedure startsim(
     constant testcase_name      : in    string;
+    constant skiptests           : in    std_logic_vector;
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t
   );
@@ -125,7 +133,7 @@ package pltbutils_func_pkg is
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t;
     constant show_success_fail  : in    boolean := false;
-    constant force              : in    boolean := false
+    constant force_stop         : in    boolean := false
   );
 
   -- starttest
@@ -140,6 +148,11 @@ package pltbutils_func_pkg is
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t
   );
+
+  -- is_test_active
+  function is_test_active(
+    constant pltbv              : in    pltbv_t
+  ) return boolean;
 
   -- endtest
   procedure endtest(
@@ -290,6 +303,13 @@ package pltbutils_func_pkg is
     constant falling            : in    boolean := false;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
+  procedure waitsig(
+    signal   s                  : in    std_logic;
+    constant value              : in    std_logic;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );
 
   -- check
   procedure check(
@@ -368,6 +388,35 @@ package pltbutils_func_pkg is
     constant rpt                : in    string;
     constant actual             : in    signed;
     constant expected           : in    integer;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
+  procedure check(
+    constant rpt                : in    string;
+    constant actual             : in    boolean;
+    constant expected           : in    boolean;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
+  procedure check(
+    constant rpt                : in    string;
+    constant actual             : in    boolean;
+    constant expected           : in    integer;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
+  procedure check(
+    constant rpt                : in    string;
+    constant actual             : in    time;
+    constant expected           : in    time;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  );
+  procedure check(
+    constant rpt                : in    string;
+    constant actual             : in    time;
+    constant expected           : in    time;
+    constant tolerance          : in    time;
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t
   );
@@ -458,6 +507,7 @@ package pltbutils_func_pkg is
     constant testcase_name      : in string;
     constant timestamp          : in time;
     constant num_tests          : in integer;
+    constant num_skiptests      : in integer;
     constant num_checks         : in integer;
     constant num_errors         : in integer;
     constant show_success_fail  : in boolean
@@ -469,10 +519,17 @@ package pltbutils_func_pkg is
     constant timestamp          : in time
   );
 
+  procedure skiptest_msg(
+    constant test_num           : in integer;
+    constant test_name          : in string;
+    constant timestamp          : in time
+  );
+
   procedure endtest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
     constant timestamp          : in time;
+    constant test_active        : in boolean;
     constant num_checks_in_test : in integer;
     constant num_errors_in_test : in integer
   );
@@ -507,6 +564,7 @@ package body pltbutils_func_pkg is
   --
   -- procedure startsim(
   --   constant testcase_name      : in    string;
+  --   constant skiptests          : in    std_logic_vector;
   --   variable pltbv              : inout pltbv_t;
   --   signal   pltbs              : out   pltbs_t
   -- )
@@ -518,6 +576,18 @@ package body pltbutils_func_pkg is
   -- Arguments:
   --   testcase_name            Name of the test case, e.g. "tc1".
   --
+  --   skiptests                std_logic_vector for marking tests that should
+  --                            be skipped. The leftmost bit has position 0,
+  --                            and position numbers increment to the right.
+  --                            A '1' indicates that the test with the same
+  --                            number as the position should be skipped.
+  --                            Note that there is usually no test which has
+  --                            number 0, so bit zero in the vector is usually
+  --                            ignored.
+  --                            This argument is normally fed by a generic.
+  --                            If no tests should be skipped, a zero-length 
+  --                            vector is allowed, ("").
+  --                          
   --   pltbv, pltbs             PlTbUtils' status- and control variable and
   --                            -signal.
   --
@@ -530,15 +600,18 @@ package body pltbutils_func_pkg is
   -- DO NOT MODIFY the message "--- START OF SIMULATION ---".
   -- DO NOT OUTPUT AN IDENTICAL MESSAGE anywhere else.
   --
-  -- Example:
-  -- startsim("tc1", pltbv, pltbs);
+  -- Examples:
+  -- startsim("tc1", "", pltbv, pltbs);
+  -- startsim("tc2", G_SKIPTESTS, pltbv, pltbs); -- G_SKIPTESTS is a generic
   ----------------------------------------------------------------------------
   procedure startsim(
     constant testcase_name      : in    string;
+    constant skiptests          : in    std_logic_vector; 
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t
   ) is
     variable timestamp          : time;
+    variable v_ignored_skiptest : boolean := false;
   begin
     timestamp := now;
     pltbv := C_PLTBV_INIT;
@@ -547,6 +620,23 @@ package body pltbutils_func_pkg is
     printv(pltbv.test_name, "START OF SIMULATION");
     pltbv.test_name_len     := 19;
     printv(pltbv.info, testcase_name);
+    if skiptests'length > 0 then
+      for i in skiptests'low to skiptests'high loop
+        if i >= pltbv.skiptests'low and i <= pltbv.skiptests'high then
+          pltbv.skiptests(i) := skiptests(i);
+        else 
+          if pltbv.skiptests(i) = '1' then
+            v_ignored_skiptest := true;
+          end if;
+        end if;
+      end loop;
+      if v_ignored_skiptest then
+        assert false
+          report "Some SKIPTESTS flags ignored. Max " & 
+                 integer'image(pltbv.skiptests'length) & " flag bits supported."
+          severity warning;
+      end if;
+    end if;
     pltbv.info_len          := testcase_name'length;
     pltbs_update(pltbv, pltbs);
     if C_PLTBUTILS_USE_STD_STARTSIM_MSG then
@@ -564,7 +654,7 @@ package body pltbutils_func_pkg is
   --   variable pltbv              : inout pltbv_t;
   --   signal   pltbs              : out   pltbs_t;
   --   constant show_success_fail  : in  boolean := false;
-  --   constant force              : in  boolean := false
+  --   constant force_stop         : in  boolean := false
   -- )
   --
   -- Displays a message at end of simulation message, presents the simulation
@@ -579,7 +669,7 @@ package body pltbutils_func_pkg is
   --                            "*** FAIL ***", or "*** NO CHECKS ***".
   --                            Optional, default is false.
   --
-  --   force                    If true, forces the simulation to stop using an
+  --   force_stop               If true, forces the simulation to stop using an
   --                            assert failure statement. Use this option only
   --                            if the normal way of stopping the simulation
   --                            doesn't work (see below).
@@ -587,8 +677,8 @@ package body pltbutils_func_pkg is
   --
   -- The testbench should be designed so that all clocks stop when endsim()
   -- sets the signal pltbs.stop_sim to '1'. This should stop the simulator.
-  -- In some cases that doesn't work, then set the force argument to true, which
-  -- causes a false assert failure, which should stop the simulator.
+  -- In some cases that doesn't work, then set the force_stop argument to true,
+  -- which causes a false assert failure, which should stop the simulator.
   -- Scripts searching transcript logs for errors and failures, should ignore
   -- the failure with "--- FORCE END OF SIMULATION ---" as part of the report.
   --
@@ -612,18 +702,20 @@ package body pltbutils_func_pkg is
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t;
     constant show_success_fail  : in    boolean := false;
-    constant force              : in    boolean := false
+    constant force_stop         : in    boolean := false
   ) is
     variable timestamp : time;
   begin
     timestamp := now;
     if C_PLTBUTILS_USE_STD_ENDSIM_MSG then
       endsim_msg(pltbv.testcase_name(1 to pltbv.testcase_name_len), timestamp,
-        pltbv.test_cnt, pltbv.chk_cnt, pltbv.err_cnt, show_success_fail);
+        pltbv.test_cnt, pltbv.skiptest_cnt, pltbv.chk_cnt, pltbv.err_cnt,
+        show_success_fail);
     end if;
     if C_PLTBUTILS_USE_CUSTOM_ENDSIM_MSG then
       custom_endsim_msg(pltbv.testcase_name(1 to pltbv.testcase_name_len), timestamp,
-        pltbv.test_cnt, pltbv.chk_cnt, pltbv.err_cnt, show_success_fail);
+        pltbv.test_cnt, pltbv.skiptest_cnt, pltbv.chk_cnt, pltbv.err_cnt,
+        show_success_fail);
     end if;
     pltbv.test_num      := 0;
     printv(pltbv.test_name, "END OF SIMULATION");
@@ -631,7 +723,7 @@ package body pltbutils_func_pkg is
     pltbv.stop_sim      := '1';
     pltbs_update(pltbv, pltbs);
     wait for C_WAIT_BEFORE_STOP_TIME;
-    if force then
+    if force_stop then
       if C_PLTBUTILS_USE_STD_STOPSIM then
         stopsim(now);
       end if;
@@ -692,15 +784,32 @@ package body pltbutils_func_pkg is
     end if;
     printv(pltbv.test_name, name);
     pltbv.test_name_len := name'length;
-    pltbv.test_cnt := pltbv.test_cnt + 1;
     pltbv.chk_cnt_in_test := 0;
     pltbv.err_cnt_in_test := 0;
-    pltbs_update(pltbv, pltbs);
-    if C_PLTBUTILS_USE_STD_STARTTEST_MSG then
-     starttest_msg(pltbv.test_num, name, timestamp);
+    pltbv.test_active := true;
+    if pltbv.test_num >= pltbv.skiptests'low and pltbv.test_num <= pltbv.skiptests'high then
+      if pltbv.skiptests(pltbv.test_num) = '1' then
+        pltbv.test_active := false;
+      end if;
     end if;
-    if C_PLTBUTILS_USE_CUSTOM_STARTTEST_MSG then
-     custom_starttest_msg(pltbv.test_num, name, timestamp);
+    if pltbv.test_active then
+      pltbv.test_cnt := pltbv.test_cnt + 1;
+      pltbs_update(pltbv, pltbs);
+      if C_PLTBUTILS_USE_STD_STARTTEST_MSG then
+        starttest_msg(pltbv.test_num, name, timestamp);
+      end if;
+      if C_PLTBUTILS_USE_CUSTOM_STARTTEST_MSG then
+        custom_starttest_msg(pltbv.test_num, name, timestamp);
+      end if;
+    else
+      pltbv.skiptest_cnt := pltbv.skiptest_cnt + 1; 
+      pltbs_update(pltbv, pltbs);
+      if C_PLTBUTILS_USE_STD_SKIPTEST_MSG then
+        skiptest_msg(pltbv.test_num, name, timestamp);
+      end if;
+      if C_PLTBUTILS_USE_CUSTOM_SKIPTEST_MSG then
+        custom_skiptest_msg(pltbv.test_num, name, timestamp);
+      end if;
     end if;
   end procedure starttest;
 
@@ -712,6 +821,32 @@ package body pltbutils_func_pkg is
   begin
     starttest(-1, name, pltbv, pltbs);
   end procedure starttest;
+
+  ----------------------------------------------------------------------------
+  -- is_test_active
+  --
+  -- function is_test_active(
+  --   constant pltbv              : in    pltbv_t
+  -- ) return boolean
+  --
+  -- Returns true if a test is active (not skipped), otherwise false.
+  --
+  -- Arguments:
+  --   pltbv                     PlTbUtils' status- and control variable.
+  --
+  -- Example:
+  -- starttest(3, "Example test", pltbv, pltbs);
+  -- if is_test_active(pltbv) then
+  --   ... test code ...
+  -- end if;
+  -- endtest(pltbv, pltbs);
+  ----------------------------------------------------------------------------
+  function is_test_active(
+    constant pltbv              : in    pltbv_t
+  ) return boolean is
+  begin
+    return pltbv.test_active;
+  end function is_test_active;
 
   ----------------------------------------------------------------------------
   -- endtest
@@ -739,12 +874,13 @@ package body pltbutils_func_pkg is
     timestamp := now;
     if C_PLTBUTILS_USE_STD_ENDTEST_MSG then
       endtest_msg(pltbv.test_num, pltbv.test_name(1 to pltbv.test_name_len),
-        timestamp, pltbv.chk_cnt_in_test, pltbv.err_cnt_in_test);
+        timestamp, pltbv.test_active, pltbv.chk_cnt_in_test, pltbv.err_cnt_in_test);
     end if;
     if C_PLTBUTILS_USE_CUSTOM_ENDTEST_MSG then
       custom_endtest_msg(pltbv.test_num, pltbv.test_name(1 to pltbv.test_name_len),
-        timestamp, pltbv.chk_cnt_in_test, pltbv.err_cnt_in_test);
+        timestamp, pltbv.test_active, pltbv.chk_cnt_in_test, pltbv.err_cnt_in_test);
     end if;
+    pltbv.test_active := true;
     printv(pltbv.test_name, " ");
     pltbv.test_name_len := 1;
     pltbs_update(pltbv, pltbs);
@@ -938,7 +1074,7 @@ package body pltbutils_func_pkg is
     constant txt                : in    string
   ) is
   begin
-    print(true, s, txt);
+    print2(true, s, txt);
   end procedure print2;
 
   procedure print2(
@@ -958,7 +1094,7 @@ package body pltbutils_func_pkg is
     constant txt                : in    string
   ) is
   begin
-    print(true, pltbv, pltbs, txt);
+    print2(true, pltbv, pltbs, txt);
   end procedure print2;
 
   ----------------------------------------------------------------------------
@@ -1061,6 +1197,7 @@ package body pltbutils_func_pkg is
   -- waitsig(rd_en,   1, sys_clk, pltbv, pltbs, true);
   -- waitclks(full, '1', sys_clk, pltbv, pltbs, true, 1 ms);
   ----------------------------------------------------------------------------
+  -- waitsig integer, clocked
   procedure waitsig(
     signal   s                  : in    integer;
     constant value              : in    integer;
@@ -1082,6 +1219,7 @@ package body pltbutils_func_pkg is
     end if;
   end procedure waitsig;
 
+  -- waitsig std_logic, clocked
   procedure waitsig(
     signal   s                  : in    std_logic;
     constant value              : in    std_logic;
@@ -1103,6 +1241,7 @@ package body pltbutils_func_pkg is
     end if;
   end procedure waitsig;
 
+  -- waitsig std_logic against integer, clocked
   procedure waitsig(
     signal   s                  : in    std_logic;
     constant value              : in    integer;
@@ -1127,6 +1266,7 @@ package body pltbutils_func_pkg is
     end if;
   end procedure waitsig;
 
+  -- waitsig std_logic_vector, clocked
   procedure waitsig(
     signal   s                  : in    std_logic_vector;
     constant value              : in    std_logic_vector;
@@ -1148,6 +1288,7 @@ package body pltbutils_func_pkg is
     end if;
   end procedure waitsig;
 
+  -- waitsig std_logic_vector against integer, clocked
   procedure waitsig(
     signal   s                  : in    std_logic_vector;
     constant value              : in    integer;
@@ -1163,6 +1304,7 @@ package body pltbutils_func_pkg is
             pltbv, pltbs, falling, timeout);
   end procedure waitsig;
 
+  -- waitsig unsigned, clocked
   procedure waitsig(
     signal   s                  : in    unsigned;
     constant value              : in    unsigned;
@@ -1184,6 +1326,7 @@ package body pltbutils_func_pkg is
     end if;
   end procedure waitsig;
 
+  -- waitsig unsigned against integer, clocked
   procedure waitsig(
     signal   s                  : in    unsigned;
     constant value              : in    integer;
@@ -1199,6 +1342,7 @@ package body pltbutils_func_pkg is
             pltbv, pltbs, falling, timeout);
   end procedure waitsig;
 
+  -- waitsig signed, clocked
   procedure waitsig(
     signal   s                  : in    signed;
     constant value              : in    signed;
@@ -1220,6 +1364,7 @@ package body pltbutils_func_pkg is
     end if;
   end procedure waitsig;
 
+  -- waitsig signed against integer, clocked
   procedure waitsig(
     signal   s                  : in    signed;
     constant value              : in    integer;
@@ -1235,13 +1380,30 @@ package body pltbutils_func_pkg is
             pltbv, pltbs, falling, timeout);
   end procedure waitsig;
 
+  -- waitsig std_logic, unclocked
+  procedure waitsig(
+    signal   s                  : in    std_logic;
+    constant value              : in    std_logic;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+  begin
+    if s /= value then
+      wait until s = value for timeout;
+      if s /= value then
+        pltbutils_error("waitsig() timeout", pltbv, pltbs);
+      end if;
+    end if;
+  end procedure waitsig;
+
   ----------------------------------------------------------------------------
   -- check
   --
   -- procedure check(
   --   constant rpt             : in    string;
-  --   constant actual          : in    integer|std_logic|std_logic_vector|unsigned|signed|string;
-  --   constant expected        : in    integer|std_logic|std_logic_vector|unsigned|signed|string;
+  --   constant actual          : in    integer|std_logic|std_logic_vector|unsigned|signed|boolean|time|string;
+  --   constant expected        : in    integer|std_logic|std_logic_vector|unsigned|signed|boolean|time|string;
   --   variable pltbv           : inout pltbv_t;
   --   signal   pltbs           : out   pltbs_t
   -- )
@@ -1251,6 +1413,15 @@ package body pltbutils_func_pkg is
   --   constant actual          : in    std_logic_vector;
   --   constant expected        : in    std_logic_vector;
   --   constant mask            : in    std_logic_vector;
+  --   variable pltbv           : inout pltbv_t;
+  --   signal   pltbs           : out   pltbs_t
+  -- )
+  --
+  -- procedure check(
+  --   constant rpt             : in    string;
+  --   constant actual          : in    time;
+  --   constant expected        : in    time;
+  --   constant tolerance       : in    time;
   --   variable pltbv           : inout pltbv_t;
   --   signal   pltbs           : out   pltbs_t
   -- )
@@ -1277,7 +1448,8 @@ package body pltbutils_func_pkg is
   --
   --   actual                   The signal or variable to be checked.
   --                            Supported types: integer, std_logic,
-  --                            std_logic_vector, unsigned, signed.
+  --                            std_logic_vector, unsigned, signed, boolean,
+  --                            time, string.
   --
   --   expected                 Expected value.
   --                            Same type as data or integer.
@@ -1287,6 +1459,10 @@ package body pltbutils_func_pkg is
   --                            Optional if data is std_logic_vector.
   --                            Not allowed for other types.
   --
+  --   tolerance                Allowed tolerance. Checks that
+  --                            expected - tolerance <= actual <= expected + tolerance
+  --                            is true.
+  -- 
   --   expr                     boolean expression for checking.
   --                            This makes it possible to check any kind of
   --                            expresion, not just equality.
@@ -1438,6 +1614,57 @@ package body pltbutils_func_pkg is
   begin
     check(rpt, actual, to_signed(expected, actual'length), pltbv, pltbs);
   end procedure check;
+
+  -- check boolean
+  procedure check(
+    constant rpt                : in    string;
+    constant actual             : in    boolean;
+    constant expected           : in    boolean;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  ) is
+  begin
+    check(rpt, actual = expected, str(actual), str(expected), "", pltbv, pltbs);
+  end procedure check;
+
+  -- check boolean against integer
+  procedure check(
+    constant rpt                : in    string;
+    constant actual             : in    boolean;
+    constant expected           : in    integer;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  ) is
+  begin
+    check(rpt, ((actual = false and expected = 0) or (actual = true and expected = 1)),
+          str(actual), str(expected), "", pltbv, pltbs);
+  end procedure check;
+
+  -- check time
+  procedure check(
+    constant rpt                : in    string;
+    constant actual             : in    time;
+    constant expected           : in    time;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  ) is
+  begin
+    check(rpt, actual = expected, time'image(actual), time'image(expected), "", pltbv, pltbs);
+  end procedure check;
+
+  -- check time with tolerance
+  procedure check(
+    constant rpt                : in    string;
+    constant actual             : in    time;
+    constant expected           : in    time;
+    constant tolerance          : in    time;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  ) is
+  begin
+    check(rpt, ((actual >= expected-tolerance) and (actual <= expected+tolerance)),
+          time'image(actual), time'image(expected) & " +/- " & time'image(tolerance), "", pltbv, pltbs);
+  end procedure check;
   
   -- check string
   procedure check(
@@ -1463,8 +1690,9 @@ package body pltbutils_func_pkg is
   end procedure check;  
   
   -- check with boolean expression
-  -- Check signal or variable with a boolean expression as argument C_EXPR.
-  -- This allowes any kind of check.
+  -- Check signal or variable with a boolean expression as argument expr.
+  -- This allowes any kind of check, including less than, greater than,
+  -- ranges, etc. But there are no clear messages in case of mismatch.
   procedure check(
     constant rpt                : in    string;
     constant expr               : in    boolean;
@@ -1475,6 +1703,12 @@ package body pltbutils_func_pkg is
     check(rpt, expr, "", "", "", pltbv, pltbs);
   end procedure check;
 
+  -- check base procedure
+  -- All other check procedures perform the check, and calls this procedure
+  -- with the check result in the expr argument.
+  -- This procedure can also be called directly. It allow any kind of check,
+  -- including less than, greater than, ranges, etc. 
+  -- Your calling code must convert actual, expected and mask to strings.
   procedure check(
     constant rpt                : in    string;
     constant expr               : in    boolean;
@@ -1489,6 +1723,18 @@ package body pltbutils_func_pkg is
     timestamp := now;
     pltbv.chk_cnt := pltbv.chk_cnt + 1;
     pltbv.chk_cnt_in_test := pltbv.chk_cnt_in_test + 1;
+    if not is_test_active(pltbv) then
+      pltbv.err_cnt := pltbv.err_cnt + 1;
+      pltbv.err_cnt_in_test := pltbv.err_cnt_in_test + 1;
+      if C_PLTBUTILS_USE_STD_CHECK_MSG then
+        check_msg("check() executed in skipped test, missing if clause?", timestamp, false, "", "", "", pltbv.test_num,
+          pltbv.test_name(1 to pltbv.test_name_len), pltbv.chk_cnt, pltbv.err_cnt_in_test);
+      end if;
+      if C_PLTBUTILS_USE_CUSTOM_CHECK_MSG then
+        custom_check_msg("check() executed in skipped test, missing if clause?", timestamp, false, "", "", "", pltbv.test_num,
+          pltbv.test_name(1 to pltbv.test_name_len), pltbv.chk_cnt, pltbv.err_cnt_in_test);
+      end if;
+    end if;
     if not expr then
       pltbv.err_cnt := pltbv.err_cnt + 1;
       pltbv.err_cnt_in_test := pltbv.err_cnt_in_test + 1;
@@ -1520,8 +1766,19 @@ package body pltbutils_func_pkg is
   --  constant s                  : signed
   -- ) return signed;
   --
-  -- Converts a signal or variable to ascending range ("to-range").
+  -- Converts a vector to ascending range ("to-range").
   -- The argument s can have ascending or descending range.
+  -- E.g. an argument defined as a std_logic_vector(3 downto 1) 
+  -- will be returned as a std_logic_vector(1 to 3).
+  --
+  -- Arguments: 
+  --   s             Constant, signal or variable to convert
+  --
+  -- Return value:   Converted value
+  --
+  -- Examples:
+  -- ascending_sig <= to_ascending(descending_sig);
+  -- ascending_var := to_ascending(descending_var);
   ----------------------------------------------------------------------------
   function to_ascending(
     constant s                  : std_logic_vector
@@ -1571,8 +1828,19 @@ package body pltbutils_func_pkg is
   --  constant s                  : signed
   -- ) return signed;
   --
-  -- Converts a signal or variable to descending range ("downto-range").
+  -- Converts a vector to descending range ("downto-range").
   -- The argument s can have ascending or descending range.
+  -- E.g. an argument defined as a std_logic_vector(1 to 3) 
+  -- will be returned as a std_logic_vector(3 downto 1).
+  --
+  -- Arguments: 
+  --   s             Constant, signal or variable to convert
+  --
+  -- Return value:   Converted value
+  --
+  -- Examples:
+  -- descending_sig <= to_descending(ascending_sig);
+  -- descending_var := to_descending(ascending_var);
   ----------------------------------------------------------------------------
   function to_descending(
     constant s                  : std_logic_vector
@@ -1627,26 +1895,63 @@ package body pltbutils_func_pkg is
   --  constant postfix            : string := ""
   -- ) return string;
   --
-  -- Converts a signal to a string in hexadecimal format.
-  -- An optional prefix can be specified, e.g. "0x".
+  -- Converts a vector to a string in hexadecimal format.
+  -- An optional prefix can be specified, e.g. "0x", as well as a suffix.
   --
-  -- The signal can have ascending range ( "to-range" ) or descending range
-  -- ("downto-range").
+  -- The input argument can have ascending range ( "to-range" ) or descending range
+  -- ("downto-range"). There is no vector length limitation.
   --
-  -- hxstr is a wrapper function for hstr in txt_util.
-  -- hstr only support std_logic_vector with descending range.
+  -- Arguments: 
+  --   s             Constant, signal or variable to convert
+  --
+  -- Return value:   Converted value
   --
   -- Examples:
   -- print("value=" & hxstr(s));
   -- print("value=" & hxstr(s, "0x"));
+  -- print("value=" & hxstr(s, "16#", "#"));
   ----------------------------------------------------------------------------
   function hxstr(
     constant s                  : std_logic_vector;
     constant prefix             : string := "";
     constant postfix            : string := ""
   ) return string is
+    variable hexstr             : string(1 to (s'length+3)/4);
+    variable nibble_aligned_s   : std_logic_vector(((s'length+3)/4)*4-1 downto 0) := (others => '0');
+    variable nibble             : std_logic_vector(3 downto 0);
   begin
-    return prefix & hstr(to_descending(s)) & postfix;
+    nibble_aligned_s(s'length-1 downto 0) := to_descending(s);
+    for i in 0 to nibble_aligned_s'high/4 loop
+      nibble := nibble_aligned_s(4*i + 3 downto 4*i); 
+      case nibble is
+        when "0000" => hexstr(hexstr'high-i) := '0';
+        when "0001" => hexstr(hexstr'high-i) := '1';
+        when "0010" => hexstr(hexstr'high-i) := '2';
+        when "0011" => hexstr(hexstr'high-i) := '3';
+        when "0100" => hexstr(hexstr'high-i) := '4';
+        when "0101" => hexstr(hexstr'high-i) := '5';
+        when "0110" => hexstr(hexstr'high-i) := '6';
+        when "0111" => hexstr(hexstr'high-i) := '7';
+        when "1000" => hexstr(hexstr'high-i) := '8';
+        when "1001" => hexstr(hexstr'high-i) := '9';
+        when "1010" => hexstr(hexstr'high-i) := 'A';
+        when "1011" => hexstr(hexstr'high-i) := 'B';
+        when "1100" => hexstr(hexstr'high-i) := 'C';
+        when "1101" => hexstr(hexstr'high-i) := 'D';
+        when "1110" => hexstr(hexstr'high-i) := 'E';
+        when "1111" => hexstr(hexstr'high-i) := 'F';
+        when "UUUU" => hexstr(hexstr'high-i) := 'U';
+        when "XXXX" => hexstr(hexstr'high-i) := 'X';
+        when "ZZZZ" => hexstr(hexstr'high-i) := 'Z';
+        when "WWWW" => hexstr(hexstr'high-i) := 'W';
+        when "LLLL" => hexstr(hexstr'high-i) := 'L';
+        when "HHHH" => hexstr(hexstr'high-i) := 'H';
+        when "----" => hexstr(hexstr'high-i) := '-';
+        when others => hexstr(hexstr'high-i) := '?';
+        -- TODO: handle vectors where nibble_aligned_s'length > a'length and the highest nibble are all equal characters such as "XXX"
+      end case; 
+    end loop;
+    return prefix & hexstr & postfix;
   end function hxstr;
 
   function hxstr(
@@ -1655,7 +1960,7 @@ package body pltbutils_func_pkg is
     constant postfix            : string := ""
   ) return string is
   begin
-    return prefix & hstr(to_descending(std_logic_vector(s))) & postfix;
+    return hxstr(std_logic_vector(s), prefix, postfix);
   end function hxstr;
 
   function hxstr(
@@ -1664,13 +1969,13 @@ package body pltbutils_func_pkg is
     constant postfix            : string := ""
   ) return string is
   begin
-    return prefix & hstr(to_descending(std_logic_vector(s))) & postfix;
+    return hxstr(std_logic_vector(s), prefix, postfix);
   end function hxstr;
 
   ----------------------------------------------------------------------------
-  -- pltbutils internal procedure(s), called from other pltbutils procedures.
-  -- Do not to call this/these from user's code.
-  -- This/these procedures are undocumented in the specification on purpose.
+  -- pltbutils internal procedures, called from other pltbutils procedures.
+  -- Do not to call these from user's code.
+  -- These procedures are undocumented in the specification on purpose.
   ----------------------------------------------------------------------------
   procedure pltbs_update(
     variable pltbv              : inout pltbv_t;
@@ -1728,6 +2033,7 @@ package body pltbutils_func_pkg is
     constant testcase_name      : in string;
     constant timestamp          : in time;
     constant num_tests          : in integer;
+    constant num_skiptests      : in integer;
     constant num_checks         : in integer;
     constant num_errors         : in integer;
     constant show_success_fail  : in boolean
@@ -1741,6 +2047,9 @@ package body pltbutils_func_pkg is
     writeline(output, l);
     write(l, num_tests, right, 11);
     write(l, string'(" Tests"));
+    writeline(output, l);
+    write(l, num_skiptests, right, 11);
+    write(l, string'(" Skipped tests"));
     writeline(output, l);
     write(l, num_checks, right, 11);
     write(l, string'(" Checks"));
@@ -1768,15 +2077,27 @@ package body pltbutils_func_pkg is
     print(lf & "Test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
   end procedure starttest_msg;
 
+  procedure skiptest_msg(
+    constant test_num           : in integer;
+    constant test_name          : in string;
+    constant timestamp          : in time
+  ) is
+  begin
+    print(lf & "Skipping Test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
+  end procedure skiptest_msg;
+
   procedure endtest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
     constant timestamp          : in time;
+    constant test_active        : in boolean;
     constant num_checks_in_test : in integer;
     constant num_errors_in_test : in integer
   ) is
   begin
-    print("Done with test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
+    if test_active then
+      print("Done with test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
+    end if;
   end procedure endtest_msg;
 
   procedure check_msg(

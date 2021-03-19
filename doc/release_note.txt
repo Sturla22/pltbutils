@@ -1,5 +1,40 @@
 pltbutils release_note.txt
 
+v1.1 August 14, 2018
+1. Corrected handling of skipped tests.
+   Thanks to Kent Damberg for finding the bug.
+
+v1.0 January 26, 2016
+1. Updated specification_pltbutils.docx / .pdf
+
+beta004 January 3, 2016
+1. Added skiptest argument to startsim().
+2. Added function is_test_active().
+3. Updated examples, testbenches and templates.
+4. Updated specification_pltbutils.docx / .pdf
+
+beta0003 November 23, 2015
+1. Added check() for boolean.
+2. Added check() for boolean against integer.
+3. Added check() for time.
+4. Added check() for time with tolerance. Suggested by Stefan Eriksson.
+5. Updated tb_pltbutils.vhd with tests for the new check() procedures.
+6. Updated specification_pltbutils.docx / .pdf
+
+Thanks to Stefan Eriksson for suggesting features and providing feedback
+on documentation.
+
+beta0002 February 2, 2015
+1. endsim(): renamed argument from force to force_stop for clarity.
+2. print2(string, string): corrected call, from print() to print2().
+3. print2(pltbv_t, pltbs_t, string): corrected call, from print() to print2().
+4. pltbutils_func_pkg.vhd: more comments.
+5. waitsig(): added overloaded unclocked variant.
+6. hxstr(): no longer wrapper for hstr, improved with unlimited length of 
+   argument s.
+7. Updated author's email address in all files where applicable.
+8: Updated specification_pltbutils.docx/.pdf.
+
 beta0001 April 9, 2014
 1. Added check() for string.
 

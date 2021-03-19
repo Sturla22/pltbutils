@@ -7,6 +7,35 @@ If you have made testbenches which use pltbutils, you may need to make
 modifications if you update to a newer version of pltbutils.
 This document lists required modifications to your testbenches.
 
+beta0003 -> beta0004 and later
+1. In your testbench, replace
+     startsim("ExampleName", pltbv, pltbs);
+   with 
+     startsim("ExampleName", "", pltbv, pltbs);
+   The new argument 2 is a std_logic_vector for skipping tests.
+   Read more in the specification. 
+2. If you have created your own procedure custom_endsim_msg(),
+   it must now have a new argument:
+      procedure custom_endsim_msg(
+        constant testcase_name      : in string;
+        constant timestamp          : in time;
+        constant num_tests          : in integer;
+        constant num_skip_tests     : in integer; -- New argument
+        constant num_checks         : in integer;
+        constant num_errors         : in integer;
+        constant show_success_fail  : in boolean
+      )
+3. If you have created your own procedure custom_endtest_msg(),
+   it must now have a new argument:
+      procedure custom_endtest_msg(
+        constant test_num           : in integer;
+        constant test_name          : in string;
+        constant timestamp          : in time;
+        constant test_active        : in boolean; -- New argument
+        constant num_checks_in_test : in integer;
+        constant num_errors_in_test : in integer
+      ) 
+
 alpha0006 -> alpha0007 and later
 Nothing.
 
