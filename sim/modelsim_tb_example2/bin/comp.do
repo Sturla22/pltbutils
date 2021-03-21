@@ -1,7 +1,9 @@
 # comp.do
 # ModelSim do-script for compiling design and testbench
-vlib work
-vcom -novopt -work work \
+if {![file exists $libname]} {
+  vlib $libname
+}
+vcom -novopt -work $libname \
      ../../../examples/vhdl/rtl_example/dut_example.vhd \
      ../../../src/vhdl/txt_util.vhd \
      ../../../src/vhdl/pltbutils_user_cfg_pkg.vhd \

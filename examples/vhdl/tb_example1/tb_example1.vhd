@@ -22,7 +22,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013-2014 Authors and OPENCORES.ORG            ----
+---- Copyright (C) 2013-2020 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----

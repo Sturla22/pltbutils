@@ -24,7 +24,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013 Authors and OPENCORES.ORG                 ----
+---- Copyright (C) 2013-2020 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -78,7 +78,63 @@ package pltbutils_comp_pkg is
   --  port map (
   --    clk_o           => clk,
   --    clk_n_o         => clk_n,
-  --    stop_sim_i      => stop_sim
+  --    stop_sim_i      => pltbs.stop_sim
+  --  );
+
+  component pltbutils_time_measure is
+    generic (
+      G_VERBOSITY     : integer := 0;
+      G_RPT_LABEL     : string  := "pltbutils_time_measure" 
+    );
+    port (
+      t_hi_o          : out time;             -- High time
+      t_lo_o          : out time;             -- Low time
+      t_per_o         : out time;             -- Period time
+      s_i             : in  std_logic         -- Signal to measure
+    );
+  end component pltbutils_time_measure;
+
+  -- Instansiation template
+  -- (copy to your own file and remove the comment characters):
+  --pltbutils_time_measure0 : pltbutils_time_measure
+  --  generic map (
+  --    G_VERBOSITY     => G_VERBOSITY
+  --    G_RPT_LABEL     => "sig" 
+  --  )
+  --  port map (
+  --    t_hi_o          => sig_t_hi,
+  --    t_lo_o          => sig_t_lo,
+  --    t_per_o         => sig_t_per,
+  --    s_i             => sig
+  --  );
+
+  component pltbutils_diff_check is
+    generic (
+      G_VERBOSITY     : integer := 0;
+      G_RPT_LABEL     : string  := "pltbutils_diff_check" 
+    );
+    port (
+      diff_error_o    : out std_logic;        -- High when diff error detected
+      diff_errors_o   : out integer;          -- Number of diff errors detected
+      s_i             : in  std_logic;        -- Pos half of diff pair to check
+      s_n_i           : in  std_logic := '0'; -- Neg half of diff pair to check
+      rst_errors_i    : in  std_logic := '0'  -- High resets diff error counter
+    );
+  end component pltbutils_diff_check;
+
+  -- Instansiation template
+  -- (copy to your own file and remove the comment characters):
+  --pltbutils_diff_check0 : pltbutils_diff_check
+  --  generic map (
+  --    G_VERBOSITY     => G_VERBOSITY
+  --    G_RPT_LABEL     => "sig" 
+  --  )
+  --  port map (
+  --    diff_error      => sig_diff_error,
+  --    diff_errors     => sig_diff_errors,
+  --    s_i             => sig,
+  --    s_n_i           => sig_n,
+  --    rst_errors_i    => sig_rst_errors
   --  );
 
 end package pltbutils_comp_pkg;

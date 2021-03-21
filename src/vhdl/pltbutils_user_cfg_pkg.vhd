@@ -27,7 +27,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2014 Authors and OPENCORES.ORG                 ----
+---- Copyright (C) 2014-2020 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -54,7 +54,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
---use std.textio.all;
+use std.textio.all;
 --use std.env.all; -- Uncomment if using stop or finish in custom_stopsim() below.
 use work.txt_util.all;
 
@@ -65,7 +65,7 @@ package pltbutils_user_cfg_pkg is
   constant C_PLTBUTILS_USE_STD_STARTSIM_MSG     : boolean := true;
   constant C_PLTBUTILS_USE_STD_ENDSIM_MSG       : boolean := true;
   constant C_PLTBUTILS_USE_STD_STARTTEST_MSG    : boolean := true;
-  constant C_PLTBUTILS_USE_STD_SKIPTEST_MSG    : boolean := true;
+  constant C_PLTBUTILS_USE_STD_SKIPTEST_MSG     : boolean := true;
   constant C_PLTBUTILS_USE_STD_ENDTEST_MSG      : boolean := true;
   constant C_PLTBUTILS_USE_STD_CHECK_MSG        : boolean := true;
   constant C_PLTBUTILS_USE_STD_ERROR_MSG        : boolean := true;
@@ -256,39 +256,42 @@ package body pltbutils_user_cfg_pkg is
     constant check_num          : in integer;
     constant err_cnt_in_test    : in integer
   ) is
-    variable comparison_str     : string(1 to 32) := (others => ' ');
-    variable comparison_str_len : integer := 1;
-    variable actual_str         : string(1 to 32) := (others => ' ');
-    variable actual_str_len     : integer := 1;
-    variable expected_str       : string(1 to 32) := (others => ' ');
-    variable expected_str_len   : integer := 1;
-    variable mask_str           : string(1 to 32) := (others => ' ');
-    variable mask_str_len       : integer := 1;
+    variable l                  : line;
+    constant C_NO_TAGS_STR      : string := "!NO_TAGS!";
+    variable no_tags            : boolean := false;
   begin
     if not expr then -- Output message only if the check fails
       if err_cnt_in_test <= 1 then -- TeamCity allows max one error message per test
-        if actual /= "" then
-          actual_str_len := 10 + actual'length;
-          actual_str(1 to actual_str_len) := " actual='" & tcfilter(actual) & "'";
-        end if;        
-        if expected /= "" then
-          comparison_str_len := 26;
-          comparison_str(1 to comparison_str_len) := " type='comparisonFailure' ";
-          expected_str_len := 12 + expected'length;
-          expected_str(1 to expected_str_len) := " expected='" & tcfilter(expected) & "'";
-        end if;        
-        if mask /= "" then
-          mask_str_len := 17 + mask'length;
-          mask_str(1 to mask_str_len) := " details='mask=" & tcfilter(mask) & "' ";
-        end if;        
-        print("##teamcity[testFailed" &
-              comparison_str(1 to comparison_str_len) &
-              "name='" & tcfilter(test_name) & "' " &
-              "message='" & tcfilter(rpt) & "' " &
-              expected_str(1 to expected_str_len) & 
-              actual_str(1 to actual_str_len) &
-              mask_str(1 to mask_str_len) &
-              "]");
+        if mask'length = C_NO_TAGS_STR'length then
+          if mask = C_NO_TAGS_STR then
+            no_tags := true;
+          end if;
+        end if;
+        if no_tags then
+          write(l, "##teamcity[testFailed name='" & tcfilter(test_name) & "'"); 
+          write(l, "  message='" & tcfilter(rpt) & "'");
+          if actual /= "" or expected /= "" then
+            write(l, " details='" & tcfilter(actual));
+            if actual /= "" and expected /= "" then
+              write(l, string'(" "));
+            end if;
+            write(l, tcfilter(expected) & "'");
+          end if;
+          write(l, string'("]"));
+        else
+          write(l, "##teamcity[testFailed type='comparisonFailure' name='" & tcfilter(test_name) & "'");
+          if expected /= "" then
+            write(l, " expected='" & tcfilter(expected) & "'");
+          end if;
+          if actual /= "" then
+            write(l, " actual='" & tcfilter(actual) & "'");
+          end if;
+          if mask /= "" then
+            write(l, " details='mask=" & tcfilter(mask) & "'");
+          end if;
+          write(l, string'("]"));
+        end if;       
+        print(l.all);
       else
         print("(TeamCity error message filtered out, because max one message is allowed for each test)");
       end if;

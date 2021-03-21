@@ -1,5 +1,24 @@
 pltbutils release_note.txt
 
+v1.3 May 12, 2020
+1. Updated private procedure get_file_item() for correct functionality with
+   XSim.
+2. Added simulation directory xsim_pltbutils.
+
+v1.2 March 11, 2020
+1. Added waitsig() for unclocked std_logic in pltbutils_func_pkg.vhd .
+2. Added check_binfile(), check_txtfile(), check_datfile() in
+   pltbutils_func_pkg.vhd .
+3. Added str() for converting integer to string with fixed field width 
+   in pltbutils_func_pkg.vhd .
+4. Added str_equal() for comparing strings in pltbutils_func_pkg.vhd .
+5. Improved handling of internal (private) procedures 
+   in pltbutils_func_pkg.vhd .
+6. Added components pltbutils_time_measure and pltbutils_diff_check 
+   in pltbutils_comp.vhd / pltbutils_comp_pkg.vhd
+7. Minor updates to scripts.
+8. Updated specification_pltbutils.docx / .pdf
+
 v1.1 August 14, 2018
 1. Corrected handling of skipped tests.
    Thanks to Kent Damberg for finding the bug.

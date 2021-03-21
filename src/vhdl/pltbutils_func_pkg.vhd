@@ -21,7 +21,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2013-2014 Authors and OPENCORES.ORG            ----
+---- Copyright (C) 2013-2020 Authors and OPENCORES.ORG            ----
 ----                                                              ----
 ---- This source file may be used and distributed without         ----
 ---- restriction provided that this copyright statement is not    ----
@@ -310,7 +310,14 @@ package pltbutils_func_pkg is
     signal   pltbs              : out   pltbs_t;
     constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   );
-
+  -- waitsig std_logic edge, unclocked
+  procedure waitsig(
+    signal   s                  : in    std_logic;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  );
   -- check
   procedure check(
     constant rpt                : in    string;
@@ -433,7 +440,32 @@ package pltbutils_func_pkg is
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t
   );
-   procedure check(
+  procedure check_binfile(
+    constant rpt        : in    string;
+    constant filename1  : in    string;
+    constant filename2  : in    string;
+    constant verbosity  : in    integer;
+    variable pltbv      : inout pltbv_t;
+    signal   pltbs      : out   pltbs_t
+  );  
+  procedure check_txtfile(
+    constant rpt        : in    string;
+    constant filename1  : in    string;
+    constant filename2  : in    string;
+    constant verbosity  : in    integer;
+    variable pltbv      : inout pltbv_t;
+    signal   pltbs      : out   pltbs_t
+  );
+  procedure check_datfile(
+    constant rpt        : in    string;
+    constant filename1  : in    string;
+    constant filename2  : in    string;
+    constant verbosity  : in    integer;
+    variable pltbv      : inout pltbv_t;
+    signal   pltbs      : out   pltbs_t;
+    constant skip_init_items : in integer := 0
+  );  
+  procedure check(
     constant rpt                : in    string;
     constant expr               : in    boolean;
     constant actual             : in    string;
@@ -482,48 +514,60 @@ package pltbutils_func_pkg is
     constant postfix            : string := ""
   ) return string;
 
-  -- pltbutils internal procedure(s), do not call from user's code
+  -- str
+  function str(
+    constant n                  : integer;
+    constant len                : integer;
+    constant fillchar           : character := ' '
+  ) return string;
+
+  function str_equal (
+    constant s1 : STRING;
+    constant s2 : STRING
+  ) return boolean;
+
+end package pltbutils_func_pkg;
+
+package body pltbutils_func_pkg is
+
+  --==========================================================================
+  -- pltbutils internal (private) procedures
+  -- To be called from other pltbutils procedures.
+  -- Do not to call these from user's code.
+  -- These procedures are intentionally undocumented in the specification
+  -- document.
+  --==========================================================================
+
   procedure pltbs_update(
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t
-  );
+  ) is
+  begin
+    pltbs.test_num  <= pltbv.test_num;
+    print(pltbs.test_name, pltbv.test_name);
+    print(pltbs.info, pltbv.info);
+    pltbs.chk_cnt   <= pltbv.chk_cnt;
+    pltbs.err_cnt   <= pltbv.err_cnt;
+    pltbs.stop_sim  <= pltbv.stop_sim;
+  end procedure pltbs_update;
 
-  procedure stopsim(
-    constant timestamp          : in time
-  );
-
-  procedure pltbutils_error(
-    constant rpt                : in string;
-    variable pltbv              : inout pltbv_t;
-    signal   pltbs              : out   pltbs_t
-  );
-
-  procedure startsim_msg(
-    constant testcase_name      : in string;
-    constant timestamp          : in time
-  );
-
-  procedure endsim_msg(
-    constant testcase_name      : in string;
-    constant timestamp          : in time;
-    constant num_tests          : in integer;
-    constant num_skiptests      : in integer;
-    constant num_checks         : in integer;
-    constant num_errors         : in integer;
-    constant show_success_fail  : in boolean
-  );
-
-  procedure starttest_msg(
+    procedure starttest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
     constant timestamp          : in time
-  );
+  ) is
+  begin
+    print(lf & "Test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
+  end procedure starttest_msg;
 
   procedure skiptest_msg(
     constant test_num           : in integer;
     constant test_name          : in string;
     constant timestamp          : in time
-  );
+  ) is
+  begin
+    print(lf & "Skipping Test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
+  end procedure skiptest_msg;
 
   procedure endtest_msg(
     constant test_num           : in integer;
@@ -532,7 +576,12 @@ package pltbutils_func_pkg is
     constant test_active        : in boolean;
     constant num_checks_in_test : in integer;
     constant num_errors_in_test : in integer
-  );
+  ) is
+  begin
+    if test_active then
+      print("Done with test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
+    end if;
+  end procedure endtest_msg;
 
   procedure check_msg(
     constant rpt                : in string;
@@ -545,7 +594,58 @@ package pltbutils_func_pkg is
     constant test_name          : in string;
     constant check_num          : in integer;
     constant err_cnt_in_test    : in integer
-  );
+  ) is
+    variable actual_str_len     : integer := 1;
+    variable actual_str         : string(1 to actual'length+8) := (others => ' ');
+    variable expected_str       : string(1 to expected'length+10) := (others => ' ');
+    variable expected_str_len   : integer := 1;
+    variable mask_str           : string(1 to mask'length+6) := (others => ' ');
+    variable mask_str_len       : integer := 1;
+    constant C_ACTUAL_PREFIX    : string := " Actual=";
+    constant C_ACTUAL_POSTFIX   : string := "";
+    constant C_EXPECTED_PREFIX  : string := " Expected=";
+    constant C_EXPECTED_POSTFIX : string := "";
+    constant C_MASK_PREFIX      : string := " Mask=";
+    constant C_MASK_POSTFIX     : string := "";    
+  begin
+    if not expr then -- Output message only if the check fails
+      if str_equal(mask, "!NO_TAGS!") then
+         -- if mask=!NO_TAGS!, then do not add Actual= and Expected=" tags to strings
+         actual_str_len := actual'length;
+         actual_str(1 to actual_str_len) := actual;
+         expected_str_len := expected'length;
+         expected_str(1 to expected_str_len) := expected;
+         mask_str_len := 1;
+      else
+        -- Add Actual= and Expected= tags to strings
+        if actual /= "" then
+          --actual_str_len := 8 + actual'length;
+          --actual_str := " Actual=" & actual;
+            actual_str_len := C_ACTUAL_PREFIX'length + actual'length + C_ACTUAL_POSTFIX'length;
+            actual_str(1 to actual_str_len) := C_ACTUAL_PREFIX & tcfilter(actual) & C_ACTUAL_POSTFIX;          
+        end if;
+        if expected /= "" then
+          --expected_str_len := 10 + expected'length;
+          --expected_str := " Expected=" & expected;
+          expected_str_len := C_EXPECTED_PREFIX'length + expected'length + C_EXPECTED_POSTFIX'length;
+          expected_str(1 to expected_str_len) := C_EXPECTED_PREFIX & tcfilter(expected) & C_EXPECTED_POSTFIX;
+        end if;
+        if mask /= "" then
+          --mask_str_len := 6 + mask'length;
+          --mask_str := " Mask=" & mask;
+          mask_str_len := C_MASK_PREFIX'length + mask'length + C_MASK_POSTFIX'length;
+          mask_str(1 to mask_str_len) := C_MASK_PREFIX & tcfilter(mask) & C_MASK_POSTFIX;                      
+        end if;
+      end if;
+      assert false
+        report "Check " & str(check_num) & "; " & rpt & "; " &
+               actual_str(1 to actual_str_len) &
+               expected_str(1 to expected_str_len) &
+               mask_str(1 to mask_str_len) &
+               "  in test " & str(test_num) & " " & test_name
+        severity error;
+    end if;
+  end procedure check_msg;
 
   procedure error_msg(
     constant rpt                : in string;
@@ -553,11 +653,156 @@ package pltbutils_func_pkg is
     constant test_num           : in integer;
     constant test_name          : in string;
     constant err_cnt_in_test    : in integer
-  );
+  ) is
+  begin
+    assert false
+    report rpt & " in test " & str(test_num) & ": " & test_name
+    severity error;
+  end procedure error_msg;
 
-end package pltbutils_func_pkg;
+  procedure pltbutils_error(
+    constant rpt                : in string;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t
+  ) is
+  begin
+    pltbv.err_cnt := pltbv.err_cnt + 1;
+    pltbv.err_cnt_in_test := pltbv.err_cnt_in_test + 1;
+    pltbs_update(pltbv, pltbs);
+    if C_PLTBUTILS_USE_STD_ERROR_MSG then
+      error_msg(rpt, now, pltbv.test_num,
+        pltbv.test_name(1 to pltbv.test_name_len), pltbv.err_cnt_in_test);
+    end if;
+    if C_PLTBUTILS_USE_CUSTOM_ERROR_MSG then
+      custom_error_msg(rpt, now, pltbv.test_num,
+        pltbv.test_name(1 to pltbv.test_name_len), pltbv.err_cnt_in_test);
+    end if;
+  end procedure pltbutils_error;
 
-package body pltbutils_func_pkg is
+  procedure stopsim(
+    constant timestamp          : in time
+  ) is
+  begin
+    assert false
+    report "--- FORCE END OF SIMULATION ---" &
+           " (ignore this false failure message, it's not a real failure)"
+    severity failure;
+  end procedure stopsim;
+
+  procedure startsim_msg(
+    constant testcase_name      : in string;
+    constant timestamp          : in time
+  ) is
+  begin
+    print(lf & "--- START OF SIMULATION ---");
+    print("Testcase: " & testcase_name);
+    print(time'image(timestamp));
+  end procedure startsim_msg;
+
+  procedure endsim_msg(
+    constant testcase_name      : in string;
+    constant timestamp          : in time;
+    constant num_tests          : in integer;
+    constant num_skiptests      : in integer;
+    constant num_checks         : in integer;
+    constant num_errors         : in integer;
+    constant show_success_fail  : in boolean
+  ) is
+    variable l : line;
+  begin
+    print(lf & "--- END OF SIMULATION ---");
+    print("Note: the results presented below are based on the PlTbUtil's check() procedure calls.");
+    print("      The design may contain more errors, for which there are no check() calls.");
+    write(l, timestamp, right, 14);
+    writeline(output, l);
+    write(l, num_tests, right, 11);
+    write(l, string'(" Tests"));
+    writeline(output, l);
+    write(l, num_skiptests, right, 11);
+    write(l, string'(" Skipped tests"));
+    writeline(output, l);
+    write(l, num_checks, right, 11);
+    write(l, string'(" Checks"));
+    writeline(output, l);
+    write(l, num_errors, right, 11);
+    write(l, string'(" Errors"));
+    writeline(output, l);
+    if show_success_fail then
+      if num_errors = 0 and num_checks > 0 then
+        print("*** SUCCESS ***");
+      elsif num_checks > 0 then
+        print("*** FAIL ***");
+      else
+        print("*** NO CHECKS ***");
+      end if;
+    end if;
+  end procedure endsim_msg;
+
+
+
+  -- Get next item (word) in a file
+  procedure get_file_item(
+    file     f          :       text;
+    variable l          : inout line;
+    variable item       : out   string;
+    variable item_len   : out   integer;
+    variable line_num   : inout integer;
+    variable item_num   : inout integer
+  ) is
+    variable c          : character := ' ';
+    variable c_good     : boolean := true;
+    variable i          : integer := 0;
+  begin
+    item := (item'low to item'high => ' ');
+    item_len := 0;
+    while i = 0 loop
+      -- Get next line, unless we're already processing a line
+      if l = null then
+        exit when endfile(f);
+        readline(f, l);
+        line_num := line_num + 1;
+      elsif l'length = 0 then
+        exit when endfile(f);
+        readline(f, l);
+        line_num := line_num + 1;
+      end if;
+
+      -- Find next item on the line
+      read(l, c, c_good);
+      -- Skip leading whitespace characters
+      while c_good and (c = ' ' or c = ht or c = cr or c = lf) loop
+        read(l, c, c_good);
+      end loop;
+      -- Read item until next whitespace, comment character or end-of-line
+      while c_good and c /= ' ' and c /= ht and c /= cr and c /= lf and c /= '#' loop
+        -- If i >= item'length, an error will occur. We don't try to do anything
+        -- about that here, because it is probably better that the user 
+        -- find out the hard way, instead of trying to hide the problem.
+        item(item'low + i) := c;
+        i := i + 1;
+        read(l, c, c_good);
+      end loop;
+
+      -- If a comment character was found, absorb the rest of the comment
+      if c_good and c = '#' then
+        while l'length > 0 loop
+          read(l, c, c_good);
+        end loop;
+      end if;
+      -- Update output values if item was found
+      if i > 0 then
+        item_len := i;
+        item_num := item_num + 1;
+      end if;
+    end loop;
+  end procedure get_file_item;
+
+
+
+  --==========================================================================
+  -- pltbutils external (public) procedures
+  -- To be called from the user's code.
+  --==========================================================================
 
   ----------------------------------------------------------------------------
   -- startsim
@@ -1170,8 +1415,9 @@ package body pltbutils_func_pkg is
   --   constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
   -- )
   --
-  -- Waits until a signal has reached a specified value after specified clock
-  -- edge.
+  -- Waits until a signal has reached a specified value. In clocked variants of
+  -- waitsig, the signal is checked after specified clock edge (rising or falling).
+  -- Unclocked variants are currently only available for types std_logic and std_logic_vector.
   --
   -- Arguments:
   --   s                        The signal to test.
@@ -1181,7 +1427,8 @@ package body pltbutils_func_pkg is
   --   value                    Value to wait for.
   --                            Same type as data or integer.
   --
-  --   clk                      The clock.
+  --   clk                      The clock, only present in clocked variants of
+  --                            waitsig.
   --
   --   pltbv, pltbs             PlTbUtils' status- and control variable and
   --                            -signal.
@@ -1396,6 +1643,27 @@ package body pltbutils_func_pkg is
       end if;
     end if;
   end procedure waitsig;
+
+  -- waitsig std_logic edge, unclocked
+  procedure waitsig(
+    signal   s                  : in    std_logic;
+    variable pltbv              : inout pltbv_t;
+    signal   pltbs              : out   pltbs_t;
+    constant falling            : in    boolean := false;
+    constant timeout            : in    time    := C_PLTBUTILS_TIMEOUT
+  ) is
+    variable v_timeout_time     : time;
+  begin
+    if falling then
+      wait until falling_edge(s) for timeout;
+    else 
+      wait until rising_edge(s)  for timeout;
+    end if;
+    if (not ((falling and (s = '0' or s = 'L')) or ((not falling) and (s = '1' or s = 'H')))) then
+      pltbutils_error("waitsig() timeout", pltbv, pltbs);
+    end if;
+  end procedure waitsig;
+
 
   ----------------------------------------------------------------------------
   -- check
@@ -1703,10 +1971,349 @@ package body pltbutils_func_pkg is
     check(rpt, expr, "", "", "", pltbv, pltbs);
   end procedure check;
 
+
+  ----------------------------------------------------------------------------
+  -- check files
+  --
+  -- procedure check_binfile | check_txtfile | check_datfile(
+  --   constant rpt        : in    string;
+  --   constant filename1  : in    string;
+  --   constant filename2  : in    string;
+  --   constant verbosity  : in    integer;
+  --   variable pltbv      : inout pltbv_t;
+  --   signal   pltbs      : out   pltbs_t
+  -- )
+  --
+  -- Checks that the contents of a file is equal to expected contents, by 
+  -- comparing with a reference file.
+  -- If not equal, displays an error message and increments the error counter.
+  -- This is useful for examining different types of files generated by
+  -- testbench components during a simulation against reference files. 
+  -- It can be different kinds of data sequences, video image data, etc.
+  --
+  -- check_binfile compares two binary files. It uses "file of character" to
+  -- read bytes from the files. The VHDL LRM does not define how a  
+  -- "file of character" should be written or to/read from disk. In theory,
+  -- there is a risk that a VHDL file of character is not compatible with
+  -- a normal binary file, but practical tests done with some popular 
+  -- simulators have shown that they are compatible. This does not 
+  -- guarantee that this procedure works with ALL simulators, and with
+  -- ALL future versions of the tested simulators. Use your own judgement.
+  --
+  -- check_txtfile compares two text files.
+  --
+  -- check_datfile compares two files with data formatted as follows.
+  -- The files contain a sequence of data items separated by whitespace
+  -- (spaces, tabs, newlines). The files can contain comments starting with
+  -- a hash sign (#), and ending at next newline. 
+  -- Only the data items are compared. The types of whitespace and comments
+  -- are ignored. This is useful for different kinds of data dumps, 
+  -- including some image file formats such as 
+  --   Plain PBM (Portable Bit Map - P1, http://netpbm.sourceforge.net/doc/pbm.html )
+  --   Plain PGM (Portable Gray Map - P2, http://netpbm.sourceforge.net/doc/pgm.html )
+  --   Plain PPM (Portable Pixel Map - P3, http://netpbm.sourceforge.net/doc/ppm.html )
+  --
+  -- Arguments:
+  --   rpt                      Report message to be displayed in case of
+  --                            mismatch.
+  --                            It is recommended that the message is unique
+  --                            and that it contains the name of the signal
+  --                            or variable being checked.
+  --
+  --   filename1                Name of first file to be compared, 
+  --                            including relative path from the simulator's
+  --                            working directory.
+  --
+  --   filename2                Name of second file to be compared, 
+  --                            including relative path from the simulator's
+  --                            working directory.
+  --
+  --   verbosity                Controls amount of individual error reports when
+  --                            differences between files are found, to make it 
+  --                            possible to prevent flooding with error messages.
+  --                            0: no individual differences reported
+  --                            1: the first ten differences reported
+  --                            2: all differences reported
+  --
+  --   pltbv, pltbs             PlTbUtils' status- and control variable and
+  --                            -signal.
+  --
+  -- Examples:
+  -- check_binfile("Data output file", "out_file.bin", "ref_file.bin", 0, pltbv, pltbs);
+  -- check_txtfile("Result file", G_RESULT_FILE, G_REF_FILE, G_CHECKFILE_VEROBOSITY, pltbv, pltbs);
+  -- check_datfile("Resulting image", "result_img.ppm", "ref_img.ppm", 2, pltbv, pltbs);
+  ----------------------------------------------------------------------------
+
+  -- check binary file
+  procedure check_binfile(
+    constant rpt        : in    string;
+    constant filename1  : in    string;
+    constant filename2  : in    string;
+    constant verbosity  : in    integer;
+    variable pltbv      : inout pltbv_t;
+    signal   pltbs      : out   pltbs_t
+  ) is
+    variable v_file_errors    : integer := 0;
+    type charfile             is file of character;
+    file f1                   : charfile;
+    file f2                   : charfile;
+    variable f1_status        : file_open_status;
+    variable f2_status        : file_open_status;
+    variable c1               : character;
+    variable c2               : character;
+    variable offset1          : integer := 0;
+    variable offset2          : integer := 0;
+    variable error_line       : line;
+  begin
+    file_open(f1_status, f1, filename1, read_mode);
+    if f1_status /= open_ok then
+      v_file_errors := v_file_errors + 1;
+      write(error_line, " Could not open file " & filename1 & " for reading.");
+    else
+      file_open(f2_status, f2, filename2, read_mode);
+      if f2_status /= open_ok then
+        v_file_errors := v_file_errors + 1;
+        write(error_line, " Could not open file " & filename2 & " for reading. ");
+        file_close(f1);
+      end if;
+    end if;
+    if f1_status = open_ok and f2_status = open_ok then
+      while not endfile(f1) and not endfile(f2) loop
+        read(f1, c1);
+        read(f2, c2);
+        if c1 /= c2 then
+          v_file_errors := v_file_errors + 1;
+          if ((verbosity >= 2) or (verbosity = 1 and v_file_errors <= 10)) then
+            write(error_line, " Diff offset " & integer'image(offset1) & ": " &
+                  integer'image(character'pos(c1)) & " /= " & integer'image(character'pos(c2)) & ".");
+          end if;
+          if verbosity = 1 and v_file_errors = 11 then
+            write(error_line, string'(" Further diffs suppressed."));
+          end if;
+        end if;
+        offset1 := offset1 + 1;
+        offset2 := offset2 + 1;
+      end loop;
+      if v_file_errors > 0 then
+        write(error_line, " " & integer'image(v_file_errors) & " bytes differ.");
+      end if;
+
+      -- Now one or both files are at the end.
+      -- Checking remaining size of possible non-ended file.
+      while not endfile(f1) loop
+        read(f1, c1);
+        offset1 := offset1 + 1;
+      end loop;
+      while not endfile(f2) loop
+        read(f2, c2);
+        offset2 := offset2 + 1;
+      end loop;
+      if offset1 /= offset2 then
+        v_file_errors := v_file_errors + 1;
+        write(error_line, " File sizes differ: " & integer'image(offset1) & 
+                         " /= " & integer'image(offset2) & " bytes."); 
+      end if;
+      write(error_line, " (" & filename1 & ", " & filename2 & ")");
+    end if; -- f1_status, f2_status
+
+    if f1_status = open_ok then
+      file_close(f1);
+    end if;
+    if f2_status = open_ok then
+      file_close(f2);
+    end if;  
+
+    check(rpt, v_file_errors = 0, error_line.all, "", "!NO_TAGS!", pltbv, pltbs);
+
+    if error_line /= null then
+      deallocate(error_line);
+    end if;
+  end procedure check_binfile;
+
+
+  -- check text file
+  procedure check_txtfile(
+    constant rpt        : in    string;
+    constant filename1  : in    string;
+    constant filename2  : in    string;
+    constant verbosity  : in    integer;
+    variable pltbv      : inout pltbv_t;
+    signal   pltbs      : out   pltbs_t
+  ) is
+    variable v_file_errors    : integer := 0;
+    file f1                   : text;
+    file f2                   : text;
+    variable f1_status        : file_open_status;
+    variable f2_status        : file_open_status;
+    variable l1               : line;
+    variable l2               : line;
+    variable line_num1        : integer := 0;
+    variable line_num2        : integer := 0;
+    variable error_line       : line;
+  begin
+    file_open(f1_status, f1, filename1, read_mode);
+    if f1_status /= open_ok then
+      v_file_errors := v_file_errors + 1;
+      write(error_line, " Could not open file " & filename1 & " for reading.");
+    else
+      file_open(f2_status, f2, filename2, read_mode);
+      if f2_status /= open_ok then
+        v_file_errors := v_file_errors + 1;
+        write(error_line, " Could not open file " & filename2 & " for reading. ");
+        file_close(f1);
+      end if;
+    end if;
+    if f1_status = open_ok and f2_status = open_ok then
+      while not endfile(f1) and not endfile(f2) loop
+        readline(f1, l1);
+        readline(f2, l2);
+        line_num1 := line_num1 + 1;
+        line_num2 := line_num2 + 1;
+        if l1.all /= l2.all then
+          v_file_errors := v_file_errors + 1;
+          if ((verbosity >= 2) or (verbosity = 1 and v_file_errors <= 10)) then
+            write(error_line, " Diff line " & integer'image(line_num1) & ": '" &
+                  l1.all & "'' /= '" & l2.all & "'.");
+          end if;
+          if verbosity = 1 and v_file_errors = 11 then
+            write(error_line, string'(" Further diffs suppressed."));
+          end if;
+        end if;
+      end loop;
+      if v_file_errors > 0 then
+        write(error_line, " " & integer'image(v_file_errors) & " lines differ.");
+      end if;
+
+      -- Now one or both files are at the end.
+      -- Checking remaining size of possible non-ended file.
+      while not endfile(f1) loop
+        readline(f1, l1);
+        line_num1 := line_num1 + 1;
+      end loop;
+      while not endfile(f2) loop
+        readline(f2, l2);
+        line_num2 := line_num2 + 1;
+      end loop;
+      if line_num1 /= line_num2 then
+        v_file_errors := v_file_errors + 1;
+        write(error_line, " File sizes differ: " & integer'image(line_num1) & 
+                         " /= " & integer'image(line_num2) & " lines."); 
+      end if;
+      write(error_line, " (" & filename1 & ", " & filename2 & ")");
+    end if; -- f1_status, f2_status
+
+    if f1_status = open_ok then
+      file_close(f1);
+    end if;
+    if f2_status = open_ok then
+      file_close(f2);
+    end if;
+
+    check(rpt, v_file_errors = 0, error_line.all, "", "!NO_TAGS!", pltbv, pltbs);
+
+    if error_line /= null then
+      deallocate(error_line);
+    end if;
+  end procedure check_txtfile;
+
+  -- check data file
+  procedure check_datfile(
+    constant rpt        : in    string;
+    constant filename1  : in    string;
+    constant filename2  : in    string;
+    constant verbosity  : in    integer;
+    variable pltbv      : inout pltbv_t;
+    signal   pltbs      : out   pltbs_t;
+    constant skip_init_items : in integer := 0
+  ) is
+    variable v_file_errors    : integer := 0;
+    file f1                   : text;
+    file f2                   : text;
+    variable f1_status        : file_open_status;
+    variable f2_status        : file_open_status;
+    variable l1               : line;
+    variable l2               : line;
+    variable line_num1        : integer := 0;
+    variable line_num2        : integer := 0;
+    variable item1            : string(1 to 256);
+    variable item2            : string(1 to 256);
+    variable item_len1        : integer := -1;
+    variable item_len2        : integer := -1;
+    variable item_num1        : integer := 0;
+    variable item_num2        : integer := 0;
+    variable item_cnt         : integer := 0;
+    variable error_line       : line;
+  begin
+    file_open(f1_status, f1, filename1, read_mode);
+    if f1_status /= open_ok then
+      v_file_errors := v_file_errors + 1;
+      write(error_line, " Could not open file " & filename1 & " for reading: "  & file_open_status'image(f1_status));
+    else
+      file_open(f2_status, f2, filename2, read_mode);
+      if f2_status /= open_ok then
+        v_file_errors := v_file_errors + 1;
+        write(error_line, " Could not open file " & filename2 & " for reading: " & file_open_status'image(f2_status));
+        file_close(f1);
+      end if;
+    end if;
+    if f1_status = open_ok and f2_status = open_ok then
+      while item_len1 /= 0 or item_len2 /= 0 loop
+        get_file_item(f1, l1, item1, item_len1, line_num1, item_num1);
+        get_file_item(f2, l2, item2, item_len2, line_num2, item_num2);
+        item_cnt := item_cnt + 1;
+        if item_len1 > 0 and item_len2 > 0 and item_cnt > skip_init_items then
+          if item1 /= item2 then
+            v_file_errors := v_file_errors + 1;
+            if ((verbosity >= 2) or (verbosity = 1 and v_file_errors <= 10)) then
+              write(error_line, " Diff item " & integer'image(item_num1) & ": '" &
+                  item1(1 to item_len1) & "' /= '" & item2(1 to item_len2) & "'.");
+            end if;
+            if verbosity = 1 and v_file_errors = 11 then
+              write(error_line, string'(" Further diffs suppressed."));
+            end if;
+          end if;
+        end if;
+      end loop;
+
+      if v_file_errors > 0 then
+        write(error_line, " " & integer'image(v_file_errors) & " items differ.");
+      end if;
+
+      -- Now one or both files are at the end.
+      -- Checking remaining size of possible non-ended file.
+      while not endfile(f1) loop
+        get_file_item(f1, l1, item1, item_len1, line_num1, item_num1);
+      end loop;
+      while not endfile(f2) loop
+        get_file_item(f2, l2, item2, item_len2, line_num2, item_num2);
+      end loop;
+      if item_num1 /= item_num2 then
+        v_file_errors := v_file_errors + 1;
+        write(error_line, " File sizes differ: " & integer'image(item_num1) & 
+                         " /= " & integer'image(item_num2) & " items."); 
+      end if;
+      write(error_line, " (" & filename1 & ", " & filename2 & ")");
+    end if;
+
+    if f1_status = open_ok then
+      file_close(f1);
+    end if;
+    if f2_status = open_ok then
+      file_close(f2);
+    end if;  
+
+    check(rpt, v_file_errors = 0, error_line.all, "", "!NO_TAGS!", pltbv, pltbs);
+
+    if error_line /= null then
+      deallocate(error_line);
+    end if;
+  end procedure check_datfile;
+
+
   -- check base procedure
   -- All other check procedures perform the check, and calls this procedure
   -- with the check result in the expr argument.
-  -- This procedure can also be called directly. It allow any kind of check,
+  -- This procedure can also be called directly. It allows any kind of check,
   -- including less than, greater than, ranges, etc. 
   -- Your calling code must convert actual, expected and mask to strings.
   procedure check(
@@ -1750,6 +2357,8 @@ package body pltbutils_func_pkg is
     end if;
     pltbs_update(pltbv, pltbs);
   end procedure check;
+
+
 
   ----------------------------------------------------------------------------
   -- to_ascending
@@ -1973,186 +2582,45 @@ package body pltbutils_func_pkg is
   end function hxstr;
 
   ----------------------------------------------------------------------------
-  -- pltbutils internal procedures, called from other pltbutils procedures.
-  -- Do not to call these from user's code.
-  -- These procedures are undocumented in the specification on purpose.
+  -- Miscellaneous
   ----------------------------------------------------------------------------
-  procedure pltbs_update(
-    variable pltbv              : inout pltbv_t;
-    signal   pltbs              : out   pltbs_t
-  ) is
+  -- function str converts integer n to a string with fixed length len and
+  -- leading fillchar
+  function str(
+      constant n                  : integer;
+      constant len                : integer;
+      constant fillchar           : character := ' '
+  ) return string is
+    variable s     : string(1 to len) := (others => fillchar);
+    variable val   : integer := n;
+    variable digit : integer;
   begin
-    pltbs.test_num  <= pltbv.test_num;
-    print(pltbs.test_name, pltbv.test_name);
-    print(pltbs.info, pltbv.info);
-    pltbs.chk_cnt   <= pltbv.chk_cnt;
-    pltbs.err_cnt   <= pltbv.err_cnt;
-    pltbs.stop_sim  <= pltbv.stop_sim;
-  end procedure pltbs_update;
-
-  procedure pltbutils_error(
-    constant rpt                : in string;
-    variable pltbv              : inout pltbv_t;
-    signal   pltbs              : out   pltbs_t
-  ) is
-  begin
-    pltbv.err_cnt := pltbv.err_cnt + 1;
-    pltbv.err_cnt_in_test := pltbv.err_cnt_in_test + 1;
-    pltbs_update(pltbv, pltbs);
-    if C_PLTBUTILS_USE_STD_ERROR_MSG then
-      error_msg(rpt, now, pltbv.test_num,
-        pltbv.test_name(1 to pltbv.test_name_len), pltbv.err_cnt_in_test);
-    end if;
-    if C_PLTBUTILS_USE_CUSTOM_ERROR_MSG then
-      custom_error_msg(rpt, now, pltbv.test_num,
-        pltbv.test_name(1 to pltbv.test_name_len), pltbv.err_cnt_in_test);
-    end if;
-  end procedure pltbutils_error;
-
-  procedure stopsim(
-    constant timestamp          : in time
-  ) is
-  begin
-    assert false
-    report "--- FORCE END OF SIMULATION ---" &
-           " (ignore this false failure message, it's not a real failure)"
-    severity failure;
-  end procedure stopsim;
-
-  procedure startsim_msg(
-    constant testcase_name      : in string;
-    constant timestamp          : in time
-  ) is
-  begin
-    print(lf & "--- START OF SIMULATION ---");
-    print("Testcase: " & testcase_name);
-    print(time'image(timestamp));
-  end procedure startsim_msg;
-
-  procedure endsim_msg(
-    constant testcase_name      : in string;
-    constant timestamp          : in time;
-    constant num_tests          : in integer;
-    constant num_skiptests      : in integer;
-    constant num_checks         : in integer;
-    constant num_errors         : in integer;
-    constant show_success_fail  : in boolean
-  ) is
-    variable l : line;
-  begin
-    print(lf & "--- END OF SIMULATION ---");
-    print("Note: the results presented below are based on the PlTbUtil's check() procedure calls.");
-    print("      The design may contain more errors, for which there are no check() calls.");
-    write(l, timestamp, right, 14);
-    writeline(output, l);
-    write(l, num_tests, right, 11);
-    write(l, string'(" Tests"));
-    writeline(output, l);
-    write(l, num_skiptests, right, 11);
-    write(l, string'(" Skipped tests"));
-    writeline(output, l);
-    write(l, num_checks, right, 11);
-    write(l, string'(" Checks"));
-    writeline(output, l);
-    write(l, num_errors, right, 11);
-    write(l, string'(" Errors"));
-    writeline(output, l);
-    if show_success_fail then
-      if num_errors = 0 and num_checks > 0 then
-        print("*** SUCCESS ***");
-      elsif num_checks > 0 then
-        print("*** FAIL ***");
-      else
-        print("*** NO CHECKS ***");
+    for i in 0 to len-1 loop
+      if val > 0 then
+        digit := val mod 10;
+        val := val / 10;
+        s(len - i) := character'val(character'pos('0') + digit);
       end if;
+    end loop;
+    assert val = 0
+      report "str: value " & integer'image(n) & " does not fit in string with length " & integer'image(len)
+      severity error;
+    return s;
+  end function str;
+
+  -- Function str_equal returns true if strings s1 and s2 are equal, otherwise false.
+  -- The normal VHDL string comparison s1 = s2 only works correctly if the length of 
+  -- the strings are equal. str_equal works even if the lengths differ.
+  function str_equal (
+    constant s1 : STRING;
+    constant s2 : STRING
+  ) return boolean is
+  begin
+    if s1'length /= s2'length then
+      return FALSE;
+    else
+      return (s1 = s2);
     end if;
-  end procedure endsim_msg;
-
-  procedure starttest_msg(
-    constant test_num           : in integer;
-    constant test_name          : in string;
-    constant timestamp          : in time
-  ) is
-  begin
-    print(lf & "Test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
-  end procedure starttest_msg;
-
-  procedure skiptest_msg(
-    constant test_num           : in integer;
-    constant test_name          : in string;
-    constant timestamp          : in time
-  ) is
-  begin
-    print(lf & "Skipping Test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
-  end procedure skiptest_msg;
-
-  procedure endtest_msg(
-    constant test_num           : in integer;
-    constant test_name          : in string;
-    constant timestamp          : in time;
-    constant test_active        : in boolean;
-    constant num_checks_in_test : in integer;
-    constant num_errors_in_test : in integer
-  ) is
-  begin
-    if test_active then
-      print("Done with test " & str(test_num) & ": " & test_name & " (" & time'image(timestamp) & ")");
-    end if;
-  end procedure endtest_msg;
-
-  procedure check_msg(
-    constant rpt                : in string;
-    constant timestamp          : in time;
-    constant expr               : in boolean;
-    constant actual             : in string;
-    constant expected           : in string;
-    constant mask               : in string;
-    constant test_num           : in integer;
-    constant test_name          : in string;
-    constant check_num          : in integer;
-    constant err_cnt_in_test    : in integer
-  ) is
-    variable actual_str_len     : integer := 1;
-    variable actual_str         : string(1 to actual'length+8) := (others => ' ');
-    variable expected_str       : string(1 to expected'length+10) := (others => ' ');
-    variable expected_str_len   : integer := 1;
-    variable mask_str           : string(1 to mask'length+6) := (others => ' ');
-    variable mask_str_len       : integer := 1;
-  begin
-    if not expr then -- Output message only if the check fails
-      if actual /= "" then
-        actual_str_len := 8 + actual'length;
-        actual_str := " Actual=" & actual;
-      end if;
-      if expected /= "" then
-        expected_str_len := 10 + expected'length;
-        expected_str := " Expected=" & expected;
-      end if;
-      if mask /= "" then
-        mask_str_len := 6 + mask'length;
-        mask_str := " Mask=" & mask;
-      end if;
-      assert false
-        report "Check " & str(check_num) & "; " & rpt & "; " &
-               actual_str(1 to actual_str_len) &
-               expected_str(1 to expected_str_len) &
-               mask_str(1 to mask_str_len) &
-               "  in test " & str(test_num) & " " & test_name
-        severity error;
-    end if;
-  end procedure check_msg;
-
-  procedure error_msg(
-    constant rpt                : in string;
-    constant timestamp          : in time;
-    constant test_num           : in integer;
-    constant test_name          : in string;
-    constant err_cnt_in_test    : in integer
-  ) is
-  begin
-    assert false
-    report rpt & " in test " & str(test_num) & ": " & test_name
-    severity error;
-  end procedure error_msg;
+  end function str_equal;
 
 end package body pltbutils_func_pkg;

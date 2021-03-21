@@ -42,7 +42,7 @@ entity tb_template1 is
                        '0', -- Test 1
                        '0'  -- Test 2
                            -- ... etc
-                     );
+                     )
     -- < Template info: add more generics here if needed >    
   );
 end entity tb_template1;
