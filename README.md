@@ -26,7 +26,7 @@ PlTbUtils makes it easy to create automatic, self-checking simulation testbenche
 
 -   Supports VHDL-93 and later.
 
--   Supports most popular VHDL simulators, including ModelSim and ISim.
+-   Supports most popular VHDL simulators, including ModelSim, ISim and XSim.
 
 It is intended that PlTbUtils will constantly expand by adding more and more functions, procedures and testbench components. Comments, feedback and suggestions are welcome to [pela.opencores\@gmail.com](mailto:pela.opencores@gmail.com?subject=PlTbUtils).
 
@@ -57,7 +57,7 @@ Hosted Doxygen documentation: <https://sturla22.github.io/pltbutils/>
 | 1.0 | 26/01/2016 | Per Larsson | Updates for pltbutils v1.0: minor corrections. |
 | 1.1 | 14/08/2018 | Per Larsson | Corrected handling of skipped tests.|
 | | 15/08/2018 | Per Larsson | Added XSim to list of supported simulators.|
-| 1.2 | 12/04/2020 | Per Larsson | Added check\_binfile(), check\_txtfile(), check\_datfile(), and other new functions and procedures.|
+| 1.2 | 12/04/2020 | Per Larsson | Added waitsig() for unclocked signals, check\_binfile(), check\_txtfile(), check\_datfile(). Added str(), str\_equal().<br>Added pltbutils\_time\_measure, pltbutils\_diff\_check.|
 | 1.3 | 12/05/2020 | Per Larsson | Updated private procedure to make check\_datfile() get correct functionality with XSim.|
 
 
@@ -72,7 +72,7 @@ Thanks to Stefan Eriksson for suggestions and feedback.
 
 PlTbUtils complies with VHDL-1993 and later, so it works with most VHDL simulators.
 
-It is possible to configure the way a simulation stops, by taking advantage of the VHDL-2008 keywords stop and finish. If your simulator supports stop and/or finish, see Configuring Simulation Halt on page 19.
+It is possible to configure the way a simulation stops, by taking advantage of the VHDL-2008 keywords stop and finish. If your simulator supports `stop` and/or `finish`, see Configuring Simulation Halt in the [tutorial](doc/tutorial.md).
 
 ### A quick look
 

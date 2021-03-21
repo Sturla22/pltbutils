@@ -41,117 +41,8 @@ To verify this DUT, we want the testbench to apply different stimuli to
 the input ports, and check the response of the output ports. The
 following code is an example of such a testbench. We will first show all
 of the code, and then explain parts of it.
-```vhdl
-ibrary ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use work.txt_util.all;
-use work.pltbutils_func_pkg.all;
-use work.pltbutils_comp_pkg.all;
 
-entity tb_example1 is
-  generic (
-    G_WIDTH             : integer := 8;
-    G_CLK_PERIOD        : time := 10 ns;
-    G_DISABLE_BUGS      : integer range 0 to 1 := 0
-  );
-end entity tb_example1;
-
-architecture bhv of tb_example1 is
-
-  -- Simulation status- and control signals
-  -- for accessing .stop_sim and for viewing in waveform window
-  signal pltbs          : pltbs_t := C_PLTBS_INIT;
-
-  -- DUT stimuli and response signals
-  signal clk            : std_logic;
-  signal rst            : std_logic;
-  signal carry_in       : std_logic;
-  signal x              : std_logic_vector(G_WIDTH-1 downto 0);
-  signal y              : std_logic_vector(G_WIDTH-1 downto 0);
-  signal sum            : std_logic_vector(G_WIDTH-1 downto 0);
-  signal carry_out      : std_logic;
-
-begin
-
-  dut0 : entity work.dut_example
-    generic map (
-      G_WIDTH           => G_WIDTH,
-      G_DISABLE_BUGS    => G_DISABLE_BUGS
-    )
-    port map (
-      clk_i             => clk,
-      rst_i             => rst,
-      carry_i           => carry_in,
-      x_i               => x,
-      y_i               => y,
-      sum_o             => sum,
-      carry_o           => carry_out
-    );
-
-  clkgen0 : pltbutils_clkgen
-    generic map(
-      G_PERIOD          => G_CLK_PERIOD
-    )
-    port map(
-      clk_o             => clk,
-      stop_sim_i        => pltbs.stop_sim
-    );
-
-  -- Testcase process
-  -- NOTE: The purpose of the following code is to demonstrate some of the
-  -- features of PlTbUtils, not to do a thorough verification.
-  p_tc1 : process
-    variable pltbv  : pltbv_t := C_PLTBV_INIT;
-  begin
-    startsim("tc1", "", pltbv, pltbs);
-    rst         <= '1';
-    carry_in    <= '0';
-    x           <= (others => '0');
-    y           <= (others => '0');
-
-    starttest(1, "Reset test", pltbv, pltbs);
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum during reset",       sum,         0, pltbv, pltbs);
-    check("Carry out during reset", carry_out, '0', pltbv, pltbs);
-    rst         <= '0';
-    endtest(pltbv, pltbs);
-
-    starttest(2, "Simple sum test", pltbv, pltbs);
-    carry_in <= '0';
-    x <= std_logic_vector(to_unsigned(1, x'length));
-    y <= std_logic_vector(to_unsigned(2, x'length));
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum",       sum,         3, pltbv, pltbs);
-    check("Carry out", carry_out, '0', pltbv, pltbs);
-    endtest(pltbv, pltbs);
-
-    starttest(3, "Simple carry in test", pltbv, pltbs);
-    print(G_DISABLE_BUGS=0, pltbv, pltbs, "Bug here somewhere");
-    carry_in <= '1';
-    x <= std_logic_vector(to_unsigned(1, x'length));
-    y <= std_logic_vector(to_unsigned(2, x'length));
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum",       sum,         4, pltbv, pltbs);
-    check("Carry out", carry_out, '0', pltbv, pltbs);
-    print(G_DISABLE_BUGS=0, pltbv, pltbs, "");
-    endtest(pltbv, pltbs);
-
-    starttest(4, "Simple carry out test", pltbv, pltbs);
-    carry_in <= '0';
-    x <= std_logic_vector(to_unsigned(2**G_WIDTH-1, x'length));
-    y <= std_logic_vector(to_unsigned(1, x'length));
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum",       sum,         0, pltbv, pltbs);
-    check("Carry out", carry_out, '1', pltbv, pltbs);
-    endtest(pltbv, pltbs);
-
-    endsim(pltbv, pltbs, true);
-    wait;
-  end process p_tc1;
-
-end architecture bhv;
-```
+\include tb\_example1.vhd
 
 As the testbench example shows, the following packages are needed (in
 addition to the usual std\_logic\_1164, etc):
@@ -434,67 +325,7 @@ The entity is stored in its' own file.
 The architecture contains the testcase process. There can be several
 different architecture files. The architecture looks as follows.
 
-```vhdl
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use work.txt_util.all;
-use work.pltbutils_func_pkg.all;
-
--- NOTE: The purpose of the following code is to demonstrate some of the
--- features in PlTbUtils, not to do a thorough verification.
-architecture tc1 of tc_example2 is
-begin
-  p_tc1 : process
-    variable pltbv  : pltbv_t := C_PLTBV_INIT;
-  begin
-    startsim("tc1", "", pltbv, pltbs);
-    rst         <= '1';
-    carry_in    <= '0';
-    x           <= (others => '0');
-    y           <= (others => '0');
-
-    starttest(1, "Reset test", pltbv, pltbs);
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum during reset",       sum,         0, pltbv, pltbs);
-    check("Carry out during reset", carry_out, '0', pltbv, pltbs);
-    rst         <= '0';
-    endtest(pltbv, pltbs);
-
-    starttest(2, "Simple sum test", pltbv, pltbs);
-    carry_in <= '0';
-    x <= std_logic_vector(to_unsigned(1, x'length));
-    y <= std_logic_vector(to_unsigned(2, x'length));
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum",       sum,         3, pltbv, pltbs);
-    check("Carry out", carry_out, '0', pltbv, pltbs);
-    endtest(pltbv, pltbs);
-
-    starttest(3, "Simple carry in test", pltbv, pltbs);
-    print(G_DISABLE_BUGS=0, pltbv, pltbs, "Bug here somewhere");
-    carry_in <= '1';
-    x <= std_logic_vector(to_unsigned(1, x'length));
-    y <= std_logic_vector(to_unsigned(2, x'length));
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum",       sum,         4, pltbv, pltbs);
-    check("Carry out", carry_out, '0', pltbv, pltbs);
-    print(G_DISABLE_BUGS=0, pltbv, pltbs, "");
-    endtest(pltbv, pltbs);
-
-    starttest(4, "Simple carry out test", pltbv, pltbs);
-    carry_in <= '0';
-    x <= std_logic_vector(to_unsigned(2**G_WIDTH-1, x'length));
-    y <= std_logic_vector(to_unsigned(1, x'length));
-    waitclks(2, clk, pltbv, pltbs);
-    check("Sum",       sum,         0, pltbv, pltbs);
-    check("Carry out", carry_out, '1', pltbv, pltbs);
-    endtest(pltbv, pltbs);
-
-    endsim(pltbv, pltbs, true);
-    wait;
-  end process p_tc1;
-end architecture tc12;
-```
+\include tc1.vhd
 
 Try this too in your simulator. The example testbench files are located
 in examples/vhdl/example2/. The files are listed in compile order in
@@ -503,11 +334,12 @@ tb\_example2\_files.lst .
 If you are a ModelSim user, there are .do files available in
 sim/modelsim\_tb\_example2/run/ .\
 To use them, start Start ModelSim, and in the ModelSim Gui select the
-menu item\
+menu item
 File-\>Change directory\... . Navigate to the PlTbUtils directory
 sim/modelsim\_tb\_example2/run/ and click Ok. Then, in the transcript
-window, type\
-do run\_tc1.do
+window, type
+
+`do run_tc1.do`
 
 Also try
 
