@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['g_5fclk_5fperiod_345',['G_CLK_PERIOD',['../classtb__example1.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_example1.G_CLK_PERIOD()'],['../classtb__example2.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_example2.G_CLK_PERIOD()'],['../classtb__template1.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_template1.G_CLK_PERIOD()'],['../classtb__template2.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_template2.G_CLK_PERIOD()'],['../classtb__pltbutils.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_pltbutils.G_CLK_PERIOD()']]],
-  ['g_5fdisable_5fbugs_346',['G_DISABLE_BUGS',['../classdut__example.html#a57444c79aa47d2854b6d8ac1cd24cc0d',1,'dut_example.G_DISABLE_BUGS()'],['../classtb__example1.html#ac96c2f9ed656335145b7b861130cd939',1,'tb_example1.G_DISABLE_BUGS()'],['../classtb__example2.html#ac96c2f9ed656335145b7b861130cd939',1,'tb_example2.G_DISABLE_BUGS()'],['../classtc__example2.html#ac96c2f9ed656335145b7b861130cd939',1,'tc_example2.G_DISABLE_BUGS()']]],
-  ['g_5finitvalue_347',['G_INITVALUE',['../classpltbutils__clkgen.html#af4235f56aa8d86d8c309042e7d580eec',1,'pltbutils_clkgen']]],
-  ['g_5fperiod_348',['G_PERIOD',['../classpltbutils__clkgen.html#adbf8952b6b4cd64a36b8cc71101d8fe4',1,'pltbutils_clkgen']]],
-  ['g_5fskiptests_349',['G_SKIPTESTS',['../classtb__pltbutils.html#a043c292aebe26414231c4ed9ebedd710',1,'tb_pltbutils.G_SKIPTESTS()'],['../classtb__template1.html#a4fb43c6fb8b14d01d41ec9135040add7',1,'tb_template1.G_SKIPTESTS()'],['../classtb__template2.html#a4fb43c6fb8b14d01d41ec9135040add7',1,'tb_template2.G_SKIPTESTS()'],['../classtc__template2.html#a4fb43c6fb8b14d01d41ec9135040add7',1,'tc_template2.G_SKIPTESTS()']]],
-  ['g_5fwidth_350',['G_WIDTH',['../classdut__example.html#a40f594af67d95f0eb6d8f59f8825136a',1,'dut_example.G_WIDTH()'],['../classtb__example1.html#a40f594af67d95f0eb6d8f59f8825136a',1,'tb_example1.G_WIDTH()'],['../classtb__example2.html#a40f594af67d95f0eb6d8f59f8825136a',1,'tb_example2.G_WIDTH()'],['../classtc__example2.html#a40f594af67d95f0eb6d8f59f8825136a',1,'tc_example2.G_WIDTH()']]]
+  ['empty_5fchr_401',['EMPTY_CHR',['../classpltbutils__func__pkg.html#a836912e69c79e38f2689005c6ed646af',1,'pltbutils_func_pkg']]],
+  ['err_5fcnt_5fin_5ftest_7e14_402',['err_cnt_in_test~14',['../classpltbutils__func__pkg.html#a5988c802d213f9584c89e38a4fab108d',1,'pltbutils_func_pkg']]],
+  ['err_5fcnt_7e12_403',['err_cnt~12',['../classpltbutils__func__pkg.html#afd9e38978c89690fe9382d07d5584cc4',1,'pltbutils_func_pkg']]],
+  ['err_5fcnt_7e20_404',['err_cnt~20',['../classpltbutils__func__pkg.html#a82e4137bacb5b238906dd7457515ef49',1,'pltbutils_func_pkg']]],
+  ['expected_5fchecks_5fcnt_405',['expected_checks_cnt',['../classtb__pltbutils_1_1bhv.html#a3461f7896b1344c8f7d1e02c30513a81',1,'tb_pltbutils::bhv']]],
+  ['expected_5ferrors_5fcnt_406',['expected_errors_cnt',['../classtb__pltbutils_1_1bhv.html#ae1db4ecb2c3694b772cd2eee7112cac5',1,'tb_pltbutils::bhv']]]
 ];

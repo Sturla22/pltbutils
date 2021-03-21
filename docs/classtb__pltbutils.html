@@ -29,7 +29,7 @@
    <div id="projectname">PlTbUtils
    &#160;<span id="projectnumber">1.3</span>
    </div>
-   <div id="projectbrief">PlTbUtils makes it easy to create automatic, self-checking simulation testbenches, and to locate bugs during a simulation. It is a collection of functions, procedures and testbench components that simplifies creation of stimuli and checking results of a device under test.</div>
+   <div id="projectbrief">PlTbUtils is a collection of functions, procedures and components for easily creating stimuli and checking response in automatic self-checking testbenches.</div>
   </td>
  </tr>
  </tbody>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('classtb__pltbutils.html',''); initResi
 <div class="dynheader">
 Inheritance diagram for tb_pltbutils:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classtb__pltbutils__inherit__graph.svg" width="146" height="287"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classtb__pltbutils__inherit__graph.svg" width="231" height="419"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 <table class="memberdecls">
@@ -106,11 +106,221 @@ Entities</h2></td></tr>
 Generics</h2></td></tr>
  <tr class="memitem:a043c292aebe26414231c4ed9ebedd710"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a043c292aebe26414231c4ed9ebedd710">G_SKIPTESTS</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">std_logic_vector</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar">(</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span> <span class="vhdldigit">0</span> <span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span><span class="vhdlchar">,</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span> <span class="vhdldigit">0</span> <span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span><span class="vhdlchar">,</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span> <span class="vhdldigit">0</span> <span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span><span class="vhdlchar">,</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span> <span class="vhdldigit">0</span> <span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span><span class="vhdlchar">,</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span> <span class="vhdldigit">0</span> <span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span><span class="vhdlchar">,</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span> <span class="vhdldigit">1</span> <span class="vhdlchar"> </span><span class="vhdlchar">'</span><span class="vhdlchar"> </span><span class="vhdlchar">)</span><span class="vhdlchar"> </span></b></b></td></tr>
 <tr class="memitem:a66dfd6a1fb98eee0a6c1d04df77757ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a66dfd6a1fb98eee0a6c1d04df77757ce">G_CLK_PERIOD</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">time</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span> <span class="vhdldigit">10</span> <span class="vhdlchar"> </span><span class="vhdlchar">ns</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a7ee48e58092c133d5ef33dcde4d2590a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a7ee48e58092c133d5ef33dcde4d2590a">G_CHECKFILE_VERBOSITY</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">integer</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span> <span class="vhdldigit">10</span> <span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:aff11389e4673e53919b1985a7ba30547"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#aff11389e4673e53919b1985a7ba30547">G_BINTESTFILE_HEADER</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; Bintestfile R   &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a62d945fcd9ddd3197c6d90af2ef4ec73"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a62d945fcd9ddd3197c6d90af2ef4ec73">G_BINTESTFILE_LEN</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">integer</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span> <span class="vhdldigit">528</span> <span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a83789f6ad3625dd5c70a5695dc1ac4f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a83789f6ad3625dd5c70a5695dc1ac4f3">G_BINTESTFILE_REFERENCE</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_reference.bin &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:ad428fb72a380d3263226fa4e45520f10"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#ad428fb72a380d3263226fa4e45520f10">G_BINTESTFILE_CORRECT</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_correct.bin &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a6f187c15747bf40295b0719ad99ec860"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a6f187c15747bf40295b0719ad99ec860">G_BINTESTFILE_ERROR</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_error.bin &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:ae6955d7e3c165ddebf780489c7dbf720"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#ae6955d7e3c165ddebf780489c7dbf720">G_BINTESTFILE_SHORTER</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_shorter.bin &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a0679e0705e0055668788de8e32928237"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a0679e0705e0055668788de8e32928237">G_BINTESTFILE_LONGER</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_longer.txt &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a234f0c7522ed9b0eaf06e677014533e5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a234f0c7522ed9b0eaf06e677014533e5">G_TEXTTESTFILE_REFERENCE</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_reference.txt &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:adca99bc204386d7bff8275252f4d193f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#adca99bc204386d7bff8275252f4d193f">G_TEXTTESTFILE_CORRECT</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_correct.txt &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a578bcef7dd3a54d7bb5f7e2e2ee9297f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a578bcef7dd3a54d7bb5f7e2e2ee9297f">G_TEXTTESTFILE_ERROR</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_error.txt &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a840c4ab0fcf1cd930b0d673465c0fd27"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a840c4ab0fcf1cd930b0d673465c0fd27">G_TEXTTESTFILE_SHORTER</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_shorter.txt &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a93c6651f2765ccd1c89a9f8d9038882b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a93c6651f2765ccd1c89a9f8d9038882b">G_TEXTTESTFILE_LONGER</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_longer.txt &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:abbb3551884b27e3f85c8b07aa016f053"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#abbb3551884b27e3f85c8b07aa016f053">G_DATTESTFILE_REFERENCE</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_reference.dat &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:afca9a629ded446fa9ff7f727c6ffbbbe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#afca9a629ded446fa9ff7f727c6ffbbbe">G_DATTESTFILE_CORRECT</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_correct.dat &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a98f2f98bb46cfb7ec28c6fb51019a4f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a98f2f98bb46cfb7ec28c6fb51019a4f9">G_DATTESTFILE_ERROR</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_error.dat &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a975241c94f3159012cac5bd8cd3f3c4e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a975241c94f3159012cac5bd8cd3f3c4e">G_DATTESTFILE_SHORTER</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_shorter.dat &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
+<tr class="memitem:a45ff639ffd60e4e50c59fbd8a339e4b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtb__pltbutils.html#a45ff639ffd60e4e50c59fbd8a339e4b0">G_DATTESTFILE_LONGER</a> &#160;</td><td class="memItemRight" valign="bottom"><b><b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_longer.dat &quot;</span><span class="vhdlchar"> </span></b></b></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
 <p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00063">63</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="ad428fb72a380d3263226fa4e45520f10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad428fb72a380d3263226fa4e45520f10">&#9670;&nbsp;</a></span>G_BINTESTFILE_CORRECT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#ad428fb72a380d3263226fa4e45520f10">G_BINTESTFILE_CORRECT</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_correct.bin &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00078">78</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a6f187c15747bf40295b0719ad99ec860"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f187c15747bf40295b0719ad99ec860">&#9670;&nbsp;</a></span>G_BINTESTFILE_ERROR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a6f187c15747bf40295b0719ad99ec860">G_BINTESTFILE_ERROR</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_error.bin &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00079">79</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="aff11389e4673e53919b1985a7ba30547"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff11389e4673e53919b1985a7ba30547">&#9670;&nbsp;</a></span>G_BINTESTFILE_HEADER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#aff11389e4673e53919b1985a7ba30547">G_BINTESTFILE_HEADER</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; Bintestfile R   &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00075">75</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a62d945fcd9ddd3197c6d90af2ef4ec73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62d945fcd9ddd3197c6d90af2ef4ec73">&#9670;&nbsp;</a></span>G_BINTESTFILE_LEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a62d945fcd9ddd3197c6d90af2ef4ec73">G_BINTESTFILE_LEN</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">integer</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span> <span class="vhdldigit">528</span> <span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00076">76</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a0679e0705e0055668788de8e32928237"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0679e0705e0055668788de8e32928237">&#9670;&nbsp;</a></span>G_BINTESTFILE_LONGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a0679e0705e0055668788de8e32928237">G_BINTESTFILE_LONGER</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_longer.txt &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00081">81</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a83789f6ad3625dd5c70a5695dc1ac4f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83789f6ad3625dd5c70a5695dc1ac4f3">&#9670;&nbsp;</a></span>G_BINTESTFILE_REFERENCE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a83789f6ad3625dd5c70a5695dc1ac4f3">G_BINTESTFILE_REFERENCE</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_reference.bin &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00077">77</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="ae6955d7e3c165ddebf780489c7dbf720"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6955d7e3c165ddebf780489c7dbf720">&#9670;&nbsp;</a></span>G_BINTESTFILE_SHORTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#ae6955d7e3c165ddebf780489c7dbf720">G_BINTESTFILE_SHORTER</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/bintestfile_shorter.bin &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00080">80</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a7ee48e58092c133d5ef33dcde4d2590a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ee48e58092c133d5ef33dcde4d2590a">&#9670;&nbsp;</a></span>G_CHECKFILE_VERBOSITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a7ee48e58092c133d5ef33dcde4d2590a">G_CHECKFILE_VERBOSITY</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">integer</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span> <span class="vhdldigit">10</span> <span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00074">74</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
 <a id="a66dfd6a1fb98eee0a6c1d04df77757ce"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a66dfd6a1fb98eee0a6c1d04df77757ce">&#9670;&nbsp;</a></span>G_CLK_PERIOD</h2>
 
@@ -131,7 +341,127 @@ Generics</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00074">74</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00073">73</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="afca9a629ded446fa9ff7f727c6ffbbbe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afca9a629ded446fa9ff7f727c6ffbbbe">&#9670;&nbsp;</a></span>G_DATTESTFILE_CORRECT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#afca9a629ded446fa9ff7f727c6ffbbbe">G_DATTESTFILE_CORRECT</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_correct.dat &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00088">88</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a98f2f98bb46cfb7ec28c6fb51019a4f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98f2f98bb46cfb7ec28c6fb51019a4f9">&#9670;&nbsp;</a></span>G_DATTESTFILE_ERROR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a98f2f98bb46cfb7ec28c6fb51019a4f9">G_DATTESTFILE_ERROR</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_error.dat &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00089">89</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a45ff639ffd60e4e50c59fbd8a339e4b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45ff639ffd60e4e50c59fbd8a339e4b0">&#9670;&nbsp;</a></span>G_DATTESTFILE_LONGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a45ff639ffd60e4e50c59fbd8a339e4b0">G_DATTESTFILE_LONGER</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_longer.dat &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00092">92</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="abbb3551884b27e3f85c8b07aa016f053"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbb3551884b27e3f85c8b07aa016f053">&#9670;&nbsp;</a></span>G_DATTESTFILE_REFERENCE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#abbb3551884b27e3f85c8b07aa016f053">G_DATTESTFILE_REFERENCE</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_reference.dat &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00087">87</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a975241c94f3159012cac5bd8cd3f3c4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a975241c94f3159012cac5bd8cd3f3c4e">&#9670;&nbsp;</a></span>G_DATTESTFILE_SHORTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a975241c94f3159012cac5bd8cd3f3c4e">G_DATTESTFILE_SHORTER</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/dattestfile_shorter.dat &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00090">90</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
 
 </div>
 </div>
@@ -156,6 +486,126 @@ Generics</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00072">72</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="adca99bc204386d7bff8275252f4d193f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adca99bc204386d7bff8275252f4d193f">&#9670;&nbsp;</a></span>G_TEXTTESTFILE_CORRECT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#adca99bc204386d7bff8275252f4d193f">G_TEXTTESTFILE_CORRECT</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_correct.txt &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00083">83</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a578bcef7dd3a54d7bb5f7e2e2ee9297f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a578bcef7dd3a54d7bb5f7e2e2ee9297f">&#9670;&nbsp;</a></span>G_TEXTTESTFILE_ERROR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a578bcef7dd3a54d7bb5f7e2e2ee9297f">G_TEXTTESTFILE_ERROR</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_error.txt &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00084">84</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a93c6651f2765ccd1c89a9f8d9038882b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93c6651f2765ccd1c89a9f8d9038882b">&#9670;&nbsp;</a></span>G_TEXTTESTFILE_LONGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a93c6651f2765ccd1c89a9f8d9038882b">G_TEXTTESTFILE_LONGER</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_longer.txt &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00086">86</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a234f0c7522ed9b0eaf06e677014533e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a234f0c7522ed9b0eaf06e677014533e5">&#9670;&nbsp;</a></span>G_TEXTTESTFILE_REFERENCE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a234f0c7522ed9b0eaf06e677014533e5">G_TEXTTESTFILE_REFERENCE</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_reference.txt &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00082">82</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
+
+</div>
+</div>
+<a id="a840c4ab0fcf1cd930b0d673465c0fd27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a840c4ab0fcf1cd930b0d673465c0fd27">&#9670;&nbsp;</a></span>G_TEXTTESTFILE_SHORTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtb__pltbutils.html#a840c4ab0fcf1cd930b0d673465c0fd27">G_TEXTTESTFILE_SHORTER</a> <b><span class="vhdlchar"> </span></b> <b><span class="keywordtype">string</span><span class="vhdlchar"> </span><span class="vhdlchar">:</span><span class="vhdlchar">=</span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="vhdlchar"> </span><span class="keyword">&quot; ../../../bench/testfiles/texttestfile_shorter.txt &quot;</span><span class="vhdlchar"> </span></b> </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">Generic</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="tb__pltbutils_8vhd_source.html#l00085">85</a> of file <a class="el" href="tb__pltbutils_8vhd_source.html">tb_pltbutils.vhd</a>.</p>
 
 </div>
 </div>

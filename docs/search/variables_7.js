@@ -1,12 +1,23 @@
 var searchData=
 [
-  ['test_5factive_7e6_379',['test_active~6',['../classpltbutils__func__pkg.html#a7e1e436952a79d687340da6c11a4d393',1,'pltbutils_func_pkg']]],
-  ['test_5fcnt_7e9_380',['test_cnt~9',['../classpltbutils__func__pkg.html#ad0ffcad6543bf3b0388e847e30ac0149',1,'pltbutils_func_pkg']]],
-  ['test_5fname_5flen_7e4_381',['test_name_len~4',['../classpltbutils__func__pkg.html#a1f1012ecd1c4a8e5e5f909be174f32d7',1,'pltbutils_func_pkg']]],
-  ['test_5fname_7e17_382',['test_name~17',['../classpltbutils__func__pkg.html#a9b256fa238a976712a5a169ab9cf54dc',1,'pltbutils_func_pkg']]],
-  ['test_5fname_7e3_383',['test_name~3',['../classpltbutils__func__pkg.html#a6f4524f0807b41ddc844abdc46b110fa',1,'pltbutils_func_pkg']]],
-  ['test_5fnum_7e16_384',['test_num~16',['../classpltbutils__func__pkg.html#a33391c01a660f96515b058a3a6d4f524',1,'pltbutils_func_pkg']]],
-  ['test_5fnum_7e2_385',['test_num~2',['../classpltbutils__func__pkg.html#af915b4d9062ffdb90c821b003f9f84b2',1,'pltbutils_func_pkg']]],
-  ['testcase_5fname_5flen_7e1_386',['testcase_name_len~1',['../classpltbutils__func__pkg.html#a84c39a3b2634502fb0f8abdd3d1b6561',1,'pltbutils_func_pkg']]],
-  ['testcase_5fname_7e0_387',['testcase_name~0',['../classpltbutils__func__pkg.html#a959f9f8be1ec2d2b844b8ae7e7d9eedc',1,'pltbutils_func_pkg']]]
+  ['s_5fb_445',['s_b',['../classtb__pltbutils_1_1bhv.html#af9bef1913b54af797bf77b05d40e236e',1,'tb_pltbutils::bhv']]],
+  ['s_5fi_446',['s_i',['../classtb__pltbutils_1_1bhv.html#a698368ec97b8ab345f635e1051cbe59b',1,'tb_pltbutils.bhv.s_i()'],['../classpltbutils__time__measure.html#a5e329fc99f64bc7824eb5ea217c58fd6',1,'pltbutils_time_measure.s_i()'],['../classpltbutils__diff__check.html#a5e329fc99f64bc7824eb5ea217c58fd6',1,'pltbutils_diff_check.s_i()']]],
+  ['s_5fn_5fi_447',['s_n_i',['../classpltbutils__diff__check.html#a0afb33b2310132e6426fbaa86872e37e',1,'pltbutils_diff_check']]],
+  ['s_5fs_448',['s_s',['../classtb__pltbutils_1_1bhv.html#a494768aee01551e21934ee27e3f27452',1,'tb_pltbutils::bhv']]],
+  ['s_5fsl_449',['s_sl',['../classtb__pltbutils_1_1bhv.html#ad9d084688999c694c210a81a3090ee0a',1,'tb_pltbutils::bhv']]],
+  ['s_5fslv_450',['s_slv',['../classtb__pltbutils_1_1bhv.html#ad902a3e2f8661c87a250f428e2292714',1,'tb_pltbutils::bhv']]],
+  ['s_5fstr1_451',['s_str1',['../classtb__pltbutils_1_1bhv.html#a0d5f7512eb21845180bf6633074419ff',1,'tb_pltbutils::bhv']]],
+  ['s_5fstr2_452',['s_str2',['../classtb__pltbutils_1_1bhv.html#ae57dbb1e18abb8fcaf60c432dce6bbc4',1,'tb_pltbutils::bhv']]],
+  ['s_5fstr3_453',['s_str3',['../classtb__pltbutils_1_1bhv.html#aba0f716642f552f985e64cecf96b3e9d',1,'tb_pltbutils::bhv']]],
+  ['s_5fstr4_454',['s_str4',['../classtb__pltbutils_1_1bhv.html#ae0bcf4d9aa7f323dcd2af644d458d7fa',1,'tb_pltbutils::bhv']]],
+  ['s_5fstr_5fexp_455',['s_str_exp',['../classtb__pltbutils_1_1bhv.html#a73faa7da543563b52fc043131226358d',1,'tb_pltbutils::bhv']]],
+  ['s_5ftime_456',['s_time',['../classtb__pltbutils_1_1bhv.html#aad32cd8dc9b597407f74b5bdc3795bcf',1,'tb_pltbutils::bhv']]],
+  ['s_5fu_457',['s_u',['../classtb__pltbutils_1_1bhv.html#a0fc42a1697f18e03ccab6b761e5a23dd',1,'tb_pltbutils::bhv']]],
+  ['skiptest_5fcnt_7e10_458',['skiptest_cnt~10',['../classpltbutils__func__pkg.html#a8dbf97ec43991bf602a8407f719fc389',1,'pltbutils_func_pkg']]],
+  ['skiptests_7e5_459',['skiptests~5',['../classpltbutils__func__pkg.html#a0a99824a6c17bd9dda4d0b185488a5b0',1,'pltbutils_func_pkg']]],
+  ['stop_5fsim_5fi_460',['stop_sim_i',['../classpltbutils__clkgen.html#a845c8ecbf840431d25fb75580abe9746',1,'pltbutils_clkgen']]],
+  ['stop_5fsim_7e15_461',['stop_sim~15',['../classpltbutils__func__pkg.html#aaef9bcab73b7f9daf593d41dcee24ceb',1,'pltbutils_func_pkg']]],
+  ['stop_5fsim_7e21_462',['stop_sim~21',['../classpltbutils__func__pkg.html#a6e851e02497be9f7e293ca75777ed0fb',1,'pltbutils_func_pkg']]],
+  ['sum_463',['sum',['../classdut__example_1_1rtl.html#a6217b7a65a87669b7294cb6c1a7765d7',1,'dut_example.rtl.sum()'],['../classtb__example1_1_1bhv.html#a388b8e9c13a4124f0f85b3661bd89f37',1,'tb_example1.bhv.sum()'],['../classtb__example2_1_1bhv.html#a388b8e9c13a4124f0f85b3661bd89f37',1,'tb_example2.bhv.sum()'],['../classtc__example2.html#a94d081002e29147d9789b7625bfbe13c',1,'tc_example2.sum()']]],
+  ['sum_5fo_464',['sum_o',['../classdut__example.html#ac90adb73f41018def90d2b1cfa56465c',1,'dut_example']]]
 ];

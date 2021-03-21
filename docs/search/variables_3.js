@@ -1,6 +1,29 @@
 var searchData=
 [
-  ['info_5flen_7e8_351',['info_len~8',['../classpltbutils__func__pkg.html#ae31e53ccc6a6fab3adf0a55efef84729',1,'pltbutils_func_pkg']]],
-  ['info_7e18_352',['info~18',['../classpltbutils__func__pkg.html#a8d1dc716f0fe3ad41219e633e402b131',1,'pltbutils_func_pkg']]],
-  ['info_7e7_353',['info~7',['../classpltbutils__func__pkg.html#ac11d367de45b7d5df869996055636e37',1,'pltbutils_func_pkg']]]
+  ['g_5fbintestfile_5fcorrect_407',['G_BINTESTFILE_CORRECT',['../classtb__pltbutils.html#ad428fb72a380d3263226fa4e45520f10',1,'tb_pltbutils']]],
+  ['g_5fbintestfile_5ferror_408',['G_BINTESTFILE_ERROR',['../classtb__pltbutils.html#a6f187c15747bf40295b0719ad99ec860',1,'tb_pltbutils']]],
+  ['g_5fbintestfile_5fheader_409',['G_BINTESTFILE_HEADER',['../classtb__pltbutils.html#aff11389e4673e53919b1985a7ba30547',1,'tb_pltbutils']]],
+  ['g_5fbintestfile_5flen_410',['G_BINTESTFILE_LEN',['../classtb__pltbutils.html#a62d945fcd9ddd3197c6d90af2ef4ec73',1,'tb_pltbutils']]],
+  ['g_5fbintestfile_5flonger_411',['G_BINTESTFILE_LONGER',['../classtb__pltbutils.html#a0679e0705e0055668788de8e32928237',1,'tb_pltbutils']]],
+  ['g_5fbintestfile_5freference_412',['G_BINTESTFILE_REFERENCE',['../classtb__pltbutils.html#a83789f6ad3625dd5c70a5695dc1ac4f3',1,'tb_pltbutils']]],
+  ['g_5fbintestfile_5fshorter_413',['G_BINTESTFILE_SHORTER',['../classtb__pltbutils.html#ae6955d7e3c165ddebf780489c7dbf720',1,'tb_pltbutils']]],
+  ['g_5fcheckfile_5fverbosity_414',['G_CHECKFILE_VERBOSITY',['../classtb__pltbutils.html#a7ee48e58092c133d5ef33dcde4d2590a',1,'tb_pltbutils']]],
+  ['g_5fclk_5fperiod_415',['G_CLK_PERIOD',['../classtb__template1.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_template1.G_CLK_PERIOD()'],['../classtb__template2.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_template2.G_CLK_PERIOD()'],['../classtb__example2.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_example2.G_CLK_PERIOD()'],['../classtb__example1.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_example1.G_CLK_PERIOD()'],['../classtb__pltbutils.html#a66dfd6a1fb98eee0a6c1d04df77757ce',1,'tb_pltbutils.G_CLK_PERIOD()']]],
+  ['g_5fdattestfile_5fcorrect_416',['G_DATTESTFILE_CORRECT',['../classtb__pltbutils.html#afca9a629ded446fa9ff7f727c6ffbbbe',1,'tb_pltbutils']]],
+  ['g_5fdattestfile_5ferror_417',['G_DATTESTFILE_ERROR',['../classtb__pltbutils.html#a98f2f98bb46cfb7ec28c6fb51019a4f9',1,'tb_pltbutils']]],
+  ['g_5fdattestfile_5flonger_418',['G_DATTESTFILE_LONGER',['../classtb__pltbutils.html#a45ff639ffd60e4e50c59fbd8a339e4b0',1,'tb_pltbutils']]],
+  ['g_5fdattestfile_5freference_419',['G_DATTESTFILE_REFERENCE',['../classtb__pltbutils.html#abbb3551884b27e3f85c8b07aa016f053',1,'tb_pltbutils']]],
+  ['g_5fdattestfile_5fshorter_420',['G_DATTESTFILE_SHORTER',['../classtb__pltbutils.html#a975241c94f3159012cac5bd8cd3f3c4e',1,'tb_pltbutils']]],
+  ['g_5fdisable_5fbugs_421',['G_DISABLE_BUGS',['../classtc__example2.html#ac96c2f9ed656335145b7b861130cd939',1,'tc_example2.G_DISABLE_BUGS()'],['../classtb__example2.html#ac96c2f9ed656335145b7b861130cd939',1,'tb_example2.G_DISABLE_BUGS()'],['../classdut__example.html#a57444c79aa47d2854b6d8ac1cd24cc0d',1,'dut_example.G_DISABLE_BUGS()'],['../classtb__example1.html#ac96c2f9ed656335145b7b861130cd939',1,'tb_example1.G_DISABLE_BUGS()']]],
+  ['g_5finitvalue_422',['G_INITVALUE',['../classpltbutils__clkgen.html#af4235f56aa8d86d8c309042e7d580eec',1,'pltbutils_clkgen']]],
+  ['g_5fperiod_423',['G_PERIOD',['../classpltbutils__clkgen.html#adbf8952b6b4cd64a36b8cc71101d8fe4',1,'pltbutils_clkgen']]],
+  ['g_5frpt_5flabel_424',['G_RPT_LABEL',['../classpltbutils__time__measure.html#a5dd40eff234d3dc91d8098cd7f57a346',1,'pltbutils_time_measure.G_RPT_LABEL()'],['../classpltbutils__diff__check.html#a487113aa2a8b4d384b6390c079bc33c9',1,'pltbutils_diff_check.G_RPT_LABEL()']]],
+  ['g_5fskiptests_425',['G_SKIPTESTS',['../classtb__pltbutils.html#a043c292aebe26414231c4ed9ebedd710',1,'tb_pltbutils.G_SKIPTESTS()'],['../classtb__template1.html#a4fb43c6fb8b14d01d41ec9135040add7',1,'tb_template1.G_SKIPTESTS()'],['../classtb__template2.html#a4fb43c6fb8b14d01d41ec9135040add7',1,'tb_template2.G_SKIPTESTS()'],['../classtc__template2.html#a4fb43c6fb8b14d01d41ec9135040add7',1,'tc_template2.G_SKIPTESTS()']]],
+  ['g_5ftexttestfile_5fcorrect_426',['G_TEXTTESTFILE_CORRECT',['../classtb__pltbutils.html#adca99bc204386d7bff8275252f4d193f',1,'tb_pltbutils']]],
+  ['g_5ftexttestfile_5ferror_427',['G_TEXTTESTFILE_ERROR',['../classtb__pltbutils.html#a578bcef7dd3a54d7bb5f7e2e2ee9297f',1,'tb_pltbutils']]],
+  ['g_5ftexttestfile_5flonger_428',['G_TEXTTESTFILE_LONGER',['../classtb__pltbutils.html#a93c6651f2765ccd1c89a9f8d9038882b',1,'tb_pltbutils']]],
+  ['g_5ftexttestfile_5freference_429',['G_TEXTTESTFILE_REFERENCE',['../classtb__pltbutils.html#a234f0c7522ed9b0eaf06e677014533e5',1,'tb_pltbutils']]],
+  ['g_5ftexttestfile_5fshorter_430',['G_TEXTTESTFILE_SHORTER',['../classtb__pltbutils.html#a840c4ab0fcf1cd930b0d673465c0fd27',1,'tb_pltbutils']]],
+  ['g_5fverbosity_431',['G_VERBOSITY',['../classpltbutils__time__measure.html#abdfdd10070d7a193456a34d44ab8f5a0',1,'pltbutils_time_measure.G_VERBOSITY()'],['../classpltbutils__diff__check.html#abdfdd10070d7a193456a34d44ab8f5a0',1,'pltbutils_diff_check.G_VERBOSITY()']]],
+  ['g_5fwidth_432',['G_WIDTH',['../classdut__example.html#a40f594af67d95f0eb6d8f59f8825136a',1,'dut_example.G_WIDTH()'],['../classtb__example1.html#a40f594af67d95f0eb6d8f59f8825136a',1,'tb_example1.G_WIDTH()'],['../classtb__example2.html#a40f594af67d95f0eb6d8f59f8825136a',1,'tb_example2.G_WIDTH()'],['../classtc__example2.html#a40f594af67d95f0eb6d8f59f8825136a',1,'tc_example2.G_WIDTH()']]]
 ];

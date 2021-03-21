@@ -1,0 +1,7 @@
+vhdl xil_defaultlib ../../../src/vhdl/txt_util.vhd
+vhdl xil_defaultlib ../../../src/vhdl/pltbutils_user_cfg_pkg.vhd
+vhdl xil_defaultlib ../../../src/vhdl/pltbutils_func_pkg.vhd
+vhdl xil_defaultlib ../../../src/vhdl/pltbutils_comp.vhd
+vhdl xil_defaultlib ../../../src/vhdl/pltbutils_comp_pkg.vhd
+vhdl xil_defaultlib ../../../bench/vhdl/tb_pltbutils.vhd
+     

@@ -1,27 +1,17 @@
---!
---! PlTbUtils Example Testcase Entity for Example Testbench
+--! \file tc_example2.vhd
+--! \brief PlTbUtils Example Testcase Entity for Example Testbench
 --!
 --! This file is part of the PlTbUtils project
 --! http://opencores.org/project,pltbutils
 --!
---! Description:
---! PlTbUtils is a collection of functions, procedures and
---! components for easily creating stimuli and checking response
---! in automatic self-checking testbenches.
---!
 --! This file is an example which demonstrates how PlTbUtils
 --! can be used.
 --!
+--! \author Per Larsson, pela.opencores@gmail.com
 --!
---! To Do:
---! -
+--! \copyright Copyright (C) 2013-2020 Authors and OPENCORES.ORG
 --!
---! Author(s):
---! - Per Larsson, pela.opencores@gmail.com
---!
---!
---! Copyright (C) 2013 Authors and OPENCORES.ORG
---!
+--! \licenseblock
 --! This source file may be used and distributed without
 --! restriction provided that this copyright statement is not
 --! removed from the file and that any derivative work contains
@@ -42,6 +32,8 @@
 --! You should have received a copy of the GNU Lesser General
 --! Public License along with this source; if not, download it
 --! from http://www.opencores.org/lgpl.shtml
+--! \endlicenseblock
+
 library ieee;
 use ieee.std_logic_1164.all;
 use work.pltbutils_func_pkg.all;

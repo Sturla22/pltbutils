@@ -29,7 +29,7 @@
    <div id="projectname">PlTbUtils
    &#160;<span id="projectnumber">1.3</span>
    </div>
-   <div id="projectbrief">PlTbUtils makes it easy to create automatic, self-checking simulation testbenches, and to locate bugs during a simulation. It is a collection of functions, procedures and testbench components that simplifies creation of stimuli and checking results of a device under test.</div>
+   <div id="projectbrief">PlTbUtils is a collection of functions, procedures and components for easily creating stimuli and checking response in automatic self-checking testbenches.</div>
   </td>
  </tr>
  </tbody>
@@ -90,8 +90,17 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 <li>c
 : <a class="el" href="classdut__example_1_1rtl.html#a313eb80d407cafdaad7a7842af53c4c8">dut_example.rtl</a>
 </li>
+<li>C_EXPECTED_FAIL
+: <a class="el" href="classtb__pltbutils_1_1bhv.html#a1851edde3892961cbe7dd9c23c892a49">tb_pltbutils.bhv</a>
+</li>
+<li>C_EXPECTED_SUCCESS
+: <a class="el" href="classtb__pltbutils_1_1bhv.html#a1041ce81b1e84bf1efa6e27589016920">tb_pltbutils.bhv</a>
+</li>
 <li>C_HALF_PERIOD
 : <a class="el" href="classpltbutils__clkgen_1_1bhv.html#a4cf214e4b7cca5143691dcab0fb5a1ba">pltbutils_clkgen.bhv</a>
+</li>
+<li>C_INTEGER_MAX
+: <a class="el" href="classpltbutils__diff__check_1_1bhv.html#ac3783fc78627111fb1dc14256d54825f">pltbutils_diff_check.bhv</a>
 </li>
 <li>C_PLTBS_INIT
 : <a class="el" href="classpltbutils__func__pkg.html#a894fa613bcc226e8e3a15f6aea92e788">pltbutils_func_pkg</a>
@@ -209,6 +218,22 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 </ul>
 
 
+<h3><a id="index_d"></a>- d -</h3><ul>
+<li>diff_error
+: <a class="el" href="classpltbutils__diff__check_1_1bhv.html#ab00035b57e49baab6275f6e310c1df70">pltbutils_diff_check.bhv</a>
+</li>
+<li>diff_error_o
+: <a class="el" href="classpltbutils__diff__check.html#a76415061f0875d7500a23359553865ea">pltbutils_diff_check</a>
+</li>
+<li>diff_errors
+: <a class="el" href="classpltbutils__diff__check_1_1bhv.html#abbd96df10ba81f8e340bedc55a51f8d0">pltbutils_diff_check.bhv</a>
+</li>
+<li>diff_errors_o
+: <a class="el" href="classpltbutils__diff__check.html#a1210525a34a08ebb9d0e208db32a404f">pltbutils_diff_check</a>
+</li>
+</ul>
+
+
 <h3><a id="index_e"></a>- e -</h3><ul>
 <li>EMPTY_CHR
 : <a class="el" href="classpltbutils__func__pkg.html#a836912e69c79e38f2689005c6ed646af">pltbutils_func_pkg</a>
@@ -229,12 +254,51 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 
 
 <h3><a id="index_g"></a>- g -</h3><ul>
+<li>G_BINTESTFILE_CORRECT
+: <a class="el" href="classtb__pltbutils.html#ad428fb72a380d3263226fa4e45520f10">tb_pltbutils</a>
+</li>
+<li>G_BINTESTFILE_ERROR
+: <a class="el" href="classtb__pltbutils.html#a6f187c15747bf40295b0719ad99ec860">tb_pltbutils</a>
+</li>
+<li>G_BINTESTFILE_HEADER
+: <a class="el" href="classtb__pltbutils.html#aff11389e4673e53919b1985a7ba30547">tb_pltbutils</a>
+</li>
+<li>G_BINTESTFILE_LEN
+: <a class="el" href="classtb__pltbutils.html#a62d945fcd9ddd3197c6d90af2ef4ec73">tb_pltbutils</a>
+</li>
+<li>G_BINTESTFILE_LONGER
+: <a class="el" href="classtb__pltbutils.html#a0679e0705e0055668788de8e32928237">tb_pltbutils</a>
+</li>
+<li>G_BINTESTFILE_REFERENCE
+: <a class="el" href="classtb__pltbutils.html#a83789f6ad3625dd5c70a5695dc1ac4f3">tb_pltbutils</a>
+</li>
+<li>G_BINTESTFILE_SHORTER
+: <a class="el" href="classtb__pltbutils.html#ae6955d7e3c165ddebf780489c7dbf720">tb_pltbutils</a>
+</li>
+<li>G_CHECKFILE_VERBOSITY
+: <a class="el" href="classtb__pltbutils.html#a7ee48e58092c133d5ef33dcde4d2590a">tb_pltbutils</a>
+</li>
 <li>G_CLK_PERIOD
 : <a class="el" href="classtb__example1.html#a66dfd6a1fb98eee0a6c1d04df77757ce">tb_example1</a>
 , <a class="el" href="classtb__example2.html#a66dfd6a1fb98eee0a6c1d04df77757ce">tb_example2</a>
 , <a class="el" href="classtb__pltbutils.html#a66dfd6a1fb98eee0a6c1d04df77757ce">tb_pltbutils</a>
 , <a class="el" href="classtb__template1.html#a66dfd6a1fb98eee0a6c1d04df77757ce">tb_template1</a>
 , <a class="el" href="classtb__template2.html#a66dfd6a1fb98eee0a6c1d04df77757ce">tb_template2</a>
+</li>
+<li>G_DATTESTFILE_CORRECT
+: <a class="el" href="classtb__pltbutils.html#afca9a629ded446fa9ff7f727c6ffbbbe">tb_pltbutils</a>
+</li>
+<li>G_DATTESTFILE_ERROR
+: <a class="el" href="classtb__pltbutils.html#a98f2f98bb46cfb7ec28c6fb51019a4f9">tb_pltbutils</a>
+</li>
+<li>G_DATTESTFILE_LONGER
+: <a class="el" href="classtb__pltbutils.html#a45ff639ffd60e4e50c59fbd8a339e4b0">tb_pltbutils</a>
+</li>
+<li>G_DATTESTFILE_REFERENCE
+: <a class="el" href="classtb__pltbutils.html#abbb3551884b27e3f85c8b07aa016f053">tb_pltbutils</a>
+</li>
+<li>G_DATTESTFILE_SHORTER
+: <a class="el" href="classtb__pltbutils.html#a975241c94f3159012cac5bd8cd3f3c4e">tb_pltbutils</a>
 </li>
 <li>G_DISABLE_BUGS
 : <a class="el" href="classdut__example.html#a57444c79aa47d2854b6d8ac1cd24cc0d">dut_example</a>
@@ -248,11 +312,34 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 <li>G_PERIOD
 : <a class="el" href="classpltbutils__clkgen.html#adbf8952b6b4cd64a36b8cc71101d8fe4">pltbutils_clkgen</a>
 </li>
+<li>G_RPT_LABEL
+: <a class="el" href="classpltbutils__diff__check.html#a487113aa2a8b4d384b6390c079bc33c9">pltbutils_diff_check</a>
+, <a class="el" href="classpltbutils__time__measure.html#a5dd40eff234d3dc91d8098cd7f57a346">pltbutils_time_measure</a>
+</li>
 <li>G_SKIPTESTS
 : <a class="el" href="classtb__pltbutils.html#a043c292aebe26414231c4ed9ebedd710">tb_pltbutils</a>
 , <a class="el" href="classtb__template1.html#a4fb43c6fb8b14d01d41ec9135040add7">tb_template1</a>
 , <a class="el" href="classtb__template2.html#a4fb43c6fb8b14d01d41ec9135040add7">tb_template2</a>
 , <a class="el" href="classtc__template2.html#a4fb43c6fb8b14d01d41ec9135040add7">tc_template2</a>
+</li>
+<li>G_TEXTTESTFILE_CORRECT
+: <a class="el" href="classtb__pltbutils.html#adca99bc204386d7bff8275252f4d193f">tb_pltbutils</a>
+</li>
+<li>G_TEXTTESTFILE_ERROR
+: <a class="el" href="classtb__pltbutils.html#a578bcef7dd3a54d7bb5f7e2e2ee9297f">tb_pltbutils</a>
+</li>
+<li>G_TEXTTESTFILE_LONGER
+: <a class="el" href="classtb__pltbutils.html#a93c6651f2765ccd1c89a9f8d9038882b">tb_pltbutils</a>
+</li>
+<li>G_TEXTTESTFILE_REFERENCE
+: <a class="el" href="classtb__pltbutils.html#a234f0c7522ed9b0eaf06e677014533e5">tb_pltbutils</a>
+</li>
+<li>G_TEXTTESTFILE_SHORTER
+: <a class="el" href="classtb__pltbutils.html#a840c4ab0fcf1cd930b0d673465c0fd27">tb_pltbutils</a>
+</li>
+<li>G_VERBOSITY
+: <a class="el" href="classpltbutils__diff__check.html#abdfdd10070d7a193456a34d44ab8f5a0">pltbutils_diff_check</a>
+, <a class="el" href="classpltbutils__time__measure.html#abdfdd10070d7a193456a34d44ab8f5a0">pltbutils_time_measure</a>
 </li>
 <li>G_WIDTH
 : <a class="el" href="classdut__example.html#a40f594af67d95f0eb6d8f59f8825136a">dut_example</a>
@@ -289,6 +376,12 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 <li>pltbutils_clkgen
 : <a class="el" href="classpltbutils__comp__pkg.html#a91043d8209aa5d64661c46b8f3b6a457">pltbutils_comp_pkg</a>
 </li>
+<li>pltbutils_diff_check
+: <a class="el" href="classpltbutils__comp__pkg.html#a133fa71fe2eb27d91b5b521f853df40a">pltbutils_comp_pkg</a>
+</li>
+<li>pltbutils_time_measure
+: <a class="el" href="classpltbutils__comp__pkg.html#adba48b316efd4efdde8b5b8c419c2988">pltbutils_comp_pkg</a>
+</li>
 <li>pltbv_t
 : <a class="el" href="classpltbutils__func__pkg.html#a028adefc22f3d942030af00456080741">pltbutils_func_pkg</a>
 </li>
@@ -304,6 +397,9 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 , <a class="el" href="classtc__example2.html#a352387ac1c11448edf5830e9b3408485">tc_example2</a>
 , <a class="el" href="classtc__template2.html#a352387ac1c11448edf5830e9b3408485">tc_template2</a>
 </li>
+<li>rst_errors_i
+: <a class="el" href="classpltbutils__diff__check.html#af4d063c5fc1609315cfd17f7fb99f1d6">pltbutils_diff_check</a>
+</li>
 <li>rst_i
 : <a class="el" href="classdut__example.html#ab86c7a8eec3a8327e506892977f85708">dut_example</a>
 </li>
@@ -315,7 +411,12 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 : <a class="el" href="classtb__pltbutils_1_1bhv.html#af9bef1913b54af797bf77b05d40e236e">tb_pltbutils.bhv</a>
 </li>
 <li>s_i
-: <a class="el" href="classtb__pltbutils_1_1bhv.html#a698368ec97b8ab345f635e1051cbe59b">tb_pltbutils.bhv</a>
+: <a class="el" href="classpltbutils__diff__check.html#a5e329fc99f64bc7824eb5ea217c58fd6">pltbutils_diff_check</a>
+, <a class="el" href="classpltbutils__time__measure.html#a5e329fc99f64bc7824eb5ea217c58fd6">pltbutils_time_measure</a>
+, <a class="el" href="classtb__pltbutils_1_1bhv.html#a698368ec97b8ab345f635e1051cbe59b">tb_pltbutils.bhv</a>
+</li>
+<li>s_n_i
+: <a class="el" href="classpltbutils__diff__check.html#a0afb33b2310132e6426fbaa86872e37e">pltbutils_diff_check</a>
 </li>
 <li>s_s
 : <a class="el" href="classtb__pltbutils_1_1bhv.html#a494768aee01551e21934ee27e3f27452">tb_pltbutils.bhv</a>
@@ -372,6 +473,24 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 
 
 <h3><a id="index_t"></a>- t -</h3><ul>
+<li>t_hi
+: <a class="el" href="classpltbutils__time__measure_1_1bhv.html#a91487bf2a24eb4b1f2f9f423c8274bf2">pltbutils_time_measure.bhv</a>
+</li>
+<li>t_hi_o
+: <a class="el" href="classpltbutils__time__measure.html#a00319ef1a67652c8eb9af4c148834dd7">pltbutils_time_measure</a>
+</li>
+<li>t_lo
+: <a class="el" href="classpltbutils__time__measure_1_1bhv.html#ae20c71ea462c003f3284312e7417888c">pltbutils_time_measure.bhv</a>
+</li>
+<li>t_lo_o
+: <a class="el" href="classpltbutils__time__measure.html#aee924db4313479dbeeb0ab65344e0c2d">pltbutils_time_measure</a>
+</li>
+<li>t_per
+: <a class="el" href="classpltbutils__time__measure_1_1bhv.html#a6b10f1fe06d1d1a4b44a8ece78c3fc38">pltbutils_time_measure.bhv</a>
+</li>
+<li>t_per_o
+: <a class="el" href="classpltbutils__time__measure.html#a61c2f529cad6d0bb0dff2770747e4104">pltbutils_time_measure</a>
+</li>
 <li>test_active
 : <a class="el" href="classpltbutils__func__pkg.html#a7e1e436952a79d687340da6c11a4d393">pltbutils_func_pkg</a>
 </li>

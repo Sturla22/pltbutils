@@ -12,7 +12,7 @@
 <!-- Node1 -->
 <g id="node1" class="node">
 <title>Node1</title>
-<g id="a_node1"><a xlink:title=" ">
+<g id="a_node1"><a xlink:title="This is an example which demonstrates how PlTbUtils can be used.">
 <polygon fill="#bfbfbf" stroke="black" points="61,-0.5 61,-79.5 177,-79.5 177,-0.5 61,-0.5"/>
 <text text-anchor="middle" x="119" y="-67.5" font-family="Helvetica,sans-Serif" font-size="10.00">tb_example1</text>
 <polyline fill="none" stroke="black" points="61,-60.5 177,-60.5 "/>
@@ -54,7 +54,7 @@
 <!-- Node3 -->
 <g id="node3" class="node">
 <title>Node3</title>
-<g id="a_node3"><a xlink:href="classpltbutils__clkgen.html" target="_top" xlink:title=" ">
+<g id="a_node3"><a xlink:href="classpltbutils__clkgen.html" target="_top" xlink:title="Creates a clock for use in a testbench.">
 <polygon fill="white" stroke="black" points="134,-138.5 134,-239.5 228,-239.5 228,-138.5 134,-138.5"/>
 <text text-anchor="middle" x="181" y="-227.5" font-family="Helvetica,sans-Serif" font-size="10.00">pltbutils_clkgen</text>
 <polyline fill="none" stroke="black" points="134,-220.5 228,-220.5 "/>

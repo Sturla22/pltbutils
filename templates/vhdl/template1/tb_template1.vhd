@@ -1,12 +1,8 @@
---!  PlTbUtils Testbench Template 1
+--! \file tb_template1.vhd
+--! \brief PlTbUtils Testbench Template 1
 --!
 --!  This file is part of the PlTbUtils project
 --!  http://opencores.org/project,pltbutils
---!
---!  Description:
---!  PlTbUtils is a collection of functions, procedures and
---!  components for easily creating stimuli and checking response
---!  in automatic self-checking testbenches.
 --!
 --!  This file is a template, which can be used as a base when
 --!  testbenches which use PlTbUtils.
@@ -15,12 +11,7 @@
 --!  "template" with a name for your design.
 --!  Also remove informative comments enclosed in < ... > .
 --!
---!
---!  To Do:
---!  -
---!
---!  Author(s):
---!  - Per Larsson, pela.opencores@gmail.com
+--!  \author Per Larsson, pela.opencores@gmail.com
 --!
 library ieee;
 use ieee.std_logic_1164.all;

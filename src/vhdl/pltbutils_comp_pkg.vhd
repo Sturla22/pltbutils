@@ -1,14 +1,8 @@
-
 --! \file pltbutils_comp_pkg.vhd
---! PlTbUtils Component Declarations
+--! \brief PlTbUtils Component Declarations
 --!
 --! This file is part of the PlTbUtils project
 --! http://opencores.org/project,pltbutils
---!
---! Description:
---! PlTbUtils is a collection of functions, procedures and
---! components for easily creating stimuli and checking response
---! in automatic self-checking testbenches.
 --!
 --! This file declares testbench components, which are defined
 --! in pltbutils_comp.vhd .
@@ -17,9 +11,9 @@
 --!
 --! \author Per Larsson, pela.opencores@gmail.com
 --!
+--! \copyright (C) 2013-2020 Authors and OPENCORES.ORG
 --!
---! \copyright (C) 2013 Authors and OPENCORES.ORG
---!
+--! \licenseblock
 --! This source file may be used and distributed without
 --! restriction provided that this copyright statement is not
 --! removed from the file and that any derivative work contains
@@ -40,7 +34,7 @@
 --! You should have received a copy of the GNU Lesser General
 --! Public License along with this source; if not, download it
 --! from http://www.opencores.org/lgpl.shtml
---!
+--! \endlicenseblock
 
 library ieee;
   use ieee.std_logic_1164.all;
@@ -60,6 +54,33 @@ package pltbutils_comp_pkg is
       stop_sim_i : in    std_logic
     );
   end component pltbutils_clkgen;
+
+  component pltbutils_time_measure is
+    generic (
+      G_VERBOSITY     : integer := 0;
+      G_RPT_LABEL     : string  := "pltbutils_time_measure"
+    );
+    port (
+      t_hi_o          : out time;             -- High time
+      t_lo_o          : out time;             -- Low time
+      t_per_o         : out time;             -- Period time
+      s_i             : in  std_logic         -- Signal to measure
+    );
+  end component pltbutils_time_measure;
+
+  component pltbutils_diff_check is
+    generic (
+      G_VERBOSITY     : integer := 0;
+      G_RPT_LABEL     : string  := "pltbutils_diff_check"
+    );
+    port (
+      diff_error_o    : out std_logic;        -- High when diff error detected
+      diff_errors_o   : out integer;          -- Number of diff errors detected
+      s_i             : in  std_logic;        -- Pos half of diff pair to check
+      s_n_i           : in  std_logic := '0'; -- Neg half of diff pair to check
+      rst_errors_i    : in  std_logic := '0'  -- High resets diff error counter
+    );
+  end component pltbutils_diff_check;
 
 end package pltbutils_comp_pkg;
 

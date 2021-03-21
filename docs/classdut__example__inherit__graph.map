@@ -1,5 +1,5 @@
 <map id="dut_example" name="dut_example">
 <area shape="rect" id="node1" title=" " alt="" coords="95,5,249,200"/>
-<area shape="rect" id="node2" href="$classtb__example1.html" title=" " alt="" coords="5,248,160,355"/>
+<area shape="rect" id="node2" href="$classtb__example1.html" title="This is an example which demonstrates how PlTbUtils can be used." alt="" coords="5,248,160,355"/>
 <area shape="rect" id="node3" href="$classtb__example2.html" title=" " alt="" coords="184,248,339,355"/>
 </map>

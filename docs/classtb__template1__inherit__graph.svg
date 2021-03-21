@@ -26,7 +26,7 @@
 <!-- Node2 -->
 <g id="node2" class="node">
 <title>Node2</title>
-<g id="a_node2"><a xlink:href="classpltbutils__clkgen.html" target="_top" xlink:title=" ">
+<g id="a_node2"><a xlink:href="classpltbutils__clkgen.html" target="_top" xlink:title="Creates a clock for use in a testbench.">
 <polygon fill="white" stroke="black" points="3.5,-105.5 3.5,-206.5 97.5,-206.5 97.5,-105.5 3.5,-105.5"/>
 <text text-anchor="middle" x="50.5" y="-194.5" font-family="Helvetica,sans-Serif" font-size="10.00">pltbutils_clkgen</text>
 <polyline fill="none" stroke="black" points="3.5,-187.5 97.5,-187.5 "/>

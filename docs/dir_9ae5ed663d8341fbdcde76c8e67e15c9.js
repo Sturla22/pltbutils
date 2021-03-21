@@ -2,7 +2,11 @@ var dir_9ae5ed663d8341fbdcde76c8e67e15c9 =
 [
     [ "pltbutils_comp.vhd", "pltbutils__comp_8vhd.html", [
       [ "pltbutils_clkgen", "classpltbutils__clkgen.html", "classpltbutils__clkgen" ],
-      [ "pltbutils_clkgen.bhv", "classpltbutils__clkgen_1_1bhv.html", "classpltbutils__clkgen_1_1bhv" ]
+      [ "pltbutils_clkgen.bhv", "classpltbutils__clkgen_1_1bhv.html", "classpltbutils__clkgen_1_1bhv" ],
+      [ "pltbutils_time_measure", "classpltbutils__time__measure.html", "classpltbutils__time__measure" ],
+      [ "pltbutils_time_measure.bhv", "classpltbutils__time__measure_1_1bhv.html", "classpltbutils__time__measure_1_1bhv" ],
+      [ "pltbutils_diff_check", "classpltbutils__diff__check.html", "classpltbutils__diff__check" ],
+      [ "pltbutils_diff_check.bhv", "classpltbutils__diff__check_1_1bhv.html", "classpltbutils__diff__check_1_1bhv" ]
     ] ],
     [ "pltbutils_comp_pkg.vhd", "pltbutils__comp__pkg_8vhd.html", [
       [ "pltbutils_comp_pkg", "classpltbutils__comp__pkg.html", "classpltbutils__comp__pkg" ]

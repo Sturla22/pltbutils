@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['y_193',['y',['../classdut__example_1_1rtl.html#a61e5e7a4c2ca266e366682daeb85bb92',1,'dut_example.rtl.y()'],['../classtb__example1_1_1bhv.html#a70e68dd99e9bab52dfa4c3bddb370bc9',1,'tb_example1.bhv.y()'],['../classtb__example2_1_1bhv.html#a70e68dd99e9bab52dfa4c3bddb370bc9',1,'tb_example2.bhv.y()'],['../classtc__example2.html#a9df30f532a9df0ce4c7653558c77c68b',1,'tc_example2.y()']]],
-  ['y_5fi_194',['y_i',['../classdut__example.html#a262bf3ac9f72fc74df66c1e920f884e0',1,'dut_example']]]
+  ['x_236',['x',['../classdut__example_1_1rtl.html#a311b00f22912995c872219692605b4a1',1,'dut_example.rtl.x()'],['../classtb__example1_1_1bhv.html#adad9fdabcb16d6868ba56a9004f85e75',1,'tb_example1.bhv.x()'],['../classtb__example2_1_1bhv.html#adad9fdabcb16d6868ba56a9004f85e75',1,'tb_example2.bhv.x()'],['../classtc__example2.html#afac68546c9ed9205bdedf8ab77c3e336',1,'tc_example2.x()']]],
+  ['x_5fi_237',['x_i',['../classdut__example.html#a74e1eb7316514a25c11bd8b9226afcf8',1,'dut_example']]]
 ];

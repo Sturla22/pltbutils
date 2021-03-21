@@ -3,28 +3,23 @@
 --! This file is part of the PlTbUtils project
 --! http://opencores.org/project,pltbutils
 --!
---! PlTbUtils is a collection of functions, procedures and
---! components for easily creating stimuli and checking response
---! in automatic self-checking testbenches.
---!
 --! Source:
---! http://www.mrc.uidaho.edu/mrc/people/jff/vhdl_info/txt_util.vhd -
---! Thanks to Stefan Doll and James F. Frenzel.                  --!
+--! http://www.mrc.uidaho.edu/mrc/people/jff/vhdl_info/txt_util.vhd
+--! Thanks to Stefan Doll and James F. Frenzel.
 --!
---!  Disclaimer: Derived from txt_util.vhd on www.stefanvhdl.com
+--! Disclaimer: Derived from txt_util.vhd on www.stefanvhdl.com
 --!
---!  Revision History:
+--! Revision History:
 --!
---!  1.0 URL: http://www.stefanvhdl.com/vhdl/vhdl/txt_util.vhd
+--! 1.0 URL: http://www.stefanvhdl.com/vhdl/vhdl/txt_util.vhd
 --!
---!  1.1 Modified str_read() to prevent extra character (JFF)
+--! 1.1 Modified str_read() to prevent extra character (JFF)
 --!
---!  1.2 Added is_whitespace() and strip_whitespace() (JFF)
+--! 1.2 Added is_whitespace() and strip_whitespace() (JFF)
 --!
---!  1.3 Added first_string() and chomp() (JFF)
+--! 1.3 Added first_string() and chomp() (JFF)
 --!
---!  1.4 Added hex string and integer string conversion (JFF)
---!
+--! 1.4 Added hex string and integer string conversion (JFF)
 
 library ieee;
   use ieee.std_logic_1164.all;

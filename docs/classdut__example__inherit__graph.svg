@@ -33,7 +33,7 @@
 <!-- Node2 -->
 <g id="node2" class="node">
 <title>Node2</title>
-<g id="a_node2"><a xlink:href="classtb__example1.html" target="_top" xlink:title=" ">
+<g id="a_node2"><a xlink:href="classtb__example1.html" target="_top" xlink:title="This is an example which demonstrates how PlTbUtils can be used.">
 <polygon fill="white" stroke="black" points="0,-0.5 0,-79.5 116,-79.5 116,-0.5 0,-0.5"/>
 <text text-anchor="middle" x="58" y="-67.5" font-family="Helvetica,sans-Serif" font-size="10.00">tb_example1</text>
 <polyline fill="none" stroke="black" points="0,-60.5 116,-60.5 "/>

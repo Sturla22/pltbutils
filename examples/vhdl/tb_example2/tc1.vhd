@@ -1,27 +1,18 @@
---! PlTbUtils Example Testcase Architecture for
+--! \file tc1.vhd
+--! \brief PlTbUtils Example Testcase Architecture for
 --! Example Testbench
 --!
 --! This file is part of the PlTbUtils project
 --! http://opencores.org/project,pltbutils
 --!
---! Description:
---! PlTbUtils is a collection of functions, procedures and
---! components for easily creating stimuli and checking response
---! in automatic self-checking testbenches.
---!
 --! This file is an example which demonstrates how PlTbUtils
 --! can be used.
 --!
---! To Do:
---! -
+--! \author Per Larsson, pela.opencores@gmail.com
 --!
---! Author(s):
---! - Per Larsson, pela.opencores@gmail.com
+--! \copyright Copyright (C) 2013-2020 Authors and OPENCORES.ORG
 --!
---!
---!
---! Copyright (C) 2013-2014 Authors and OPENCORES.ORG
---!
+--! \licenseblock
 --! This source file may be used and distributed without
 --! restriction provided that this copyright statement is not
 --! removed from the file and that any derivative work contains
@@ -42,14 +33,16 @@
 --! You should have received a copy of the GNU Lesser General
 --! Public License along with this source; if not, download it
 --! from http://www.opencores.org/lgpl.shtml
+--! \endlicenseblock
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.txt_util.all;
 use work.pltbutils_func_pkg.all;
 
--- NOTE: The purpose of the following code is to demonstrate some of the
--- features of PlTbUtils, not to do a thorough verification.
+--! \note The purpose of the following code is to demonstrate some of the
+--! features of PlTbUtils, not to do a thorough verification.
 architecture tc1 of tc_example2 is
 begin
   p_tc1 : process

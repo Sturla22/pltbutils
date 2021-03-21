@@ -2,6 +2,8 @@ var annotated_dup =
 [
     [ "dut_example", "classdut__example.html", "classdut__example" ],
     [ "pltbutils_clkgen", "classpltbutils__clkgen.html", "classpltbutils__clkgen" ],
+    [ "pltbutils_diff_check", "classpltbutils__diff__check.html", "classpltbutils__diff__check" ],
+    [ "pltbutils_time_measure", "classpltbutils__time__measure.html", "classpltbutils__time__measure" ],
     [ "tb_example1", "classtb__example1.html", "classtb__example1" ],
     [ "tb_example2", "classtb__example2.html", "classtb__example2" ],
     [ "tb_pltbutils", "classtb__pltbutils.html", "classtb__pltbutils" ],

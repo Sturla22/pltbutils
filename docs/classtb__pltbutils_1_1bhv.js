@@ -1,7 +1,10 @@
 var classtb__pltbutils_1_1bhv =
 [
+    [ "check_cnt", "classtb__pltbutils_1_1bhv.html#a49cf5a987e27020036cccce663291ad3", null ],
     [ "p_clk_cnt", "classtb__pltbutils_1_1bhv.html#a8dd042bfd4e423d988fd483e76f6e099", null ],
     [ "p_tc1", "classtb__pltbutils_1_1bhv.html#a334ad9d88aa78f4f6f3547583a9c9b1a", null ],
+    [ "C_EXPECTED_FAIL", "classtb__pltbutils_1_1bhv.html#a1851edde3892961cbe7dd9c23c892a49", null ],
+    [ "C_EXPECTED_SUCCESS", "classtb__pltbutils_1_1bhv.html#a1041ce81b1e84bf1efa6e27589016920", null ],
     [ "clk", "classtb__pltbutils_1_1bhv.html#a1bc5c1a0be5baa1956f86292646908ad", null ],
     [ "clk_cnt", "classtb__pltbutils_1_1bhv.html#acbc24886de98ce5c1884a5e920d97d12", null ],
     [ "clk_cnt_clr", "classtb__pltbutils_1_1bhv.html#aacbc3532cc72ebe46c9b311cbced0cf5", null ],
