@@ -12,7 +12,7 @@ var searchData=
   ['pltbutils_5fcomp_5fpkg_128',['pltbutils_comp_pkg',['../classpltbutils__comp__pkg.html',1,'pltbutils_comp_pkg'],['../namespacepltbutils__comp__pkg.html',1,'pltbutils_comp_pkg']]],
   ['pltbutils_5fcomp_5fpkg_2evhd_129',['pltbutils_comp_pkg.vhd',['../pltbutils__comp__pkg_8vhd.html',1,'']]],
   ['pltbutils_5fdiff_5fcheck_130',['pltbutils_diff_check',['../classpltbutils__diff__check.html',1,'pltbutils_diff_check'],['../classpltbutils__comp__pkg.html#a133fa71fe2eb27d91b5b521f853df40a',1,'pltbutils_comp_pkg.pltbutils_diff_check()']]],
-  ['pltbutils_5ferror_131',['pltbutils_error',['../class__pltbutils__func__pkg.html#a30aecfb585c4ca8cd5901b2583d725da',1,'_pltbutils_func_pkg.pltbutils_errorrpt,pltbv,pltbs,'],['../class__pltbutils__func__pkg.html#a30aecfb585c4ca8cd5901b2583d725da',1,'_pltbutils_func_pkg.pltbutils_errorrpt,pltbv,pltbs,']]],
+  ['pltbutils_5ferror_131',['pltbutils_error',['../class__pltbutils__func__pkg.html#a30aecfb585c4ca8cd5901b2583d725da',1,'_pltbutils_func_pkg']]],
   ['pltbutils_5ffiles_2elst_132',['pltbutils_files.lst',['../pltbutils__files_8lst.html',1,'']]],
   ['pltbutils_5ffunc_5fpkg_133',['pltbutils_func_pkg',['../namespacepltbutils__func__pkg.html',1,'pltbutils_func_pkg'],['../classpltbutils__func__pkg.html',1,'pltbutils_func_pkg']]],
   ['pltbutils_5ffunc_5fpkg_2evhd_134',['pltbutils_func_pkg.vhd',['../pltbutils__func__pkg_8vhd.html',1,'']]],

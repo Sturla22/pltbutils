@@ -26,13 +26,13 @@ var NAVTREE =
 [
   [ "PlTbUtils", "index.html", [
     [ "Reference", "md_doc_reference.html", [
-      [ "Features", "index.html#autotoc_md54", null ],
-      [ "Revision History", "index.html#autotoc_md55", null ],
-      [ "Acknowledgements", "index.html#autotoc_md56", null ],
-      [ "Language", "index.html#autotoc_md57", null ],
-      [ "A quick look", "index.html#autotoc_md58", null ],
-      [ "PlTbUtils files", "index.html#autotoc_md59", null ],
-      [ "See also", "index.html#autotoc_md60", null ],
+      [ "Features", "index.html#autotoc_md55", null ],
+      [ "Revision History", "index.html#autotoc_md56", null ],
+      [ "Acknowledgements", "index.html#autotoc_md57", null ],
+      [ "Language", "index.html#autotoc_md58", null ],
+      [ "A quick look", "index.html#autotoc_md59", null ],
+      [ "PlTbUtils files", "index.html#autotoc_md60", null ],
+      [ "See also", "index.html#autotoc_md61", null ],
       [ "Functions and procedures", "md_doc_reference.html#autotoc_md1", [
         [ "startsim", "md_doc_reference.html#autotoc_md2", [
           [ "Arguments", "md_doc_reference.html#autotoc_md3", null ],
@@ -92,7 +92,17 @@ var NAVTREE =
         [ "pltbutils_clkgen", "md_doc_reference.html#autotoc_md43", null ]
       ] ]
     ] ],
-    [ "Tutorial", "md_doc_tutorial.html", null ],
+    [ "Tutorial", "md_doc_tutorial.html", [
+      [ "Basics", "md_doc_tutorial.html#autotoc_md45", null ],
+      [ "Different kinds of check()", "md_doc_tutorial.html#autotoc_md46", null ],
+      [ "Testbench with multiple testcases", "md_doc_tutorial.html#autotoc_md47", null ],
+      [ "Skipping tests", "md_doc_tutorial.html#autotoc_md48", null ],
+      [ "User Configuration", "md_doc_tutorial.html#autotoc_md49", null ],
+      [ "Configuring Simulation Halt", "md_doc_tutorial.html#autotoc_md50", null ],
+      [ "Configuring Messages for Integration Environments", "md_doc_tutorial.html#autotoc_md51", null ],
+      [ "Differences between simulators", "md_doc_tutorial.html#autotoc_md52", null ],
+      [ "See also", "md_doc_tutorial.html#autotoc_md53", null ]
+    ] ],
     [ "Packages", "namespaces.html", [
       [ "Packages", "namespaces.html", "namespaces_dup" ]
     ] ],

@@ -89,21 +89,20 @@ $(document).ready(function(){initNavTree('md_doc_tutorial.html',''); initResizab
 </div><!--header-->
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
-<ul><ul><li class="level2"><a href="#autotoc_md44">Basics</a></li>
-<li class="level2"><a href="#autotoc_md45">Different kinds of check()</a></li>
-<li class="level2"><a href="#autotoc_md46">Testbench with multiple testcases</a></li>
-<li class="level2"><a href="#autotoc_md47">Skipping tests</a></li>
-<li class="level2"><a href="#autotoc_md48">User Configuration</a></li>
-<li class="level2"><a href="#autotoc_md49">Configuring Simulation Halt</a></li>
-<li class="level2"><a href="#autotoc_md50">Configuring Messages for Integration Environments</a></li>
-<li class="level2"><a href="#autotoc_md51">Differences between simulators</a></li>
-<li class="level2"><a href="#autotoc_md52">See also</a></li>
-</ul>
+<ul><li class="level1"><a href="#autotoc_md45">Basics</a></li>
+<li class="level1"><a href="#autotoc_md46">Different kinds of check()</a></li>
+<li class="level1"><a href="#autotoc_md47">Testbench with multiple testcases</a></li>
+<li class="level1"><a href="#autotoc_md48">Skipping tests</a></li>
+<li class="level1"><a href="#autotoc_md49">User Configuration</a></li>
+<li class="level1"><a href="#autotoc_md50">Configuring Simulation Halt</a></li>
+<li class="level1"><a href="#autotoc_md51">Configuring Messages for Integration Environments</a></li>
+<li class="level1"><a href="#autotoc_md52">Differences between simulators</a></li>
+<li class="level1"><a href="#autotoc_md53">See also</a></li>
 </ul>
 </div>
 <div class="textblock"><p>If you are reading this markdown file on github, it has been formatted for <a href="https://sturla22.github.io/pltbutils/">doxygen</a>, which might explain some strange symbols.</p>
-<h2><a class="anchor" id="autotoc_md44"></a>
-Basics</h2>
+<h1><a class="anchor" id="autotoc_md45"></a>
+Basics</h1>
 <p>We will demonstrate how to use PlTbUtils by showing an example. In this example, we have a DUT (Device Under Test / Design Under Test) with the following entity.</p>
 <div class="fragment"><div class="line"><span class="keywordflow">entity </span><a class="code" href="classdut__example.html">dut_example</a> <span class="keywordflow">is</span></div>
 <div class="line">  <span class="keywordflow">generic</span> <span class="vhdlchar">(</span></div>
@@ -325,8 +324,8 @@ Basics</h2>
 </div>
 <p>This tutorial has shown some of the available procedures and testbench components in PlTbUtils. For a complete list, see the reference section.</p>
 <p>When you want to make your own testbenches with PlTbUtils, have a look at the template files in <a class="el" href="dir_de3c39578b6cba41d12670d7873c35ee.html">templates/vhdl/template1</a>/ .</p>
-<h2><a class="anchor" id="autotoc_md45"></a>
-Different kinds of check()</h2>
+<h1><a class="anchor" id="autotoc_md46"></a>
+Different kinds of check()</h1>
 <p>There are a number of overloaded <a class="el" href="classpltbutils__func__pkg.html#a0b8ddc930fb2c0e7956bad43276f9137">check</a> procedures for different VHDL types, e.g. std_logic, std_logic_vector, unsigned, signed, integer, boolean, time, etc. See the <a class="el" href="md_doc_reference.html">reference</a> section for a complete list. The check procedures checks equality, i.e. that a signal or variable has an expected value. They have the form</p>
 <div class="fragment"><div class="line"><span class="vhdlchar">check</span><span class="vhdlchar">(</span><span class="vhdlchar">rpt</span><span class="vhdlchar">,</span> <span class="vhdlchar">actual</span><span class="vhdlchar">,</span> <span class="vhdlchar">expected</span><span class="vhdlchar">,</span> <span class="vhdlchar">pltbv</span><span class="vhdlchar">,</span> <span class="vhdlchar"><a class="code" href="classtb__example1_1_1bhv.html#aaad491fafb00bd3f2eee8cc0de052dbb">pltbs</a></span><span class="vhdlchar">)</span></div>
 </div><!-- fragment --><p>where rpt is the string message with info on what is being checked, actual is the signal or variable to check, and expected is the expected value. If the check fails, rpt is printed togher with actual and expected valued. There is no need to include the expected value in the rpt string, because it is printed anyway.</p>
@@ -354,8 +353,8 @@ Different kinds of check()</h2>
 <div class="line"><span class="vhdlkeyword">begin</span></div>
 <div class="line">  <span class="vhdlchar">check</span><span class="vhdlchar">(</span><span class="vhdlchar">rpt</span><span class="vhdlchar">,</span> <span class="vhdlchar">actual</span> <span class="vhdlchar">&gt;</span> <span class="vhdlchar">expected</span><span class="vhdlchar">,</span> <span class="vhdlchar">str</span><span class="vhdlchar">(</span><span class="vhdlchar">actual</span><span class="vhdlchar">)</span><span class="vhdlchar">,</span> <span class="keyword">&quot;&gt;&quot;</span> <span class="vhdlchar">&amp;</span> <span class="vhdlchar">str</span><span class="vhdlchar">(</span><span class="vhdlchar">expected</span><span class="vhdlchar">)</span><span class="vhdlchar">,</span> <span class="keyword">&quot;&quot;</span><span class="vhdlchar">,</span> <span class="vhdlchar">pltbv</span><span class="vhdlchar">,</span> <span class="vhdlchar"><a class="code" href="classtb__example1_1_1bhv.html#aaad491fafb00bd3f2eee8cc0de052dbb">pltbs</a></span><span class="vhdlchar">)</span>;</div>
 <div class="line"><span class="keywordflow">end</span> <span class="keywordflow">procedure</span> check_gt;</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md46"></a>
-Testbench with multiple testcases</h2>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md47"></a>
+Testbench with multiple testcases</h1>
 <p>In some cases, it is more convenient to not include the testcase process in the testbench top. Instead, we can put the testcase process in its own VHDL component. Then we can have alternative architectures for this component, with different testcase processes.</p>
 <p>This is practial for large testbenches with a lot of testbench components and other code, with a requirement for multiple testcases. Then we don't have to write a new testbench for each testcase.</p>
 <p>The following is an example of such a testbench.</p>
@@ -550,8 +549,8 @@ Testbench with multiple testcases</h2>
 <p>Also try</p>
 <p><code>do <a class="el" href="run__tc1__bugfixed_8do.html">run_tc1_bugfixed.do</a></code></p>
 <p>Template files for this type of testbench is available in <a class="el" href="dir_f18bc5d2cc309339e584d6315871bcf5.html">templates/vhdl/template2</a>/</p>
-<h2><a class="anchor" id="autotoc_md47"></a>
-Skipping tests</h2>
+<h1><a class="anchor" id="autotoc_md48"></a>
+Skipping tests</h1>
 <p>PlTbUtils lets you skip tests, if you want to. This is useful while debugging a failure in a test. You can save simulation time by skipping the tests before and after the failing test. It is also useful while developing a test to skip the tests before.</p>
 <p>To skip a test, add generic G_SKIPTESTS to the testbench of type std_logic_vector.</p>
 <div class="fragment"><div class="line"><span class="keywordflow">entity </span>tb_example1_skip <span class="keywordflow">is</span></div>
@@ -585,13 +584,13 @@ Skipping tests</h2>
 <p>It is of course also possible to define the generic in the following form:</p>
 <div class="fragment"><div class="line"><span class="vhdlchar">G_SKIPTESTS</span> <span class="vhdlchar">:</span> <span class="keywordtype">std_logic_vector</span> <span class="vhdlchar">:=</span> <span class="vhdllogic">&quot;001&quot;</span>;</div>
 </div><!-- fragment --><p>This is more compact as it uses only a single line, but it is not possible to add individual comments for each test.</p>
-<h2><a class="anchor" id="autotoc_md48"></a>
-User Configuration</h2>
+<h1><a class="anchor" id="autotoc_md49"></a>
+User Configuration</h1>
 <p>It is possible to configure some aspects of PlTbUtils's behaviour, by modifying the package file <a class="el" href="pltbutils__user__cfg__pkg_8vhd.html" title="This file defines the user&#39;s customizations.">pltbutils_user_cfg_pkg.vhd</a></p>
 <p>It is recommended NOT to modify the file directly. Instead, copy it to another directory and modify the copy. Make the simulator read the modified copy instead of the original. This makes it easier to update pltbutils to a later version without destroying the modifications. After updating, check if anything has changed in the file, and change your modified copy accordingly.</p>
 <p>If your simulation environment (scripts, etc) uses the file <a class="el" href="pltbutils__files_8lst.html">pltbutils_files.lst</a> , then copy it too, to the other directory. Modify the contents of the file, by modifying the relative paths to point to the files from the new location.</p>
-<h2><a class="anchor" id="autotoc_md49"></a>
-Configuring Simulation Halt</h2>
+<h1><a class="anchor" id="autotoc_md50"></a>
+Configuring Simulation Halt</h1>
 <p>When calling <code>endsim</code>, the signal stop_sim is set to '1'. When set, all clock generators etc in the testbench and the DUT should stop, so there will be no further events in the simulation. The simulator will detect that nothing more will happen, and stops the simulation.</p>
 <p>In some cases, it is not possible to stop clock generators, PLL models etc. In that case, <code>endsim</code> can force a simulaton halt, by setting the force argument to true.</p>
 <p>The declaration of <code>endsim</code> is</p>
@@ -605,8 +604,8 @@ Configuring Simulation Halt</h2>
 <p>This stops the simulation using an assert-failure. This works in all versions of VHDL, but it is an ugly way of doing it, since it outputs a failure message for something which isn't a failure.</p>
 <p>You can change the way the simulation stops when the force flag is set in your copy of <a class="el" href="pltbutils__user__cfg__pkg_8vhd.html" title="This file defines the user&#39;s customizations.">pltbutils_user_cfg_pkg.vhd</a>.</p>
 <p>Change the constant C_PLTBUTILS_USE_CUSTOM_STOPSIM to true, and modify the behavior of the procedure <a class="el" href="classpltbutils__user__cfg__pkg.html#a91bf2e5901ad735f8848a7a916f1b8da">custom_stopsim</a>. In VHDL-2008 the new keywords stop and finish was introduced. Try one of them, if your simulator supports them.</p>
-<h2><a class="anchor" id="autotoc_md50"></a>
-Configuring Messages for Integration Environments</h2>
+<h1><a class="anchor" id="autotoc_md51"></a>
+Configuring Messages for Integration Environments</h1>
 <p>It is possible adapt the status messages to suit various continous integration environments, e.g. TeamCity, by specifying what the messages should look like.</p>
 <p>You can create your own messages printed when starting and stopping a simulation, starting and stopping a test, for checking, etc.</p>
 <p>In your copy of <a class="el" href="pltbutils__user__cfg__pkg_8vhd.html" title="This file defines the user&#39;s customizations.">pltbutils_user_cfg_pkg.vhd</a>, set one or more of the message constants to true, and modify the associated procedure.</p>
@@ -621,11 +620,11 @@ Configuring Messages for Integration Environments</h2>
 </ul>
 <p>The corresponding procedures already contain examples for TeamCity. Modify if you use another environment.</p>
 <p>You can disable the standard messages by setting the standard constants to false (C_PLTBUTILS_USE_STD_STARTSIM_MSG etc).</p>
-<h2><a class="anchor" id="autotoc_md51"></a>
-Differences between simulators</h2>
+<h1><a class="anchor" id="autotoc_md52"></a>
+Differences between simulators</h1>
 <p>Text strings (TestName and Info text) in the waveform window look different in different simulators. In ModelSim strings look like this: Example text. In ISim it looks like this: 'E','x','a','m','p','l','e',' ','t','e','x','t'.</p>
-<h2><a class="anchor" id="autotoc_md52"></a>
-See also</h2>
+<h1><a class="anchor" id="autotoc_md53"></a>
+See also</h1>
 <ul>
 <li><a class="el" href="classtxt__util.html" title="Defines useful functions an procedures for text handling text in VHDL.">txt_util</a></li>
 <li><a class="el" href="classpltbutils__func__pkg.html" title="This package defines fuctions and procedures for controlling stimuli to a DUT and checking response.">pltbutils_func_pkg</a></li>

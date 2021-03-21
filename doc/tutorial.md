@@ -1,11 +1,10 @@
-Tutorial
---------
+# Tutorial
 
 If you are reading this markdown file on github, it has been formatted for [doxygen](https://sturla22.github.io/pltbutils/), which might explain some strange symbols.
 
 @tableofcontents
 
-### Basics
+## Basics
 
 We will demonstrate how to use PlTbUtils by showing an example. In this
 example, we have a DUT (Device Under Test / Design Under Test) with the
@@ -322,7 +321,7 @@ components in PlTbUtils. For a complete list, see the reference section.
 When you want to make your own testbenches with PlTbUtils, have a look
 at the template files in \ref templates/vhdl/template1/ .
 
-### Different kinds of check()
+## Different kinds of check()
 
 There are a number of overloaded \ref pltbutils\_func\_pkg.check() "check" procedures for different VHDL
 types, e.g. std\_logic, std\_logic\_vector, unsigned, signed, integer,
@@ -395,7 +394,7 @@ Example:
   end procedure check_gt;
 ```
 
-### Testbench with multiple testcases
+## Testbench with multiple testcases
 
 In some cases, it is more convenient to not include the testcase process
 in the testbench top. Instead, we can put the testcase process in its
@@ -517,7 +516,7 @@ Also try
 Template files for this type of testbench is available in
 \ref templates/vhdl/template2/
 
-### Skipping tests
+## Skipping tests
 
 PlTbUtils lets you skip tests, if you want to. This is useful while
 debugging a failure in a test. You can save simulation time by skipping
@@ -592,7 +591,7 @@ G_SKIPTESTS : std_logic_vector := "001";
 This is more compact as it uses only a single line, but it is not
 possible to add individual comments for each test.
 
-### User Configuration
+## User Configuration
 
 It is possible to configure some aspects of PlTbUtils's behaviour, by
 modifying the package file pltbutils\_user\_cfg\_pkg.vhd
@@ -609,7 +608,7 @@ pltbutils\_files.lst , then copy it too, to the other directory. Modify
 the contents of the file, by modifying the relative paths to point to
 the files from the new location.
 
-### Configuring Simulation Halt
+## Configuring Simulation Halt
 
 When calling `endsim`, the signal stop\_sim is set to '1'. When set, all
 clock generators etc in the testbench and the DUT should stop, so there
@@ -646,7 +645,7 @@ modify the behavior of the procedure \ref pltbutils\_user\_cfg\_pkg.custom\_stop
 new keywords stop and finish was introduced. Try one of them, if your
 simulator supports them.
 
-### Configuring Messages for Integration Environments
+## Configuring Messages for Integration Environments
 
 It is possible adapt the status messages to suit various continous
 integration environments, e.g. TeamCity, by specifying what the messages
@@ -673,16 +672,17 @@ Modify if you use another environment.
 You can disable the standard messages by setting the standard constants
 to false (C\_PLTBUTILS\_USE\_STD\_STARTSIM\_MSG etc).
 
-### Differences between simulators
+## Differences between simulators
 
 Text strings (TestName and Info text) in the waveform window look
 different in different simulators. In ModelSim strings look like this:
 Example text. In ISim it looks like this: 'E','x','a','m','p','l','e','
 ','t','e','x','t'.
 
-### See also
+## See also
 - txt\_util
 - pltbutils\_func\_pkg
 - pltbutils\_clkgen
 - pltbutils\_user\_cfg\_pkg
 - [Reference](doc/reference.md)
+
