@@ -13,7 +13,7 @@
 ---- This file is a template, which can be used as a base when    ----
 ---- testbenches which use PlTbUtils.                             ----
 ---- Copy this file to your preferred location and rename the     ----
----- copied file and its contents, by replacing the word          ---- 
+---- copied file and its contents, by replacing the word          ----
 ---- "template" with a name for your design.                      ----
 ---- Also remove informative comments enclosed in < ... > .       ----
 ----                                                              ----
@@ -42,8 +42,8 @@ entity tb_template2 is
                       '0', -- Test 1
                       '0'  -- Test 2
                            -- ... etc
-                    );
-    -- < Template info: add more generics here if needed >    
+                    )
+    -- < Template info: add more generics here if needed >
   );
 end entity tb_template2;
 
@@ -52,24 +52,24 @@ architecture bhv of tb_template2 is
   -- Simulation status- and control signals
   -- for accessing .stop_sim and for viewing in waveform window
   signal pltbs          : pltbs_t := C_PLTBS_INIT;
-  
+
   -- DUT stimuli and response signals
   signal clk            : std_logic;
   signal rst            : std_logic;
   -- < Template info: add more DUT stimuli and response signals here. >
-  
+
 begin
 
   dut0 : entity work.template
-    generic map (
-      -- < Template info: add DUT generics here, if any. >      
-    )
+    -- generic map (
+      -- < Template info: add DUT generics here, if any. >
+    -- )
     port map (
       clk_i             => clk, -- Template example
-      rst_i             => rst, -- Template example
+      rst_i             => rst -- Template example
       -- < Template info: add more DUT ports here. >
     );
-    
+
   clkgen0 : pltbutils_clkgen
     generic map(
       G_PERIOD          => G_CLK_PERIOD
@@ -78,7 +78,7 @@ begin
       clk_o             => clk,
       stop_sim_i        => pltbs.stop_sim
     );
-   
+
   tc0 : entity work.tc_template2
     generic map (
       G_SKIPTESTS       => G_SKIPTESTS
@@ -86,8 +86,8 @@ begin
     )
     port map(
       clk               => clk, -- Template example
-      rst               => rst, -- Template example
+      rst               => rst -- Template example
       -- < Template info: add more ports for testcase component here. >
     );
-  
+
 end architecture bhv;

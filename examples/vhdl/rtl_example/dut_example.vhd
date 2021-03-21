@@ -47,54 +47,59 @@
 ---- from http://www.opencores.org/lgpl.shtml                     ----
 ----                                                              ----
 ----------------------------------------------------------------------
+
 library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+  use ieee.std_logic_1164.all;
+  use ieee.numeric_std.all;
 
 entity dut_example is
   generic (
-    G_WIDTH         : integer := 8;
-    G_DISABLE_BUGS  : integer range 0 to 1 := 1
+    G_WIDTH        : integer              := 8;
+    G_DISABLE_BUGS : integer range 0 to 1 := 1
   );
   port (
-    clk_i           : in  std_logic;
-    rst_i           : in  std_logic;
-    carry_i         : in  std_logic;
-    x_i             : in  std_logic_vector(G_WIDTH-1 downto 0);
-    y_i             : in  std_logic_vector(G_WIDTH-1 downto 0);
-    sum_o           : out std_logic_vector(G_WIDTH-1 downto 0);
-    carry_o         : out std_logic
-  );    
+    clk_i   : in    std_logic;
+    rst_i   : in    std_logic;
+    carry_i : in    std_logic;
+    x_i     : in    std_logic_vector(G_WIDTH - 1 downto 0);
+    y_i     : in    std_logic_vector(G_WIDTH - 1 downto 0);
+    sum_o   : out   std_logic_vector(G_WIDTH - 1 downto 0);
+    carry_o : out   std_logic
+  );
 end entity dut_example;
 
 architecture rtl of dut_example is
-  signal x          : unsigned(G_WIDTH downto 0);
-  signal y          : unsigned(G_WIDTH downto 0);
-  signal c          : unsigned(G_WIDTH downto 0);
-  signal sum        : unsigned(G_WIDTH downto 0);
+
+  signal x   : unsigned(G_WIDTH downto 0);
+  signal y   : unsigned(G_WIDTH downto 0);
+  signal c   : unsigned(G_WIDTH downto 0);
+  signal sum : unsigned(G_WIDTH downto 0);
+
 begin
 
-  x <= resize(unsigned(x_i), G_WIDTH+1);
-  y <= resize(unsigned(y_i), G_WIDTH+1);
-  c <= resize(unsigned(std_logic_vector'('0' & carry_i)), G_WIDTH+1);
-  
-  p_sum : process(clk_i)
+  x <= resize(unsigned(x_i), G_WIDTH + 1);
+  y <= resize(unsigned(y_i), G_WIDTH + 1);
+  c <= resize(unsigned(std_logic_vector('0' & carry_i)), G_WIDTH + 1);
+
+  p_sum : process (clk_i) is
   begin
-    if rising_edge(clk_i) then
-      if rst_i = '1' then
+
+    if (clk_i'event and clk_i = '1') then
+      if (rst_i = '1') then
         sum <= (others => '0');
       else
-        if G_DISABLE_BUGS = 1 then
+        if (G_DISABLE_BUGS = 1) then
           sum <= x + y + c;
         else
           sum <= x + y;
         end if;
       end if;
     end if;
-  end process;
-  
-  sum_o <= std_logic_vector(sum(sum'high-1 downto 0));
+
+  end process p_sum;
+
+  sum_o   <= std_logic_vector(sum(sum'high - 1 downto 0));
   carry_o <= sum(sum'high);
-  
+
 end architecture rtl;
 

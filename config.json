@@ -1,0 +1,37 @@
+{
+  "rule": {
+    "concurrent_007": {
+      "allow_single_line": true
+    },
+    "variable_007": {
+      "disable": true
+    },
+    "signal_007": {
+      "disable": true
+    },
+    "port_012": {
+      "disable": true
+    },
+    "whitespace_011": {
+      "disable": true
+    },
+    "length_002": {
+      "disable": true
+    },
+    "length_001": {
+      "disable": true
+    },
+    "function_003": {
+      "disable": true
+    },
+    "constant_004": {
+      "case": "upper"
+    },
+    "generic_007": {
+      "case": "upper"
+    },
+    "component_003": {
+      "disable": true
+    }
+  }
+}
