@@ -1,5 +1,7 @@
 # Reference
 
+If you are reading this markdown file on github, it has been formatted for [doxygen](https://sturla22.github.io/pltbutils/), which might explain some strange symbols.
+
 @tableofcontents
 
 ## Functions and procedures

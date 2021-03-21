@@ -1,8 +1,8 @@
 # PlTbUtils
 
-@tableofcontents
-
 *Author: Per Larsson, pela.opencores\@gmail.com*
+
+PlTbUtils makes it easy to create automatic, self-checking simulation testbenches, and to locate bugs during a simulation. It is a collection of functions, procedures and testbench components that simplifies creation of stimuli and checking results of a device under test.
 
 ### Features
 
@@ -39,6 +39,8 @@ Subversion export command: `svn export http://opencores.org/ocsvn/pltbutils/pltb
 
 Github repository URL: <https://github.com/Sturla22/pltbutils>
 
+Hosted Doxygen documentation: <https://sturla22.github.io/pltbutils/>
+
 
 ### Revision History
 
@@ -74,15 +76,15 @@ It is possible to configure the way a simulation stops, by taking advantage of t
 
 ### A quick look
 
-\image html "doc/src/media/image3.png"
+![image3](doc/src/media/image3.png)
 
 During a simulation, the waveform window shows current test number, test name, user-defined info, accumulated number of checks and errors. When the error counter increments, a bug has been found in that point in time.
 
-\image html "doc/src/media/image4.png"
+![image4](doc/src/media/image4.png)
 
 The transcript window clearly shows points in time where the simulation starts, ends, and where errors are detected. The simulation stops with a clear SUCCESS/FAIL message, specifically formatted for parsing by scripts.
 
-\image html "doc/src/media/image5.png"
+![image](doc/src/media/image5.png)
 
 The testcase code is compact and to the point, which results in less code to write, and makes the code easier to read, as in the following example.
 
@@ -143,23 +145,19 @@ end process p_tc1;
 
 ### PlTbUtils files
 
-The PlTbUtils files are located in \ref src/vhdl/ .
+The PlTbUtils files are located in src/vhdl/ .
 
 The files needed to be compiled are listed in compile order in
 pltbutils\_files.lst .
 
-See example testbenches using PlTbUtils in \ref examples/vhdl/ .
+See example testbenches using PlTbUtils in examples/vhdl/ .
 
-This code can be simulated from \ref sim/modelsim\_tb\_example1/run/ and
-\ref sim/modelsim\_tb\_example2/run/ .
+This code can be simulated from sim/modelsim\_tb\_example1/run/ and
+sim/modelsim\_tb\_example2/run/ .
 
-Template code is available in \ref templates/vhdl/ .
+Template code is available in templates/vhdl/ .
 
 ### See also
 
 - [Tutorial](doc/tutorial.md)
-- txt\_util
-- pltbutils\_func\_pkg
-- pltbutils\_clkgen
-- pltbutils\_user\_cfg\_pkg
 - [Reference](doc/reference.md)

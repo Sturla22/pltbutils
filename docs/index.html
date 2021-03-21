@@ -88,19 +88,8 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="title">PlTbUtils </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="toc"><h3>Table of Contents</h3>
-<ul><ul><li class="level2"><a href="#autotoc_md54">Features</a></li>
-<li class="level2"><a href="#autotoc_md55">Revision History</a></li>
-<li class="level2"><a href="#autotoc_md56">Acknowledgements</a></li>
-<li class="level2"><a href="#autotoc_md57">Language</a></li>
-<li class="level2"><a href="#autotoc_md58">A quick look</a></li>
-<li class="level2"><a href="#autotoc_md59">PlTbUtils files</a></li>
-<li class="level2"><a href="#autotoc_md60">See also</a></li>
-</ul>
-</ul>
-</div>
-<div class="textblock"><p><a class="anchor" id="md_README"></a></p>
-<p><em>Author: Per Larsson, pela.opencores@gmail.com</em></p>
+<div class="textblock"><p><a class="anchor" id="md_README"></a> <em>Author: Per Larsson, pela.opencores@gmail.com</em></p>
+<p>PlTbUtils makes it easy to create automatic, self-checking simulation testbenches, and to locate bugs during a simulation. It is a collection of functions, procedures and testbench components that simplifies creation of stimuli and checking results of a device under test.</p>
 <h2><a class="anchor" id="autotoc_md54"></a>
 Features</h2>
 <ul>
@@ -121,6 +110,7 @@ Features</h2>
 <p>Subversion repository URL: <a href="http://opencores.org/ocsvn/pltbutils/pltbutils/trunk">http://opencores.org/ocsvn/pltbutils/pltbutils/trunk</a></p>
 <p>Subversion export command: <code>svn export <a href="http://opencores.org/ocsvn/pltbutils/pltbutils/trunk">http://opencores.org/ocsvn/pltbutils/pltbutils/trunk</a> pltbutils</code></p>
 <p>Github repository URL: <a href="https://github.com/Sturla22/pltbutils">https://github.com/Sturla22/pltbutils</a></p>
+<p>Hosted Doxygen documentation: <a href="https://sturla22.github.io/pltbutils/">https://sturla22.github.io/pltbutils/</a></p>
 <h2><a class="anchor" id="autotoc_md55"></a>
 Revision History</h2>
 <table class="markdownTable">
@@ -169,17 +159,11 @@ Language</h2>
 <p>It is possible to configure the way a simulation stops, by taking advantage of the VHDL-2008 keywords stop and finish. If your simulator supports stop and/or finish, see Configuring Simulation Halt on page 19.</p>
 <h2><a class="anchor" id="autotoc_md58"></a>
 A quick look</h2>
-<div class="image">
-<img src="image3.png" alt=""/>
-</div>
+<p><img src="image3.png" alt="" class="inline" title="image3"/></p>
 <p>During a simulation, the waveform window shows current test number, test name, user-defined info, accumulated number of checks and errors. When the error counter increments, a bug has been found in that point in time.</p>
-<div class="image">
-<img src="image4.png" alt=""/>
-</div>
+<p><img src="image4.png" alt="" class="inline" title="image4"/></p>
 <p>The transcript window clearly shows points in time where the simulation starts, ends, and where errors are detected. The simulation stops with a clear SUCCESS/FAIL message, specifically formatted for parsing by scripts.</p>
-<div class="image">
-<img src="image5.png" alt=""/>
-</div>
+<p><img src="image5.png" alt="" class="inline" title="image"/></p>
 <p>The testcase code is compact and to the point, which results in less code to write, and makes the code easier to read, as in the following example.</p>
 <div class="fragment"><div class="line"><span class="comment">-- NOTE: The purpose of the following code is to demonstrate some of the</span></div>
 <div class="line"><span class="comment">-- features in PlTbUtils, not to do a thorough verification.</span></div>
@@ -234,19 +218,15 @@ A quick look</h2>
 <div class="line"><span class="keywordflow">end</span> <span class="keywordflow">process</span> <span class="vhdlchar">p_tc1</span>;</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md59"></a>
 PlTbUtils files</h2>
-<p>The PlTbUtils files are located in <a class="el" href="dir_9ae5ed663d8341fbdcde76c8e67e15c9.html">src/vhdl</a>/ .</p>
+<p>The PlTbUtils files are located in src/vhdl/ .</p>
 <p>The files needed to be compiled are listed in compile order in <a class="el" href="pltbutils__files_8lst.html">pltbutils_files.lst</a> .</p>
-<p>See example testbenches using PlTbUtils in <a class="el" href="dir_5e7b643eeac40ccb5df3d29a0820a31b.html">examples/vhdl</a>/ .</p>
-<p>This code can be simulated from <a class="el" href="dir_1794685c486a75baca30b2a12598bb97.html">sim/modelsim_tb_example1/run</a>/ and <a class="el" href="dir_18fad428175e221542970d776dddb617.html">sim/modelsim_tb_example2/run</a>/ .</p>
-<p>Template code is available in <a class="el" href="dir_98b2a836ab496ff808461755eb96b75a.html">templates/vhdl</a>/ .</p>
+<p>See example testbenches using PlTbUtils in examples/vhdl/ .</p>
+<p>This code can be simulated from sim/modelsim_tb_example1/run/ and sim/modelsim_tb_example2/run/ .</p>
+<p>Template code is available in templates/vhdl/ .</p>
 <h2><a class="anchor" id="autotoc_md60"></a>
 See also</h2>
 <ul>
 <li><a class="el" href="md_doc_tutorial.html">Tutorial</a></li>
-<li><a class="el" href="classtxt__util.html" title="Defines useful functions an procedures for text handling text in VHDL.">txt_util</a></li>
-<li><a class="el" href="classpltbutils__func__pkg.html" title="This package defines fuctions and procedures for controlling stimuli to a DUT and checking response.">pltbutils_func_pkg</a></li>
-<li><a class="el" href="classpltbutils__clkgen.html">pltbutils_clkgen</a></li>
-<li><a class="el" href="classpltbutils__user__cfg__pkg.html" title="PlTbUtils User Configuration Package: User&#39;s function and procedure declarations.">pltbutils_user_cfg_pkg</a></li>
 <li><a class="el" href="md_doc_reference.html">Reference</a> </li>
 </ul>
 </div></div><!-- PageDoc -->

@@ -1,6 +1,8 @@
 Tutorial
 --------
 
+If you are reading this markdown file on github, it has been formatted for [doxygen](https://sturla22.github.io/pltbutils/), which might explain some strange symbols.
+
 @tableofcontents
 
 ### Basics
@@ -96,10 +98,6 @@ begin
       clk_o             => clk,
       stop_sim_i        => pltbs.stop_sim
     );
-
-
-
-
 
   -- Testcase process
   -- NOTE: The purpose of the following code is to demonstrate some of the
