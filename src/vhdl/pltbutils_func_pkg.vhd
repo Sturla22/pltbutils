@@ -166,8 +166,12 @@ package pltbutils_func_pkg is
   --! DO NOT OUTPUT AN IDENTICAL MESSAGE anywhere else.
   --!
   --! **Examples**
-  --! - ```vhdl startsim("tc1", "", pltbv, pltbs); ```
-  --! - ```vhdl startsim("tc2", G_SKIPTESTS, pltbv, pltbs); -- G_SKIPTESTS is a generic ```
+  --! ```vhdl
+  --!   startsim("tc1", "", pltbv, pltbs);
+  --! ```
+  --! ```vhdl
+  --!   startsim("tc2", G_SKIPTESTS, pltbv, pltbs); -- G_SKIPTESTS is a generic
+  --! ```
   procedure startsim(
     constant testcase_name      : in    string;
     constant skiptests          : in    std_logic_vector;
@@ -213,9 +217,15 @@ package pltbutils_func_pkg is
   --! DO NOT OUTPUT IDENTICAL MESSAGES anywhere else.
   --!
   --! **Examples**
-  --! - ```vhdl endsim(pltbv, pltbs); ```
-  --! - ```vhdl endsim(pltbv, pltbs, true); ```
-  --! - ```vhdl endsim(pltbv, pltbs, true, true); ```
+  --! ```vhdl
+  --!   endsim(pltbv, pltbs);
+  --! ```
+  --! ```vhdl
+  --!   endsim(pltbv, pltbs, true);
+  --! ```
+  --! ```vhdl
+  --!   endsim(pltbv, pltbs, true, true);
+  --! ```
   procedure endsim(
     variable pltbv              : inout pltbv_t;
     signal   pltbs              : out   pltbs_t;
@@ -236,7 +246,9 @@ package pltbutils_func_pkg is
   --!                          -signal.
   --!
   --! **Examples**
-  --! - ```vhdl starttest("Reset test", pltbv, pltbs); ```
+  --! ```vhdl
+  --! starttest("Reset test", pltbv, pltbs);
+  --! ```
   procedure starttest(
     constant name               : in    string;
     variable pltbv              : inout pltbv_t;
@@ -258,7 +270,9 @@ package pltbutils_func_pkg is
   --! in the testbench code, though.
   --!
   --! **Examples**
-  --! - ```vhdl starttest(1, "Reset test", pltbv, pltbs); ```
+  --! ```vhdl
+  --! starttest(1, "Reset test", pltbv, pltbs);
+  --! ```
   procedure starttest(
     constant num                : in    integer := -1;
     constant name               : in    string;
@@ -1088,9 +1102,11 @@ package pltbutils_func_pkg is
   --! \retval hexstr: s represented as a hex string
   --!
   --! Examples:
-  --! - print("value=" & hxstr(s));
-  --! - print("value=" & hxstr(s, "0x"));
-  --! - print("value=" & hxstr(s, "16#", "#"));
+  --! ```vhdl
+  --! print("value=" & hxstr(s));
+  --! print("value=" & hxstr(s, "0x"));
+  --! print("value=" & hxstr(s, "16#", "#"));
+  --! ```
   function hxstr(
     constant s                  : std_logic_vector;
     constant prefix             : string := "";
